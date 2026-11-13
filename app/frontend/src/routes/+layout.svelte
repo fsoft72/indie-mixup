@@ -28,6 +28,8 @@ onMount( () => storeUser.load() );
 
 const isModerator = $derived( !!storeUser.user.perms?.some( ( p ) => p === 'indiegame.moderate' || p === 'system.admin' ) );
 
+const isOAuthAdmin = $derived( !!storeUser.user.perms?.some( ( p ) => p === 'user.oauth.manage' || p === 'system.admin' ) );
+
 const isActive = ( href : string ) => ( href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith( href ) );
 
 const logout = async () => {
@@ -54,7 +56,8 @@ const logout = async () => {
 				<a href="/rankings" aria-current={isActive( '/rankings' ) ? 'page' : undefined}><Icon name="trophy" size={16} /> Rankings</a>
 				{#if storeUser.isLoggedIn}
 					<a href="/my-games" aria-current={isActive( '/my-games' ) ? 'page' : undefined}>My games</a>
-					{#if isModerator}<a href="/admin" aria-current={isActive( '/admin' ) ? 'page' : undefined}>Moderation</a>{/if}
+					{#if isModerator}<a href="/admin" aria-current={page.url.pathname === '/admin' ? 'page' : undefined}>Moderation</a>{/if}
+					{#if isOAuthAdmin}<a href="/admin/providers" aria-current={isActive( '/admin/providers' ) ? 'page' : undefined}>Providers</a>{/if}
 				{/if}
 			</nav>
 

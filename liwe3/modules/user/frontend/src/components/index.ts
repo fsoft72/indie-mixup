@@ -19,3 +19,4 @@ export { default as UserRolesAdmin } from './UserRolesAdmin.svelte';
 export { default as AddressForm } from './AddressForm.svelte';
 export { default as AddressList } from './AddressList.svelte';
 export { default as FiscalDataForm } from './FiscalDataForm.svelte';
+export { default as OAuthProvidersAdmin } from './OAuthProvidersAdmin.svelte';

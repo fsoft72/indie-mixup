@@ -5,6 +5,8 @@
 ### user module: enable / disable OAuth providers
 
 - New endpoint `POST /api/user/oauth/provider/enable` (`user_oauth_provider_enable`, permission `user.oauth.manage`) in `work/modules/user.json`, regenerated with flow2code. Params `id`, `enabled`; returns the provider without the secret. Tests in `liwe3/modules/user/backend/tests/user-oauth-provider-enable.test.ts`. Documented in `liwe3/modules/user/docs/oauth.md`.
+- New component `OAuthProvidersAdmin` in `liwe3/modules/user/frontend/src/components` (list, add / edit credentials, enable / disable with the grid checkbox, delete). Needs `user.oauth.manage`.
+- New app page `/admin/providers` (and a `Providers` nav link for `user.oauth.manage` / `system.admin`) that shows the component and the GitHub callback URL to register.
 
 ### indiegame module (catalog, remixes, reports, rankings)
 
