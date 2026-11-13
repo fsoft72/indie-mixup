@@ -25,6 +25,7 @@ export { user_2fa_admin_disable, type User2faAdminDisableParams } from './user-2
 export { user_oauth_provider_add, type UserOauthProviderAddParams } from './user-oauth-provider-add';
 export { user_oauth_provider_list, type UserOauthProviderListParams } from './user-oauth-provider-list';
 export { user_oauth_provider_del, type UserOauthProviderDelParams } from './user-oauth-provider-del';
+export { user_oauth_provider_enable, type UserOauthProviderEnableParams } from './user-oauth-provider-enable';
 export { user_oauth_authorize, type UserOauthAuthorizeParams } from './user-oauth-authorize';
 export { user_oauth_callback, type UserOauthCallbackParams } from './user-oauth-callback';
 export { user_set_enabled, type UserSetEnabledParams } from './user-set-enabled';

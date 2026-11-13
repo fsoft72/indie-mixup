@@ -20,6 +20,7 @@ import {
 	user_oauth_callback,
 	user_oauth_provider_add,
 	user_oauth_provider_del,
+	user_oauth_provider_enable,
 	user_oauth_provider_list,
 	user_password_change_expired,
 	user_perms_set,
@@ -138,6 +139,8 @@ export const module_init = async ( app : LiWEApp ) => {
 	app.hono.get( '/api/user/oauth/provider/list', routeGet( user_oauth_provider_list, { perms: [ USER_PERM_OAUTH_MANAGE ] } ) );
 
 	app.hono.delete( '/api/user/oauth/provider/del', routeBody( user_oauth_provider_del, { perms: [ USER_PERM_OAUTH_MANAGE ] } ) );
+
+	app.hono.post( '/api/user/oauth/provider/enable', routeBody( user_oauth_provider_enable, { perms: [ USER_PERM_OAUTH_MANAGE ] } ) );
 
 	app.hono.get( '/api/user/oauth/authorize', routeGet( user_oauth_authorize, { perms: PUBLIC } ) );
 

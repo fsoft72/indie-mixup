@@ -178,6 +178,18 @@ stripped from every row.
 `404` `OAUTH_PROVIDER_NOT_FOUND` if it doesn't exist or belongs to
 another domain. **Returns:** `LiWEResponse<boolean>`.
 
+### `user_oauth_provider_enable` - `POST /api/user/oauth/provider/enable`
+
+Switches a provider on or off without touching its credentials (the
+secret is never returned by the API, so `provider_add` cannot be used to
+flip the flag).
+
+**Permission:** `user.oauth.manage`. **Params:** `{ id: string, enabled: boolean }`
+
+`404` `OAUTH_PROVIDER_NOT_FOUND` if it doesn't exist or belongs to
+another domain. **Returns:** `LiWEResponse<UserOAUTHProvider>` -
+`client_secret` stripped.
+
 ### `user_oauth_authorize` - `GET /api/user/oauth/authorize`
 
 Starts the OAuth flow. **Auth:** none. **Params:** `{ provider: string, redirect_url: string }`

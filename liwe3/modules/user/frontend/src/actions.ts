@@ -367,6 +367,21 @@ export const user_oauth_provider_del = async ( params : {
 	return res;
 };
 
+export const user_oauth_provider_enable = async ( params : {
+	id : string;
+	enabled : boolean;
+}, options? : LiWEActionOptions ) : Promise<LiWEResponse<UserOAUTHProvider>> => {
+	const res = await _internalCall<typeof params, UserOAUTHProvider>( apiClient.post, '/api/user/oauth/provider/enable', params, options );
+
+	/*=== f2c_start user_oauth_provider_enable ===*/
+
+	// Add custom code here
+
+	/*=== f2c_end user_oauth_provider_enable ===*/
+
+	return res;
+};
+
 export const user_oauth_authorize = async ( params : {
 	provider : string;
 	redirect_url : string;

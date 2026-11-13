@@ -1111,6 +1111,58 @@
         "perm.mscwjzjm.2dii": true
       }
     },
+    "endp.mt1oauth.en4b": {
+      "id": "endp.mt1oauth.en4b",
+      "method": "POST",
+      "url": "/user/oauth/provider/enable",
+      "short_descr": "Enable or disable a provider",
+      "description": "Switches a configured provider on or off without touching its credentials",
+      "parameters": [
+        {
+          "id": "param.mt1oauth.pid1",
+          "type": "str",
+          "name": "id",
+          "description": "Provider ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mt1oauth.pen2",
+          "type": "boolean",
+          "name": "enabled",
+          "description": "True to enable, false to disable",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UserOAUTHProvider",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": true
+      }
+    },
     "endp.mscwpzei.5xfj": {
       "id": "endp.mscwpzei.5xfj",
       "method": "GET",

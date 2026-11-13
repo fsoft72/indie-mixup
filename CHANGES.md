@@ -2,6 +2,10 @@
 
 ## 2026-11-13
 
+### user module: enable / disable OAuth providers
+
+- New endpoint `POST /api/user/oauth/provider/enable` (`user_oauth_provider_enable`, permission `user.oauth.manage`) in `work/modules/user.json`, regenerated with flow2code. Params `id`, `enabled`; returns the provider without the secret. Tests in `liwe3/modules/user/backend/tests/user-oauth-provider-enable.test.ts`. Documented in `liwe3/modules/user/docs/oauth.md`.
+
 ### indiegame module (catalog, remixes, reports, rankings)
 
 - New module definition `work/modules/indiegame.json` (17 endpoints, 12 types, permission `indiegame.moderate`, 3 events) and generated scaffolding in `liwe3/modules/indiegame/{backend,frontend}`.
