@@ -2,6 +2,10 @@
 
 ## 2026-11-13
 
+### app: share image (Open Graph)
+
+- `app/frontend/src/app.html`: `og:*` and `twitter:card=summary_large_image` meta tags with `https://indiemixup.org/power.webp` (1280x720) as the share image, plus title, description and url. They are static because the app is a SPA (`ssr = false`) and social crawlers do not run JavaScript.
+
 ### app: poster for the hero video
 
 - `assets/power.webp` (20 KB) copied to `app/frontend/static/power.webp` and used as the `poster` of the hero video: it is shown from the first paint, during the 2 second delay, and if the video fails to load. Served as a static asset (no worker call).
