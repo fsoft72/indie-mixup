@@ -32,6 +32,8 @@
 	--im-glow-secondary: 0 0 0 1px color-mix(in oklch, var(--liwe3-secondary) 60%, transparent), 0 0 22px color-mix(in oklch, var(--liwe3-secondary) 40%, transparent);
 	--im-grid-line: color-mix(in oklch, var(--liwe3-primary) 7%, transparent);
 	--im-neon-gradient: linear-gradient(115deg, var(--liwe3-primary), var(--liwe3-accent) 55%, var(--liwe3-secondary));
+	/* Starts and ends on the same color, so it can scroll in a seamless loop */
+	--im-neon-loop: linear-gradient(115deg, var(--liwe3-primary), var(--liwe3-accent), var(--liwe3-secondary), var(--liwe3-accent), var(--liwe3-primary));
 	--im-panel-bg: color-mix(in oklch, var(--liwe3-surface-raised) 82%, transparent);
 	--im-panel-border: color-mix(in oklch, var(--liwe3-primary) 22%, var(--liwe3-border-subtle));
 	--im-scanline: color-mix(in oklch, var(--liwe3-primary) 4%, transparent);

@@ -145,10 +145,18 @@ a:hover {
 }
 
 .im-neon {
-	background: var(--im-neon-gradient);
+	background: var(--im-neon-loop);
+	background-size: 200% 100%;
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
+	animation: im-neon-flow 6s linear infinite;
+}
+
+@keyframes im-neon-flow {
+	to {
+		background-position: 200% 50%;
+	}
 }
 
 .im-muted {
@@ -233,6 +241,9 @@ a:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
+	.im-neon {
+		animation: none;
+	}
 	html {
 		scroll-behavior: auto;
 	}
