@@ -1,3 +1,5 @@
+export { default as Icon } from './Icon.svelte';
+export type { IconName } from './Icon.svelte';
 export { default as AdminQueue } from './AdminQueue.svelte';
 export { default as GameCard } from './GameCard.svelte';
 export { default as GameGrid } from './GameGrid.svelte';

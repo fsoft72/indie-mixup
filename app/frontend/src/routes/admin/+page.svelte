@@ -7,12 +7,13 @@ const isModerator = $derived( !!storeUser.user.perms?.some( ( p ) => p === 'indi
 
 <svelte:head><title>Moderation - Indie Mixup</title></svelte:head>
 
+<p class="im-eyebrow">// control room</p>
 <h1>Moderation</h1>
 
 {#if !storeUser.isLoggedIn}
 	<p>Login required. <a href="/login">Login</a></p>
 {:else if !isModerator}
-	<p class="liwe3-alert--error">You do not have the permission to moderate games.</p>
+	<div class="liwe3-alert--error">You do not have the permission to moderate games.</div>
 {:else}
 	<AdminQueue />
 {/if}

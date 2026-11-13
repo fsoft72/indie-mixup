@@ -1,0 +1,38 @@
+/*
+ * Indie Mixup - "cyberpunk" brand for the LiWE3 theme (docs/THEME.md).
+ *
+ * It only overrides the SEED layer (and the radius / font scales) of the dark variant: the 50-950 scales and
+ * every semantic token (--liwe3-primary, --liwe3-surface, ...) are derived from the seeds by the theme itself.
+ * The --im-* tokens below are site extensions: they are built from semantic tokens only, never from raw colors.
+ * Loaded through <ThemeProvider extras>, so it comes after the theme CSS; being outside the theme layers it wins.
+ */
+
+:root[data-theme="dark"][data-brand="cyberpunk"] {
+	/* Seeds */
+	--liwe3-seed-surface: oklch(0.16 0.035 285); /* deep indigo black */
+	--liwe3-seed-text: oklch(0.95 0.012 215);
+	--liwe3-seed-primary: oklch(0.84 0.14 205); /* neon cyan */
+	--liwe3-seed-secondary: oklch(0.7 0.26 340); /* hot magenta */
+	--liwe3-seed-accent: oklch(0.7 0.22 295); /* electric violet */
+	--liwe3-seed-neutral: oklch(0.62 0.07 285); /* indigo grey: borders and dividers */
+	--liwe3-seed-info: oklch(0.78 0.12 235);
+	--liwe3-seed-success: oklch(0.84 0.19 160); /* neon mint */
+	--liwe3-seed-warning: oklch(0.86 0.17 90);
+	--liwe3-seed-error: oklch(0.7 0.24 22);
+
+	/* Scales */
+	--liwe3-radius-base: 4px;
+	--liwe3-font-sans: "Exo 2", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--liwe3-shadow-color: oklch(0.05 0.04 285 / 0.6);
+
+	/* Site extensions */
+	--im-font-display: "Orbitron", "Exo 2", system-ui, sans-serif;
+	--im-font-mono: ui-monospace, "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+	--im-glow-primary: 0 0 0 1px color-mix(in oklch, var(--liwe3-primary) 60%, transparent), 0 0 22px color-mix(in oklch, var(--liwe3-primary) 40%, transparent);
+	--im-glow-secondary: 0 0 0 1px color-mix(in oklch, var(--liwe3-secondary) 60%, transparent), 0 0 22px color-mix(in oklch, var(--liwe3-secondary) 40%, transparent);
+	--im-grid-line: color-mix(in oklch, var(--liwe3-primary) 7%, transparent);
+	--im-neon-gradient: linear-gradient(115deg, var(--liwe3-primary), var(--liwe3-accent) 55%, var(--liwe3-secondary));
+	--im-panel-bg: color-mix(in oklch, var(--liwe3-surface-raised) 82%, transparent);
+	--im-panel-border: color-mix(in oklch, var(--liwe3-primary) 22%, var(--liwe3-border-subtle));
+	--im-scanline: color-mix(in oklch, var(--liwe3-primary) 4%, transparent);
+}

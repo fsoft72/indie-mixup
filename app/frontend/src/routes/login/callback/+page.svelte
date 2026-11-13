@@ -32,9 +32,19 @@ onMount( async () => {
 
 <svelte:head><title>Login - Indie Mixup</title></svelte:head>
 
-{#if error}
-	<p class="liwe3-alert--error">{error}</p>
-	<p><a href="/login">Try again</a></p>
-{:else}
-	<p>Signing you in...</p>
-{/if}
+<section class="im-panel box">
+	{#if error}
+		<div class="liwe3-alert--error">{error}</div>
+		<p><a href="/login">Try again</a></p>
+	{:else}
+		<p class="im-eyebrow">// handshake</p>
+		<h1>Signing you in...</h1>
+	{/if}
+</section>
+
+<style>
+.box {
+	max-width: 28rem;
+	margin: var(--liwe3-space-8) auto;
+}
+</style>

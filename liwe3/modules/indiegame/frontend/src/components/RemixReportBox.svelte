@@ -52,14 +52,24 @@ const claim = async ( idOriginal : string ) => {
 </div>
 
 <style>
+.box {
+	padding: var(--liwe3-space-4);
+	border: 1px solid var(--im-panel-border, var(--liwe3-border-subtle));
+	border-radius: var(--liwe3-radius-md);
+	background: var(--im-panel-bg, var(--liwe3-surface-raised));
+}
+p {
+	margin: 0 0 var(--liwe3-space-3);
+}
 ul {
 	list-style: none;
 	padding: 0;
+	margin: 0;
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
+	gap: var(--liwe3-space-2);
 }
 .empty {
-	opacity: 0.7;
+	color: var(--liwe3-text-muted);
 }
 </style>

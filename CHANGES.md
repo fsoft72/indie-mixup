@@ -40,3 +40,11 @@
 - The moderation queue lists the hidden games (`hidden_games` in `IndieAdminReports`, new field in `work/modules/indiegame.json`) and the admin page can show them again.
 - Screenshots and gallery accept only files of the upload module (`/api/upload/get?key=...`), never external urls.
 - Counters of a page of games are read in chunks of 50 ids (D1 allows 100 bound parameters per query).
+
+### Cyberpunk dark UI
+
+- Brand `cyberpunk` for the LiWE3 theme (docs/THEME.md): `app/frontend/static/theme-extra/indie-mixup.css` overrides only the seeds (OKLCH), the radius and font scales of the dark variant and adds the `--im-*` site tokens, built from semantic tokens only. It is loaded with `<ThemeProvider extras>`; `app.html` forces `data-theme="dark" data-brand="cyberpunk"` (anti-FOUC) and the site is dark only.
+- `app/frontend/src/app.css`: site styles (background grid and scanlines, headings, `.im-panel`, `.im-chip`, field labels) on top of the theme classes `liwe3-btn`, `liwe3-input`, `liwe3-alert--*`.
+- Fonts Orbitron (headings) and Exo 2 (text) are self-hosted in `app/frontend/static/fonts/` (latin subset, SIL OFL 1.1): no request goes to Google.
+- Redesigned: header and footer, catalog hero and cards, game page (gallery, HUD panel with the Download call to action, remix trail), rankings (tabs, windows, podium), developer page, login, submit and my-games forms (numbered sections, Publish button at the end through `FormCreator.handleSubmit`), moderation lists. New set of SVG icons (`Icon.svelte`).
+- `static/theme/*.css` is generated: run `pnpm build:theme` (root) before `pnpm dev` or a deploy.

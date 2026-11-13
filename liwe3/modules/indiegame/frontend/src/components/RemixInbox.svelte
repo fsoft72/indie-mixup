@@ -64,20 +64,34 @@ onMount( load );
 <style>
 ul {
 	list-style: none;
+	margin: 0 0 var(--liwe3-space-6);
 	padding: 0;
+	display: grid;
+	gap: var(--liwe3-space-2);
 }
 li {
-	padding: 0.5rem 0;
-	border-bottom: 1px solid var(--liwe3-border, #ddd);
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
+	gap: var(--liwe3-space-3);
 	align-items: center;
+	padding: var(--liwe3-space-3) var(--liwe3-space-4);
+	background: var(--im-panel-bg, var(--liwe3-surface-raised));
+	border: 1px solid var(--im-panel-border, var(--liwe3-border-subtle));
+	border-radius: var(--liwe3-radius-md);
 }
 .status {
-	opacity: 0.7;
+	font-family: var(--im-font-mono, monospace);
+	font-size: var(--liwe3-text-xs);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--liwe3-text-muted);
+}
+.reason {
+	flex: 1;
+	min-width: 12rem;
+	color: var(--liwe3-text-muted);
 }
 .empty {
-	opacity: 0.7;
+	color: var(--liwe3-text-muted);
 }
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { type IndieGameCard, type IndieGameDetail, RemixInbox, T, indiegame_del, indiegame_get, indiegame_mine } from '@frontend-modules/indiegame';
+import { Icon, type IndieGameCard, type IndieGameDetail, RemixInbox, T, indiegame_del, indiegame_get, indiegame_mine } from '@frontend-modules/indiegame';
 import { storeUser } from '@frontend-modules/user';
 import { toastAdd } from '@liwe3/webcomponents-svelte';
 import GameForm from '../../lib/GameForm.svelte';
@@ -42,42 +42,72 @@ $effect( () => {
 <svelte:head><title>My games - Indie Mixup</title></svelte:head>
 
 {#if !storeUser.isLoggedIn}
-	<p>Login with GitHub to see your games. <a href="/login">Login</a></p>
+	<section class="im-panel gate">
+		<p>Login with GitHub to see your games.</p>
+		<a class="liwe3-btn liwe3-btn--primary" href="/login"><Icon name="github" size={18} /> Login with GitHub</a>
+	</section>
 {:else if editing}
-	<h1>Edit {editing.name}</h1>
+	<p class="im-eyebrow">// edit</p>
+	<h1>{editing.name}</h1>
 	<GameForm game={editing} onsaved={saved} />
 	<p><button class="liwe3-btn" onclick={() => ( editing = null )}>Cancel</button></p>
 {:else}
-	<h1>My games</h1>
-	{#if games.length === 0}<p>{T.noGames} <a href="/submit">Submit your first game</a></p>{/if}
+	<p class="im-eyebrow">// your library</p>
+	<h1>My <span class="im-neon">games</span></h1>
+
+	{#if games.length === 0}
+		<div class="im-empty">
+			<p>{T.noGames}</p>
+			<a class="liwe3-btn liwe3-btn--primary" href="/submit"><Icon name="plus" size={16} /> Submit your first game</a>
+		</div>
+	{/if}
+
 	<ul class="list">
 		{#each games as game (game.id)}
-			<li>
-				<a href={`/games/${game.id}`}>{game.name}</a>
-				{#if game.status === 'hidden'}<span class="hidden">hidden by a moderator</span>{/if}
+			<li class="im-panel">
+				<a class="name" href={`/games/${game.id}`}>{game.name}</a>
+				{#if game.is_remix}<span class="im-chip im-chip--remix"><Icon name="remix" size={12} /> {T.remix}</span>{/if}
+				{#if game.status === 'hidden'}<span class="im-chip">hidden by a moderator</span>{/if}
+				<span class="grow"></span>
 				<button class="liwe3-btn" onclick={() => edit( game.id )}>Edit</button>
 				<button class="liwe3-btn liwe3-btn--danger" onclick={() => remove( game )}>Delete</button>
 			</li>
 		{/each}
 	</ul>
+
+	<div class="im-section-title"></div>
 	<RemixInbox />
 {/if}
 
 <style>
+.gate {
+	max-width: 30rem;
+	display: grid;
+	gap: var(--liwe3-space-4);
+	justify-items: start;
+}
+.gate p {
+	margin: 0;
+}
 .list {
 	list-style: none;
+	margin: var(--liwe3-space-5) 0 0;
 	padding: 0;
+	display: grid;
+	gap: var(--liwe3-space-3);
 }
 .list li {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
 	align-items: center;
-	padding: 0.4rem 0;
-	border-bottom: 1px solid #8884;
+	gap: var(--liwe3-space-3);
+	padding: var(--liwe3-space-3) var(--liwe3-space-4);
 }
-.hidden {
-	opacity: 0.7;
-	font-style: italic;
+.name {
+	font-weight: var(--liwe3-weight-semibold);
+	font-size: var(--liwe3-text-lg);
+}
+.grow {
+	flex: 1;
 }
 </style>

@@ -1,0 +1,243 @@
+/*
+ * Indie Mixup - site styles on top of the LiWE3 theme.
+ * Only semantic tokens (--liwe3-*) and the site extensions (--im-*, see static/theme-extra/indie-mixup.css) are used: no raw colors.
+ */
+
+html {
+	background: var(--liwe3-surface-sunken);
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	color: var(--liwe3-text);
+	font-family: var(--liwe3-font-sans);
+	font-size: var(--liwe3-text-base);
+	line-height: var(--liwe3-leading-normal);
+	background:
+		radial-gradient(60rem 28rem at 12% -8%, color-mix(in oklch, var(--liwe3-primary) 16%, transparent), transparent 70%),
+		radial-gradient(52rem 26rem at 96% 4%, color-mix(in oklch, var(--liwe3-secondary) 14%, transparent), transparent 70%),
+		linear-gradient(var(--im-grid-line) 1px, transparent 1px) 0 0 / 44px 44px,
+		linear-gradient(90deg, var(--im-grid-line) 1px, transparent 1px) 0 0 / 44px 44px,
+		var(--liwe3-surface);
+	background-attachment: fixed;
+}
+
+/* CRT scanlines: very faint, never over the content */
+body::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 0;
+	background: repeating-linear-gradient(to bottom, transparent 0 2px, var(--im-scanline) 2px 3px);
+}
+
+::selection {
+	background: var(--liwe3-secondary);
+	color: var(--liwe3-text-on-secondary);
+}
+
+:focus-visible {
+	outline: 2px solid var(--liwe3-focus-ring);
+	outline-offset: 3px;
+	border-radius: var(--liwe3-radius-sm);
+}
+
+h1, h2, h3, h4 {
+	font-family: var(--im-font-display);
+	letter-spacing: 0.06em;
+	line-height: var(--liwe3-leading-tight);
+	text-transform: uppercase;
+	margin: 0 0 var(--liwe3-space-3);
+}
+
+h1 {
+	font-size: clamp(1.7rem, 4vw, 2.6rem);
+	font-weight: 900;
+}
+h2 {
+	font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+	font-weight: 700;
+}
+h3 {
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+a {
+	color: var(--liwe3-primary);
+	text-decoration-color: color-mix(in oklch, var(--liwe3-primary) 40%, transparent);
+	text-underline-offset: 3px;
+	transition: color var(--liwe3-duration-fast) var(--liwe3-ease-out);
+}
+
+a:hover {
+	color: var(--liwe3-primary-hover);
+	text-decoration-color: currentcolor;
+}
+
+/* Buttons and fields of the theme, tuned for the site */
+.liwe3-btn {
+	min-height: 2.5rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	font-weight: var(--liwe3-weight-semibold);
+	text-decoration: none;
+	background: var(--im-panel-bg);
+	border-color: var(--im-panel-border);
+}
+
+.liwe3-btn:hover {
+	border-color: var(--liwe3-primary);
+	box-shadow: var(--im-glow-primary);
+	color: var(--liwe3-primary);
+}
+.liwe3-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+	box-shadow: none;
+}
+
+.liwe3-btn--primary {
+	background: var(--liwe3-primary);
+	border-color: var(--liwe3-primary);
+	color: var(--liwe3-text-on-primary);
+}
+.liwe3-btn--primary:hover {
+	background: var(--liwe3-primary-hover);
+	color: var(--liwe3-text-on-primary);
+}
+.liwe3-btn--danger:hover {
+	box-shadow: 0 0 0 1px var(--liwe3-error), 0 0 18px color-mix(in oklch, var(--liwe3-error) 40%, transparent);
+	color: var(--liwe3-error);
+}
+
+/* One look for the labels of every field (inputs use .liwe3-label, the text area a .title) */
+.liwe3-label, .im-panel .title {
+	display: block;
+	margin: 0 0 var(--liwe3-space-1);
+	font-family: var(--im-font-mono);
+	font-size: var(--liwe3-text-xs);
+	font-weight: var(--liwe3-weight-normal);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--liwe3-text-muted);
+}
+
+.liwe3-input, .liwe3-select, .liwe3-textarea {
+	background: var(--liwe3-surface-sunken);
+}
+.liwe3-input:focus, .liwe3-select:focus, .liwe3-textarea:focus {
+	box-shadow: var(--im-glow-primary);
+}
+
+/* ---------- Site building blocks ---------- */
+
+.im-eyebrow {
+	margin: 0 0 var(--liwe3-space-2);
+	font-family: var(--im-font-mono);
+	font-size: var(--liwe3-text-xs);
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: var(--liwe3-secondary);
+}
+
+.im-neon {
+	background: var(--im-neon-gradient);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.im-muted {
+	color: var(--liwe3-text-muted);
+}
+
+/* HUD panel: raised glass with two bracket corners */
+.im-panel {
+	position: relative;
+	padding: var(--liwe3-space-5);
+	background: var(--im-panel-bg);
+	border: 1px solid var(--im-panel-border);
+	border-radius: var(--liwe3-radius-md);
+	backdrop-filter: blur(8px);
+}
+
+.im-panel::before, .im-panel::after {
+	content: "";
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	pointer-events: none;
+	border: 2px solid var(--liwe3-primary);
+}
+
+.im-panel::before {
+	top: -1px;
+	left: -1px;
+	border-right: 0;
+	border-bottom: 0;
+	border-top-left-radius: var(--liwe3-radius-md);
+}
+.im-panel::after {
+	right: -1px;
+	bottom: -1px;
+	border-left: 0;
+	border-top: 0;
+	border-bottom-right-radius: var(--liwe3-radius-md);
+	border-color: var(--liwe3-secondary);
+}
+
+.im-section-title {
+	display: flex;
+	align-items: center;
+	gap: var(--liwe3-space-3);
+	margin: var(--liwe3-space-8) 0 var(--liwe3-space-4);
+}
+
+.im-section-title::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: linear-gradient(90deg, var(--im-panel-border), transparent);
+}
+
+.im-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--liwe3-space-1);
+	padding: 2px var(--liwe3-space-2);
+	border: 1px solid var(--liwe3-border);
+	border-radius: var(--liwe3-radius-full);
+	font-family: var(--im-font-mono);
+	font-size: var(--liwe3-text-xs);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--liwe3-text-muted);
+}
+
+.im-chip--remix {
+	color: var(--liwe3-secondary);
+	border-color: var(--liwe3-secondary);
+	background: var(--liwe3-secondary-subtle);
+}
+
+.im-empty {
+	padding: var(--liwe3-space-8) var(--liwe3-space-4);
+	text-align: center;
+	color: var(--liwe3-text-muted);
+	border: 1px dashed var(--liwe3-border);
+	border-radius: var(--liwe3-radius-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	*, *::before, *::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+	}
+}
