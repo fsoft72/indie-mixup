@@ -1,0 +1,266 @@
+{
+	"system": {
+		"base_url": "http://localhost:8787",
+		"authorization_template": "Bearer %(token)s",
+		"stop_on_error": false
+	},
+	"actions": [
+		{
+			"action": "include",
+			"filename": "../../../../user/backend/tests/restest/admin-login.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"rem": "=== Create notifications with 5s sleep between each ==="
+		},
+		{
+			"title": "Add INFO notification",
+			"method": "POST",
+			"url": "/api/notifier/add",
+			"body": {
+				"id_user": "%(id_admin)s",
+				"event_type": "system.info",
+				"title": "System Update Available",
+				"message": "A new system update (v3.2.1) is available. Please review the changelog.",
+				"notification_type": "info"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.status",
+					"value": "pending"
+				},
+				{
+					"field": "data.notification_type",
+					"value": "info"
+				}
+			],
+			"fields": [["data.id", "ntf_info_id"]]
+		},
+		{
+			"action": "sleep",
+			"ms": 5000
+		},
+		{
+			"title": "Add SUCCESS notification",
+			"method": "POST",
+			"url": "/api/notifier/add",
+			"body": {
+				"id_user": "%(id_admin)s",
+				"event_type": "deploy.completed",
+				"title": "Deployment Successful",
+				"message": "Production deployment completed. All health checks passed.",
+				"notification_type": "success",
+				"data": {
+					"environment": "production",
+					"version": "3.2.1"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.status",
+					"value": "pending"
+				},
+				{
+					"field": "data.notification_type",
+					"value": "success"
+				}
+			],
+			"fields": [["data.id", "ntf_success_id"]]
+		},
+		{
+			"action": "sleep",
+			"ms": 5000
+		},
+		{
+			"title": "Add WARNING notification",
+			"method": "POST",
+			"url": "/api/notifier/add",
+			"body": {
+				"id_user": "%(id_admin)s",
+				"event_type": "license.expiring",
+				"title": "License Expiring Soon",
+				"message": "Your license expires in 14 days. Please renew to avoid service interruption.",
+				"notification_type": "warning",
+				"data": {
+					"days_remaining": 14,
+					"license_id": "lic_abc123"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.status",
+					"value": "pending"
+				},
+				{
+					"field": "data.notification_type",
+					"value": "warning"
+				}
+			],
+			"fields": [["data.id", "ntf_warning_id"]]
+		},
+		{
+			"action": "sleep",
+			"ms": 5000
+		},
+		{
+			"title": "Add ERROR notification",
+			"method": "POST",
+			"url": "/api/notifier/add",
+			"body": {
+				"id_user": "%(id_admin)s",
+				"event_type": "payment.failed",
+				"title": "Payment Failed",
+				"message": "Monthly subscription payment could not be processed. Please update your billing details.",
+				"notification_type": "error",
+				"data": {
+					"invoice_id": "inv_789",
+					"amount": 49.99
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.status",
+					"value": "pending"
+				},
+				{
+					"field": "data.notification_type",
+					"value": "error"
+				}
+			],
+			"fields": [["data.id", "ntf_error_id"]]
+		},
+		{
+			"action": "sleep",
+			"ms": 5000
+		},
+		{
+			"title": "Add notification with default type (info)",
+			"method": "POST",
+			"url": "/api/notifier/add",
+			"body": {
+				"id_user": "%(id_admin)s",
+				"event_type": "comment.mention",
+				"title": "You Were Mentioned",
+				"message": "Someone mentioned you in a comment on project Alpha."
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.notification_type",
+					"value": "info"
+				}
+			],
+			"fields": [["data.id", "ntf_default_id"]]
+		},
+		{
+			"rem": "=== Verify all notifications appear in list ==="
+		},
+		{
+			"title": "List all pending notifications (should have 5)",
+			"method": "GET",
+			"url": "/api/notifier/list",
+			"params": {
+				"limit": 20
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"rem": "=== Cleanup: dismiss all test notifications ==="
+		},
+		{
+			"title": "Dismiss info notification",
+			"method": "POST",
+			"url": "/api/notifier/dismiss",
+			"body": {
+				"id": "%(ntf_info_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Dismiss success notification",
+			"method": "POST",
+			"url": "/api/notifier/dismiss",
+			"body": {
+				"id": "%(ntf_success_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Dismiss warning notification",
+			"method": "POST",
+			"url": "/api/notifier/dismiss",
+			"body": {
+				"id": "%(ntf_warning_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Dismiss error notification",
+			"method": "POST",
+			"url": "/api/notifier/dismiss",
+			"body": {
+				"id": "%(ntf_error_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Dismiss default notification",
+			"method": "POST",
+			"url": "/api/notifier/dismiss",
+			"body": {
+				"id": "%(ntf_default_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		}
+	]
+}

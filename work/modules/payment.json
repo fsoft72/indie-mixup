@@ -1,0 +1,1490 @@
+{
+  "id": "mod.mpay0000.pay1",
+  "name": "Payment",
+  "doc": "The Payment module provides a generic, provider-agnostic subscription and billing system built on top of Stripe. It manages subscription plans, checkout sessions, customer portal sessions, webhook event handling, and per-plan feature/usage limits. The module is fully multi-tenant and domain-scoped, making it reusable across any LiWE3 application that needs recurring billing.\n\nStripe keys (dev and prod) and redirect URLs are stored as domain-scoped settings so each tenant or super-admin can configure them independently without touching environment variables.\n\nThe limits system is intentionally generic: each plan carries a JSON `limits` field whose keys (e.g. `max_users`, `max_storage_mb`) are defined by the consuming application. The module provides endpoints and events to check and broadcast those limits; the business rules live in the application layer.\n\n## Provider abstraction\nAll Stripe calls are encapsulated in the method implementations inside `f2c_start`/`f2c_end` blocks. Swapping the provider only requires changing those blocks and the settings keys - the types, endpoints, permissions, and events remain stable.",
+  "short_descr": "Generic Stripe-based subscription and billing module",
+  "version": 1,
+  "modified": 0,
+  "locked_by": "",
+
+  "types": {
+    "typ.mpay0001.pln1": {
+      "id": "typ.mpay0001.pln1",
+      "name": "PaymentPlan",
+      "description": "A subscription plan with pricing tiers and optional Stripe price IDs for both monthly and annual billing cycles. Stored in the `payment_plans` table.",
+      "doc": "Each plan carries a `limits` JSON field whose schema is application-defined (e.g. `{\"max_users\": 5, \"max_storage_mb\": 1024}`). The payment module does not interpret limit keys; it only stores and returns them. Enforcement logic belongs to the application layer.",
+      "db_table": "payment_plans",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mpay0101.id01",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Unique plan identifier (slug-style, e.g. 'free', 'pro', 'enterprise')",
+          "index": "m",
+          "size": 64,
+          "min_length": 1
+        },
+        {
+          "id": "fld.mpay0102.dm01",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Domain that owns this plan (multi-tenant isolation)",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0103.nm01",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Human-readable plan name",
+          "index": "",
+          "size": 128,
+          "min_length": 1
+        },
+        {
+          "id": "fld.mpay0104.ds01",
+          "name": "description",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Optional plan description shown to users",
+          "index": "",
+          "size": 1024,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0105.mc01",
+          "name": "monthly_cost",
+          "type": "float",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Monthly price in the account's default currency (e.g. 9.99)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0106.ac01",
+          "name": "annual_cost",
+          "type": "float",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Annual (yearly) price in the account's default currency",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0107.sp01",
+          "name": "stripe_price_monthly_id",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": true,
+          "description": "Stripe Price ID for the monthly billing cycle in production mode",
+          "index": "",
+          "size": 128,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0108.sa01",
+          "name": "stripe_price_annual_id",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": true,
+          "description": "Stripe Price ID for the annual billing cycle in production mode",
+          "index": "",
+          "size": 128,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0109.tm01",
+          "name": "stripe_test_price_monthly_id",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": true,
+          "description": "Stripe Price ID for the monthly billing cycle in test/dev mode",
+          "index": "",
+          "size": 128,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0110.ta01",
+          "name": "stripe_test_price_annual_id",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": true,
+          "description": "Stripe Price ID for the annual billing cycle in test/dev mode",
+          "index": "",
+          "size": 128,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0111.lm01",
+          "name": "limits",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Application-defined JSON limits for this plan (e.g. {\"max_users\": 5, \"max_storage_mb\": 1024}). Keys are opaque to the payment module.",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0112.ca01",
+          "name": "created_at",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Timestamp when the plan was created",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0113.ua01",
+          "name": "updated_at",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Timestamp when the plan was last updated",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+
+    "typ.mpay0002.sub1": {
+      "id": "typ.mpay0002.sub1",
+      "name": "Subscription",
+      "description": "The current subscription state for a user or tenant. Not stored as its own table - derived from user/tenant fields updated by webhook events.",
+      "doc": "This type is returned by `GET /payment/subscription`. It is a read-only projection: the payment module updates subscription fields on the user or tenant record (via the `payment.subscription.updated` event) whenever Stripe sends a webhook. The application layer maps those fields to this shape.",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mpay0201.st01",
+          "name": "status",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Subscription status: 'active' | 'canceled' | 'suspended' | 'none'",
+          "index": "",
+          "size": 32,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0202.tr01",
+          "name": "plan_id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The plan ID that is currently active (e.g. 'free', 'pro', 'enterprise')",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0203.iv01",
+          "name": "interval",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Billing interval: 'monthly' | 'annual'",
+          "index": "",
+          "size": 16,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0204.ex01",
+          "name": "expires_at",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Date/time when the current billing period ends",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0205.cp01",
+          "name": "cancel_at_period_end",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "If true the subscription will not renew when the current period ends",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0206.pl01",
+          "name": "plan",
+          "type": "PaymentPlan",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Full plan details (joined from payment_plans), available when the plan_id matches a stored plan",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+
+    "typ.mpay0003.cs01": {
+      "id": "typ.mpay0003.cs01",
+      "name": "CheckoutSession",
+      "description": "Result of creating a Stripe Checkout session. The client must redirect the user to the returned URL.",
+      "doc": "Returned by `POST /payment/checkout`. The URL points to a Stripe-hosted checkout page. On completion, Stripe redirects back to the configured `success_url`.",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mpay0301.ur01",
+          "name": "url",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Stripe Checkout URL - redirect the user here to complete payment",
+          "index": "",
+          "size": 2048,
+          "min_length": 1
+        }
+      ]
+    },
+
+    "typ.mpay0004.ps01": {
+      "id": "typ.mpay0004.ps01",
+      "name": "PortalSession",
+      "description": "Result of creating a Stripe Customer Portal session. The client must redirect the user to the returned URL.",
+      "doc": "Returned by `POST /payment/portal`. The URL points to the Stripe-hosted customer portal where the user can update payment methods, change plans, or cancel. On exit, Stripe redirects back to the configured `return_url`.",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mpay0401.ur01",
+          "name": "url",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Stripe Customer Portal URL - redirect the user here to manage their subscription",
+          "index": "",
+          "size": 2048,
+          "min_length": 1
+        }
+      ]
+    },
+
+    "typ.mpay0005.ld01": {
+      "id": "typ.mpay0005.ld01",
+      "name": "LimitDefinition",
+      "description": "Describes one application-defined limit key that plans can restrict. Returned by GET /payment/limits-definitions so the frontend can display human-readable labels.",
+      "doc": "The payment module stores limit definitions as a domain-scoped setting (key: `payment_limits_definition`). Applications seed their own definitions (e.g. `max_users`, `max_storage_mb`) at startup via the admin endpoint.",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mpay0501.nm01",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Limit key name (e.g. 'max_users')",
+          "index": "",
+          "size": 64,
+          "min_length": 1
+        },
+        {
+          "id": "fld.mpay0502.lb01",
+          "name": "label",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Human-readable label (e.g. 'Team Members')",
+          "index": "",
+          "size": 128,
+          "min_length": 1
+        },
+        {
+          "id": "fld.mpay0503.ds01",
+          "name": "description",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Optional longer description of what this limit controls",
+          "index": "",
+          "size": 512,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0504.un01",
+          "name": "unit",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Optional unit label for display (e.g. 'MB', 'users', 'requests/month')",
+          "index": "",
+          "size": 32,
+          "min_length": 0
+        }
+      ]
+    },
+
+    "typ.mpay0006.lc01": {
+      "id": "typ.mpay0006.lc01",
+      "name": "LimitCheck",
+      "description": "Result of checking whether a specific usage limit would be exceeded.",
+      "doc": "Returned by `GET /payment/limits/check`. The application layer provides `current` usage; the module compares it against the active plan's limit for that key.",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mpay0601.al01",
+          "name": "allowed",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "True if the operation is within the plan's limit",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0602.lm01",
+          "name": "limit",
+          "type": "float",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The plan's limit value for this key (-1 means unlimited)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0603.cu01",
+          "name": "current",
+          "type": "float",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The current usage value passed by the caller",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0604.ky01",
+          "name": "key",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The limit key that was checked (e.g. 'max_users')",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        }
+      ]
+    },
+
+    "typ.mpay0007.st01": {
+      "id": "typ.mpay0007.st01",
+      "name": "PaymentSettings",
+      "description": "Stripe configuration keys for a domain. Stored in the generic settings table, not in a dedicated table.",
+      "doc": "Settings are stored under well-known keys in the system settings store (e.g. `payment.stripe_dev_api_key`). Both dev/test and production keys are kept separately so the module can switch based on the current environment flag. `success_url` and `cancel_url` support `{domain}` and `{subdomain}` placeholders.",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mpay0701.dk01",
+          "name": "stripe_dev_api_key",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": true,
+          "description": "Stripe secret API key for test/dev mode (sk_test_...)",
+          "index": "",
+          "size": 256,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0702.dw01",
+          "name": "stripe_dev_webhook_secret",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": true,
+          "description": "Stripe webhook signing secret for test/dev mode (whsec_...)",
+          "index": "",
+          "size": 256,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0703.pk01",
+          "name": "stripe_prod_api_key",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": true,
+          "description": "Stripe secret API key for production mode (sk_live_...)",
+          "index": "",
+          "size": 256,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0704.pw01",
+          "name": "stripe_prod_webhook_secret",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": true,
+          "description": "Stripe webhook signing secret for production mode (whsec_...)",
+          "index": "",
+          "size": 256,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0705.su01",
+          "name": "stripe_success_url",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "URL to redirect to after successful checkout. Supports {domain} and {subdomain} placeholders.",
+          "index": "",
+          "size": 512,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0706.cu01",
+          "name": "stripe_cancel_url",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "URL to redirect to when the user cancels checkout. Supports {domain} and {subdomain} placeholders.",
+          "index": "",
+          "size": 512,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0707.ru01",
+          "name": "stripe_portal_return_url",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "URL to redirect to when the user exits the Customer Portal. Supports {domain} and {subdomain} placeholders.",
+          "index": "",
+          "size": 512,
+          "min_length": 0
+        }
+      ]
+    },
+
+    "typ.mpay0008.wr01": {
+      "id": "typ.mpay0008.wr01",
+      "name": "WebhookResult",
+      "description": "Acknowledgment returned by the webhook endpoint to Stripe.",
+      "doc": "Stripe requires a 2xx response with a JSON body to confirm receipt. Any non-2xx response causes Stripe to retry the event.",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mpay0801.rc01",
+          "name": "received",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Always true when the webhook was processed without error",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mpay0802.tp01",
+          "name": "event_type",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "The Stripe event type that was processed (e.g. 'checkout.session.completed')",
+          "index": "",
+          "size": 128,
+          "min_length": 0
+        }
+      ]
+    }
+  },
+
+  "permissions": {
+    "perm.mpay0001.pc01": {
+      "id": "perm.mpay0001.pc01",
+      "name": "payment.plan.create",
+      "description": "Can create or update a subscription plan"
+    },
+    "perm.mpay0002.pd01": {
+      "id": "perm.mpay0002.pd01",
+      "name": "payment.plan.delete",
+      "description": "Can delete a subscription plan"
+    },
+    "perm.mpay0003.pl01": {
+      "id": "perm.mpay0003.pl01",
+      "name": "payment.plan.list",
+      "description": "Can list all plans including private Stripe IDs and test keys (admin-level view)"
+    },
+    "perm.mpay0004.sm01": {
+      "id": "perm.mpay0004.sm01",
+      "name": "payment.subscription.manage",
+      "description": "Can initiate checkout, open customer portal, and cancel subscriptions"
+    },
+    "perm.mpay0005.sv01": {
+      "id": "perm.mpay0005.sv01",
+      "name": "payment.subscription.view",
+      "description": "Can view the current subscription status and plan details"
+    },
+    "perm.mpay0006.ss01": {
+      "id": "perm.mpay0006.ss01",
+      "name": "payment.settings.manage",
+      "description": "Can read and write Stripe API keys and webhook secrets"
+    },
+    "perm.mpay0007.ld01": {
+      "id": "perm.mpay0007.ld01",
+      "name": "payment.limits.define",
+      "description": "Can create or update limit definitions (what limit keys mean)"
+    }
+  },
+
+  "events": {
+    "evt.mpay0001.sc01": {
+      "id": "evt.mpay0001.sc01",
+      "name": "payment.subscription.created",
+      "description": "A new subscription became active for the first time (checkout.session.completed or invoice.payment_succeeded on a new subscription). Payload: { id_user, plan_id, interval, expires_at, domain }"
+    },
+    "evt.mpay0002.su01": {
+      "id": "evt.mpay0002.su01",
+      "name": "payment.subscription.updated",
+      "description": "An existing subscription changed plan, interval, status, or renewal date (customer.subscription.updated or invoice.payment_succeeded on renewal). Payload: { id_user, plan_id, status, interval, expires_at, cancel_at_period_end, domain }"
+    },
+    "evt.mpay0003.sx01": {
+      "id": "evt.mpay0003.sx01",
+      "name": "payment.subscription.canceled",
+      "description": "A subscription was permanently canceled and will not renew (customer.subscription.deleted). Payload: { id_user, plan_id, domain }"
+    },
+    "evt.mpay0004.cc01": {
+      "id": "evt.mpay0004.cc01",
+      "name": "payment.checkout.completed",
+      "description": "A Stripe Checkout session completed successfully (checkout.session.completed). Payload: { id_user, session_id, plan_id, interval, domain }"
+    },
+    "evt.mpay0005.wh01": {
+      "id": "evt.mpay0005.wh01",
+      "name": "payment.webhook.received",
+      "description": "A raw Stripe webhook event was received and signature-verified, before business logic runs. Useful for audit logging. Payload: { event_type, event_id, domain }"
+    },
+    "evt.mpay0006.pc01": {
+      "id": "evt.mpay0006.pc01",
+      "name": "payment.plan.created",
+      "description": "A new subscription plan was created by an admin. Payload: { plan_id, name, domain }"
+    },
+    "evt.mpay0007.pu01": {
+      "id": "evt.mpay0007.pu01",
+      "name": "payment.plan.updated",
+      "description": "An existing subscription plan was modified by an admin. Payload: { plan_id, name, domain }"
+    },
+    "evt.mpay0008.pd01": {
+      "id": "evt.mpay0008.pd01",
+      "name": "payment.plan.deleted",
+      "description": "A subscription plan was deleted by an admin. Payload: { plan_id, domain }"
+    }
+  },
+
+  "endpoints": {
+    "endp.mpay0101.pl01": {
+      "id": "endp.mpay0101.pl01",
+      "method": "GET",
+      "url": "/payment/plans",
+      "short_descr": "List available subscription plans",
+      "description": "Returns all subscription plans visible to end users, ordered by monthly cost ascending.\n\nPrivate fields (Stripe price IDs and test keys) are stripped from the response. Use `GET /payment/admin/plans` to retrieve the full record including Stripe IDs.\n\n**Access:** Public (no authentication required)",
+      "parameters": [],
+      "returnType": "PaymentPlan",
+      "returnName": "plans",
+      "is_array": true,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0102.gs01": {
+      "id": "endp.mpay0102.gs01",
+      "method": "GET",
+      "url": "/payment/subscription",
+      "short_descr": "Get current subscription status",
+      "description": "Returns the active subscription for the authenticated user or tenant, including the plan details, billing interval, expiry date, and cancel-at-period-end flag.\n\nIf no subscription exists the response has `status: 'none'` and `plan_id: 'free'`.\n\n**Access:** Logged-in user (`payment.subscription.view`)",
+      "parameters": [],
+      "returnType": "Subscription",
+      "returnName": "subscription",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": true,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0103.ck01": {
+      "id": "endp.mpay0103.ck01",
+      "method": "POST",
+      "url": "/payment/checkout",
+      "short_descr": "Create a Stripe Checkout session",
+      "description": "Creates a Stripe-hosted Checkout session for the authenticated user to subscribe to the specified plan and billing interval.\n\nThe method resolves the correct Stripe Price ID (test vs. production, monthly vs. annual) from the plan record and Stripe settings. On success, returns a `CheckoutSession` with the URL the client must redirect to.\n\nStripe will send a `checkout.session.completed` webhook when payment succeeds, which updates the user's subscription automatically.\n\n**Access:** `payment.subscription.manage`",
+      "parameters": [
+        {
+          "id": "param.mpay0301.pi01",
+          "type": "str",
+          "name": "plan_id",
+          "description": "ID of the plan to subscribe to (must exist in payment_plans)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay0302.iv01",
+          "type": "str",
+          "name": "interval",
+          "description": "Billing interval: 'monthly' or 'annual'",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "monthly",
+          "value": ""
+        },
+        {
+          "id": "param.mpay0303.su01",
+          "type": "str",
+          "name": "success_url",
+          "description": "Override the default success redirect URL for this session (optional)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay0304.cu01",
+          "type": "str",
+          "name": "cancel_url",
+          "description": "Override the default cancel redirect URL for this session (optional)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "CheckoutSession",
+      "returnName": "session",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": true,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0104.po01": {
+      "id": "endp.mpay0104.po01",
+      "method": "POST",
+      "url": "/payment/portal",
+      "short_descr": "Create a Stripe Customer Portal session",
+      "description": "Opens a Stripe Customer Portal session for the authenticated user. The portal lets the user update payment methods, view invoices, change plan, or cancel.\n\nIf `plan_id` and `interval` are provided, the portal is pre-configured with a subscription-update flow pointing directly at the specified plan, skipping the plan selection screen.\n\nReturns a `PortalSession` with the URL the client must redirect to.\n\n**Access:** `payment.subscription.manage`",
+      "parameters": [
+        {
+          "id": "param.mpay0401.pi01",
+          "type": "str",
+          "name": "plan_id",
+          "description": "Optional target plan ID for a direct plan-upgrade flow in the portal",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay0402.iv01",
+          "type": "str",
+          "name": "interval",
+          "description": "Optional billing interval for the upgrade flow: 'monthly' or 'annual'",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "PortalSession",
+      "returnName": "session",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": true,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0105.ca01": {
+      "id": "endp.mpay0105.ca01",
+      "method": "POST",
+      "url": "/payment/cancel",
+      "short_descr": "Cancel the active subscription at period end",
+      "description": "Marks the authenticated user's active Stripe subscription to cancel at the end of the current billing period (`cancel_at_period_end = true`). The subscription remains active until expiry.\n\nStripe sends a `customer.subscription.updated` webhook with `cancel_at_period_end: true`, which the module processes to update the local subscription record and emit `payment.subscription.updated`.\n\n**Access:** `payment.subscription.manage`",
+      "parameters": [],
+      "returnType": "boolean",
+      "returnName": "success",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": true,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0106.wh01": {
+      "id": "endp.mpay0106.wh01",
+      "method": "POST",
+      "url": "/payment/webhook",
+      "short_descr": "Stripe webhook receiver",
+      "description": "Receives and processes Stripe webhook events. The endpoint:\n1. Verifies the `Stripe-Signature` header using HMAC-SHA256 (Web Crypto API, no external SDK required)\n2. Emits `payment.webhook.received` for audit/logging\n3. Dispatches to the appropriate internal handler based on event type:\n   - `checkout.session.completed` → activates subscription\n   - `invoice.payment_succeeded` → renews subscription\n   - `customer.subscription.updated` → syncs status and flags\n   - `customer.subscription.deleted` → cancels subscription\n4. Emits `payment.subscription.created`, `.updated`, or `.canceled` as appropriate\n\nThis endpoint must be excluded from JWT authentication middleware. Register it before auth middleware in the app router.\n\n**Access:** Public (Stripe calls this directly; security is enforced by signature verification)",
+      "parameters": [],
+      "returnType": "WebhookResult",
+      "returnName": "result",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0107.ld01": {
+      "id": "endp.mpay0107.ld01",
+      "method": "GET",
+      "url": "/payment/limits-definitions",
+      "short_descr": "Get limit key definitions for the active domain",
+      "description": "Returns the list of application-defined limit key definitions for the current domain, as stored by the admin via `POST /payment/admin/limits-definitions`.\n\nFrontends use this to render human-readable plan comparison tables (e.g. 'Max Team Members: 5 / unlimited').\n\n**Access:** Logged-in user",
+      "parameters": [],
+      "returnType": "LimitDefinition",
+      "returnName": "definitions",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0108.lc01": {
+      "id": "endp.mpay0108.lc01",
+      "method": "GET",
+      "url": "/payment/limits/check",
+      "short_descr": "Check whether a specific usage limit would be exceeded",
+      "description": "Checks if a given current usage value fits within the authenticated user's active plan for the specified limit key.\n\nThe caller passes `key` (e.g. `max_users`) and `current` (e.g. `4`). The module looks up the active plan's `limits` JSON, reads the value for that key, and returns `{ allowed, limit, current, key }`.\n\nA missing key or `null` value in the plan's limits means 'unlimited' (`limit: -1, allowed: true`).\n\nThis endpoint is intentionally thin - the calling application is responsible for computing `current` usage.\n\n**Access:** Logged-in user",
+      "parameters": [
+        {
+          "id": "param.mpay0801.ky01",
+          "type": "str",
+          "name": "key",
+          "description": "The limit key to check (e.g. 'max_users', 'max_storage_mb')",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay0802.cu01",
+          "type": "float",
+          "name": "current",
+          "description": "Current usage value to compare against the plan's limit",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "0",
+          "value": ""
+        }
+      ],
+      "returnType": "LimitCheck",
+      "returnName": "check",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0201.al01": {
+      "id": "endp.mpay0201.al01",
+      "method": "GET",
+      "url": "/payment/admin/plans",
+      "short_descr": "Admin: list all plans with full Stripe IDs",
+      "description": "Returns all subscription plans for the domain, including all private Stripe Price IDs for both production and test environments. Intended for use by super-admins in the management UI.\n\n**Access:** `payment.plan.list`",
+      "parameters": [],
+      "returnType": "PaymentPlan",
+      "returnName": "plans",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": true,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0202.ap01": {
+      "id": "endp.mpay0202.ap01",
+      "method": "POST",
+      "url": "/payment/admin/plan/add",
+      "short_descr": "Admin: create a new subscription plan",
+      "description": "Creates a new subscription plan record for the domain. The `id` must be a unique slug (alphanumeric and hyphens). Duplicate IDs within the same domain are rejected with 409.\n\nEmits `payment.plan.created`.\n\n**Access:** `payment.plan.create`",
+      "parameters": [
+        {
+          "id": "param.mpay1001.id01",
+          "type": "str",
+          "name": "id",
+          "description": "Unique plan slug (e.g. 'pro', 'enterprise'). Alphanumeric and hyphens only.",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1002.nm01",
+          "type": "str",
+          "name": "name",
+          "description": "Human-readable plan name",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1003.ds01",
+          "type": "str",
+          "name": "description",
+          "description": "Optional plan description",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1004.mc01",
+          "type": "float",
+          "name": "monthly_cost",
+          "description": "Monthly price",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "0",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1005.ac01",
+          "type": "float",
+          "name": "annual_cost",
+          "description": "Annual price",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "0",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1006.sp01",
+          "type": "str",
+          "name": "stripe_price_monthly_id",
+          "description": "Stripe production Price ID for monthly billing",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1007.sa01",
+          "type": "str",
+          "name": "stripe_price_annual_id",
+          "description": "Stripe production Price ID for annual billing",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1008.tm01",
+          "type": "str",
+          "name": "stripe_test_price_monthly_id",
+          "description": "Stripe test Price ID for monthly billing",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1009.ta01",
+          "type": "str",
+          "name": "stripe_test_price_annual_id",
+          "description": "Stripe test Price ID for annual billing",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1010.lm01",
+          "type": "json",
+          "name": "limits",
+          "description": "Application-defined limits JSON (e.g. {\"max_users\": 5})",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "{}",
+          "value": ""
+        }
+      ],
+      "returnType": "PaymentPlan",
+      "returnName": "plan",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": true,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0203.up01": {
+      "id": "endp.mpay0203.up01",
+      "method": "POST",
+      "url": "/payment/admin/plan/update",
+      "short_descr": "Admin: update an existing subscription plan",
+      "description": "Updates an existing plan. The `id` field identifies the plan to update and cannot itself be changed.\n\nAll fields except `id` are optional; omitted fields retain their current value.\n\nEmits `payment.plan.updated`.\n\n**Access:** `payment.plan.create`",
+      "parameters": [
+        {
+          "id": "param.mpay1101.id01",
+          "type": "str",
+          "name": "id",
+          "description": "Plan ID to update",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1102.nm01",
+          "type": "str",
+          "name": "name",
+          "description": "Human-readable plan name",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1103.ds01",
+          "type": "str",
+          "name": "description",
+          "description": "Plan description",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1104.mc01",
+          "type": "float",
+          "name": "monthly_cost",
+          "description": "Monthly price",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1105.ac01",
+          "type": "float",
+          "name": "annual_cost",
+          "description": "Annual price",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1106.sp01",
+          "type": "str",
+          "name": "stripe_price_monthly_id",
+          "description": "Stripe production Price ID for monthly billing",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1107.sa01",
+          "type": "str",
+          "name": "stripe_price_annual_id",
+          "description": "Stripe production Price ID for annual billing",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1108.tm01",
+          "type": "str",
+          "name": "stripe_test_price_monthly_id",
+          "description": "Stripe test Price ID for monthly billing",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1109.ta01",
+          "type": "str",
+          "name": "stripe_test_price_annual_id",
+          "description": "Stripe test Price ID for annual billing",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1110.lm01",
+          "type": "json",
+          "name": "limits",
+          "description": "Application-defined limits JSON",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "PaymentPlan",
+      "returnName": "plan",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": true,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0204.dp01": {
+      "id": "endp.mpay0204.dp01",
+      "method": "DELETE",
+      "url": "/payment/admin/plan/delete",
+      "short_descr": "Admin: delete a subscription plan",
+      "description": "Deletes a subscription plan. The operation is rejected with 409 if any user or entity in the domain currently has an active subscription referencing this plan ID, preventing orphaned references.\n\nEmits `payment.plan.deleted`.\n\n**Access:** `payment.plan.delete`",
+      "parameters": [
+        {
+          "id": "param.mpay1201.id01",
+          "type": "str",
+          "name": "id",
+          "description": "Plan ID to delete",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "deleted",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": true,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0205.gs01": {
+      "id": "endp.mpay0205.gs01",
+      "method": "GET",
+      "url": "/payment/admin/settings",
+      "short_descr": "Admin: get Stripe settings",
+      "description": "Returns the Stripe configuration for the current domain (API keys, webhook secrets, and redirect URLs).\n\nSecret fields (`stripe_*_api_key`, `stripe_*_webhook_secret`) are masked in the response (returned as `***` if set, empty string if not set) to avoid accidental exposure in logs or browser network tabs.\n\n**Access:** `payment.settings.manage`",
+      "parameters": [],
+      "returnType": "PaymentSettings",
+      "returnName": "settings",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": true,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0206.ss01": {
+      "id": "endp.mpay0206.ss01",
+      "method": "POST",
+      "url": "/payment/admin/settings",
+      "short_descr": "Admin: save Stripe settings",
+      "description": "Saves Stripe configuration for the current domain. All fields are optional; only provided (non-null) fields are written to the settings store. Sending an empty string for a key clears that setting.\n\nSettings are stored with the prefix `payment.` in the system settings table, scoped to the current domain.\n\n**Access:** `payment.settings.manage`",
+      "parameters": [
+        {
+          "id": "param.mpay1301.dk01",
+          "type": "str",
+          "name": "stripe_dev_api_key",
+          "description": "Stripe secret key for test/dev (sk_test_...)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1302.dw01",
+          "type": "str",
+          "name": "stripe_dev_webhook_secret",
+          "description": "Stripe webhook signing secret for test/dev (whsec_...)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1303.pk01",
+          "type": "str",
+          "name": "stripe_prod_api_key",
+          "description": "Stripe secret key for production (sk_live_...)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1304.pw01",
+          "type": "str",
+          "name": "stripe_prod_webhook_secret",
+          "description": "Stripe webhook signing secret for production (whsec_...)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1305.su01",
+          "type": "str",
+          "name": "stripe_success_url",
+          "description": "Post-checkout success redirect URL (supports {domain}, {subdomain} placeholders)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1306.cu01",
+          "type": "str",
+          "name": "stripe_cancel_url",
+          "description": "Post-checkout cancel redirect URL (supports {domain}, {subdomain} placeholders)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mpay1307.ru01",
+          "type": "str",
+          "name": "stripe_portal_return_url",
+          "description": "Customer Portal return URL (supports {domain}, {subdomain} placeholders)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "PaymentSettings",
+      "returnName": "settings",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": true,
+        "perm.mpay0007.ld01": false
+      }
+    },
+
+    "endp.mpay0207.ld01": {
+      "id": "endp.mpay0207.ld01",
+      "method": "POST",
+      "url": "/payment/admin/limits-definitions",
+      "short_descr": "Admin: save limit key definitions",
+      "description": "Saves (replaces) the list of application-defined limit key definitions for the current domain. This list is stored as a JSON value in the settings store and returned by `GET /payment/limits-definitions`.\n\nExample payload:\n```json\n[\n  { \"name\": \"max_users\", \"label\": \"Team Members\", \"description\": \"Maximum collaborators\", \"unit\": \"users\" },\n  { \"name\": \"max_storage_mb\", \"label\": \"Storage\", \"description\": \"Total upload storage\", \"unit\": \"MB\" }\n]\n```\n\nEmits no event (pure configuration, not operational data).\n\n**Access:** `payment.limits.define`",
+      "parameters": [
+        {
+          "id": "param.mpay1401.df01",
+          "type": "json",
+          "name": "definitions",
+          "description": "Array of LimitDefinition objects to store",
+          "is_required": true,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "[]",
+          "value": ""
+        }
+      ],
+      "returnType": "LimitDefinition",
+      "returnName": "definitions",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mpay0001.pc01": false,
+        "perm.mpay0002.pd01": false,
+        "perm.mpay0003.pl01": false,
+        "perm.mpay0004.sm01": false,
+        "perm.mpay0005.sv01": false,
+        "perm.mpay0006.ss01": false,
+        "perm.mpay0007.ld01": true
+      }
+    }
+  },
+
+  "enums": {},
+  "functions": {}
+}

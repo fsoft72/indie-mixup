@@ -1,0 +1,21 @@
+{
+	"site": {
+		"secret": "change-me",
+		"name": "gdpr",
+		"debugKey": "debug",
+		"enableDebugAsAdmin": "true",
+		"adminKey": "admin"
+	},
+	"jwt": {
+		"secret": "change-me-jwt",
+		"expiresIn": "7d"
+	},
+	"system": {
+		"username": "{{SYSTEM_ADMIN_USERNAME}}",
+		"password": "{{SYSTEM_ADMIN_PASSWORD}}",
+		"domain": "{{SYSTEM_DOMAIN}}"
+	},
+	"user": {
+		"passwordMaxAgeDays": 0
+	}
+}

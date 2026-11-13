@@ -1,0 +1,103 @@
+{
+	"actions": [
+		{
+			"title": "Save current number of comments in DB",
+			"method": "GET",
+			"url": "/api/comments/list",
+			"body": {
+				"module": "test",
+				"id_obj": "abc123"
+			},
+			"fields": [["#data", "init_comments"]]
+		},
+		{
+			"title": "Save current number of activitylog in DB",
+			"method": "GET",
+			"url": "/api/activity_log/list",
+			"fields": [["#data", "activitylog_count"]]
+		},
+		{
+			"method": "POST",
+			"url": "/api/comment/add",
+			"body": {
+				"module": "test",
+				"id_obj": "abc123",
+				"comment": "Test 01 for test/abc123"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			],
+			"fields": [["data.id", "id_comm"]]
+		},
+		{
+			"title": "Count activitylog",
+			"method": "GET",
+			"url": "/api/activity_log/list",
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${ activitylog_count + 1 }"
+				}
+			]
+		},
+		{
+			"method": "GET",
+			"url": "/api/comments/list",
+			"body": {
+				"module": "test",
+				"id_obj": "abc123"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "#data",
+					"value": "${init_comments + 1}"
+				}
+			]
+		},
+		{
+			"method": "POST",
+			"url": "/api/comment/add",
+			"body": {
+				"module": "test",
+				"id_obj": "abc123",
+				"id_follow_up": "%(id_comm)s",
+				"comment": "I agree"
+			}
+		},
+		{
+			"method": "DELETE",
+			"url": "/api/comment/del",
+			"body": {
+				"id": "%(id_comm)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Check everything has been deleted",
+			"method": "GET",
+			"url": "/api/comments/list",
+			"body": {
+				"module": "test",
+				"id_obj": "abc123"
+			},
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${init_comments}"
+				}
+			]
+		}
+	]
+}

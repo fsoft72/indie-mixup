@@ -1,0 +1,90 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "indie-mixup-local",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-08-23",
+	"observability": {
+		"enabled": true
+	},
+	"alias": {
+		"@backend/liwe3": "../../liwe3/backend/core/src/index.ts",
+		"@backend-modules/user": "../../liwe3/modules/user/backend/src/index.ts"
+	},
+	"vars": {
+		"ENVIRONMENT": "local",
+		"DEV_MODE": "true",
+		"ALLOWED_ORIGINS": "*"
+	},
+	"assets": {
+		"directory": "./public/",
+		"binding": "ASSETS"
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "indie-mixup-dev",
+			"database_id": "local",
+			"migrations_dir": "drizzle"
+		},
+		{
+			"binding": "DB_TEST",
+			"database_name": "indie-mixup-test",
+			"database_id": "local",
+			"migrations_dir": "drizzle"
+		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "KV",
+			"id": "local-sessions"
+		}
+	],
+	"r2_buckets": [
+		{
+			"bucket_name": "indie-mixup-bucket",
+			"binding": "UPLOAD_BUCKET"
+		}
+	],
+	"env": {
+		"stage": {
+			"name": "indie-mixup-stage",
+			"vars": {
+				"ENVIRONMENT": "stage",
+				"DEV_MODE": "false"
+			},
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_name": "indie-mixup-stage",
+					"database_id": "REPLACE_WITH_STAGE_DATABASE_ID"
+				}
+			],
+			"kv_namespaces": [
+				{
+					"binding": "KV",
+					"id": "sessions"
+				}
+			]
+		},
+		"prod": {
+			"name": "indie-mixup-prod",
+			"vars": {
+				"ENVIRONMENT": "production",
+				"DEV_MODE": "false"
+			},
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_name": "indie-mixup-prod",
+					"database_id": "REPLACE_WITH_PROD_DATABASE_ID"
+				}
+			],
+			"kv_namespaces": [
+				{
+					"binding": "KV",
+					"id": "sessions-prod"
+				}
+			]
+		}
+	}
+}

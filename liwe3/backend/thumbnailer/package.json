@@ -1,0 +1,22 @@
+{
+	"name": "@liwe3/thumbnailer",
+	"version": "0.1.0",
+	"private": true,
+	"main": "src/index.ts",
+	"scripts": {
+		"build": "tsc",
+		"test": "vitest run --passWithNoTests",
+		"cf-typegen": "wrangler types"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.21.3",
+		"typescript": "^6.0.2",
+		"vitest": "~4.1.2",
+		"wrangler": "^4.123.0"
+	},
+	"dependencies": {
+		"@jsquash/jpeg": "^1.6.0",
+		"@jsquash/png": "^3.1.1",
+		"@jsquash/resize": "^2.1.1"
+	}
+}

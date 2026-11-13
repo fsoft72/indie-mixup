@@ -1,0 +1,237 @@
+{
+	"actions": [
+		{
+			"title": "Config reset: start from a clean state (a previous run may have left an override)",
+			"method": "POST",
+			"url": "/api/system/admin/config/reset",
+			"body": {
+				"keys": [
+					"site.name"
+				]
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Config fields: the four groups are returned",
+			"method": "GET",
+			"url": "/api/system/admin/config/fields",
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "#data",
+					"value": 4
+				}
+			],
+			"fields": [
+				[
+					"data[1].fields[0].default",
+					"orig_name"
+				]
+			]
+		},
+		{
+			"title": "Config set: override the site name",
+			"method": "POST",
+			"url": "/api/system/admin/config/set",
+			"body": {
+				"values": {
+					"site.name": "RESTest Name"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Config fields: the new site name is the current value",
+			"method": "GET",
+			"url": "/api/system/admin/config/fields",
+			"tests": [
+				{
+					"field": "data[1].fields[0].name",
+					"value": "site.name"
+				},
+				{
+					"field": "data[1].fields[0].default",
+					"value": "RESTest Name"
+				}
+			]
+		},
+		{
+			"title": "Config set: a secret key is rejected",
+			"method": "POST",
+			"url": "/api/system/admin/config/set",
+			"body": {
+				"values": {
+					"jwt.secret": "hacked"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": false
+				}
+			],
+			"status": 400
+		},
+		{
+			"title": "Config set: a valid key next to a secret one is not saved either",
+			"method": "POST",
+			"url": "/api/system/admin/config/set",
+			"body": {
+				"values": {
+					"site.name": "Should not be saved",
+					"db.secret": "hacked"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": false
+				}
+			],
+			"status": 400
+		},
+		{
+			"title": "Config set: a value of the wrong type is rejected",
+			"method": "POST",
+			"url": "/api/system/admin/config/set",
+			"body": {
+				"values": {
+					"user.passwordMaxAgeDays": "abc"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": false
+				}
+			],
+			"status": 400
+		},
+		{
+			"title": "Config fields: the rejected requests changed nothing",
+			"method": "GET",
+			"url": "/api/system/admin/config/fields",
+			"tests": [
+				{
+					"field": "data[1].fields[0].default",
+					"value": "RESTest Name"
+				}
+			]
+		},
+		{
+			"title": "Config reset: the override is removed",
+			"method": "POST",
+			"url": "/api/system/admin/config/reset",
+			"body": {
+				"keys": [
+					"site.name"
+				]
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data[1].fields[0].default",
+					"value": "%(orig_name)s"
+				}
+			]
+		},
+		{
+			"title": "Config reset: a key without an override is not an error",
+			"method": "POST",
+			"url": "/api/system/admin/config/reset",
+			"body": {
+				"keys": [
+					"site.name"
+				]
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Config set: a duration without a unit is rejected",
+			"method": "POST",
+			"url": "/api/system/admin/config/set",
+			"body": {
+				"values": {
+					"jwt.expiresIn": "7"
+				}
+			},
+			"status": 400,
+			"tests": [
+				{
+					"field": "ok",
+					"value": false
+				}
+			]
+		},
+		{
+			"title": "Config set: a duration in days is stored and shown back as typed",
+			"method": "POST",
+			"url": "/api/system/admin/config/set",
+			"body": {
+				"values": {
+					"jwt.expiresIn": "7d"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data[0].fields[0].default",
+					"value": "7d"
+				}
+			]
+		},
+		{
+			"title": "Config reset: the duration goes back to config.json",
+			"method": "POST",
+			"url": "/api/system/admin/config/reset",
+			"body": {
+				"keys": [
+					"jwt.expiresIn"
+				]
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Config fields: a request without a session is denied",
+			"method": "GET",
+			"url": "/api/system/admin/config/fields",
+			"auth": false,
+			"tests": [
+				{
+					"field": "ok",
+					"value": false
+				}
+			],
+			"status": 401
+		}
+	]
+}

@@ -1,0 +1,386 @@
+{
+  "id": "mod.mj3zc7wh.5axj",
+  "name": "ActivityLog",
+  "doc": "This module handles activity logs of a service / website",
+  "short_descr": "Activity logs of a service / website",
+  "version": 12,
+  "modified": 0,
+  "locked_by": "",
+  "endpoints": {
+    "endp.mj3zfqdj.3lxi": {
+      "id": "endp.mj3zfqdj.3lxi",
+      "method": "GET",
+      "url": "/activity_log/list",
+      "short_descr": "Return all events",
+      "description": "Return list of events in `DESC`ending order (can be changed with the `sort` parameter)\nThis endpoint uses pagination with `offset` (row start) and `limit` (how many rows to return once)\nIf `full` is `true`, event data will be returned along with event itself. Since event data can be huge, `full` is `false` by default.\n\n\n\n\n",
+      "parameters": [
+        {
+          "id": "param.mj3zh94y.ao2j",
+          "type": "int",
+          "name": "offset",
+          "description": "Pagination row start",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "0",
+          "value": ""
+        },
+        {
+          "id": "param.mj3ziakm.4wv6",
+          "type": "int",
+          "name": "limit",
+          "description": "Pagination rows size",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "50",
+          "value": ""
+        },
+        {
+          "id": "param.mjjrpyyv.9llv",
+          "type": "str",
+          "name": "module",
+          "description": "Filter by module name",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mj3zgjm8.8mpk",
+          "type": "datetime",
+          "name": "date_start",
+          "description": "Initial date and time of events",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mj3zgy75.go5j",
+          "type": "datetime",
+          "name": "date_end",
+          "description": "Final date and time of events",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mj3zik39.ftme",
+          "type": "boolean",
+          "name": "full",
+          "description": "If `true`, event data is returned as well",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mj3zizpx.1lqd",
+          "type": "str",
+          "name": "sort",
+          "description": "Sort (`asc` | `desc`)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "ActivityLogEvent",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mj3zondr.i4gx": false,
+        "perm.mjinyxd6.6pta": true,
+        "perm.mjip4ie7.hr32": false
+      }
+    },
+    "endp.mj3zp06j.53me": {
+      "id": "endp.mj3zp06j.53me",
+      "method": "POST",
+      "url": "/activity_log/add",
+      "short_descr": "Add a new event to the system",
+      "description": "Add a new event to the system.\n\nOnly users with permission `activitylog.event_add` can add a new event with this endpoint.\n",
+      "parameters": [
+        {
+          "id": "param.mj40qk7x.icjc",
+          "type": "str",
+          "name": "event",
+          "description": "Event description",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mj40qvjr.etlr",
+          "type": "json",
+          "name": "data",
+          "description": "Event data",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mj40tveb.hygb",
+          "type": "str",
+          "name": "module",
+          "description": "",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "ActivityLogEvent",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mj3zondr.i4gx": true
+      }
+    },
+    "endp.mjip4wmb.fvde": {
+      "id": "endp.mjip4wmb.fvde",
+      "method": "DELETE",
+      "url": "/activity_log/del",
+      "short_descr": "Deletes an event",
+      "description": "",
+      "parameters": [
+        {
+          "id": "param.mjip5e7r.6ksj",
+          "type": "str",
+          "name": "id",
+          "description": "Event id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mj3zondr.i4gx": false,
+        "perm.mjinyxd6.6pta": false,
+        "perm.mjip4ie7.hr32": true
+      }
+    },
+    "endp.mjjqoss7.i3ob": {
+      "id": "endp.mjjqoss7.i3ob",
+      "method": "DELETE",
+      "url": "/activity_log/clear",
+      "short_descr": "Clear all rows in activitylog",
+      "description": "Remove all rows in activity log\nIt is possible to specify an optional `module` to delete only those rows.\n\nIf no `module` is specified, all rows are deleted.",
+      "parameters": [
+        {
+          "id": "param.mjjqpu7c.4slf",
+          "type": "str",
+          "name": "module",
+          "description": "Module to delete rows",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mj3zondr.i4gx": false,
+        "perm.mjinyxd6.6pta": false,
+        "perm.mjip4ie7.hr32": true
+      }
+    }
+  },
+  "functions": {},
+  "enums": {},
+  "types": {
+    "typ.mj3zcvog.jwcj": {
+      "id": "typ.mj3zcvog.jwcj",
+      "name": "ActivityLogEvent",
+      "description": "A single event in activity log",
+      "doc": "An entry in the activity log",
+      "db_table": "activity_log_events",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mj3zcxmo.87vw",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": " main ID",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mj3zdr9k.eyjn",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User ID (if any)",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mj3ze2hk.do7i",
+          "name": "event",
+          "type": "string",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The event description",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mj3zf5bz.6ps1",
+          "name": "data",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Event data object",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mj40rdsk.kltg",
+          "name": "module",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The module name",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mj40rp1x.eshv",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.activitylog.id_obj",
+          "name": "id_obj",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Id of the object the event is about (e.g. a kanban card), used to list the events of one object",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.activitylog.created",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Creation timestamp",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    }
+  },
+  "permissions": {
+    "perm.mj3zondr.i4gx": {
+      "id": "perm.mj3zondr.i4gx",
+      "name": "activitylog.event_add",
+      "description": "Can add an event to the system"
+    },
+    "perm.mjinyxd6.6pta": {
+      "id": "perm.mjinyxd6.6pta",
+      "name": "activitylog.event_view",
+      "description": "Can get all events"
+    },
+    "perm.mjip4ie7.hr32": {
+      "id": "perm.mjip4ie7.hr32",
+      "name": "activitylog.event_del",
+      "description": "Allows to remove an event"
+    }
+  },
+  "events": {
+    "evt.mj3zo659.1x4z": {
+      "id": "evt.mj3zo659.1x4z",
+      "name": "activitylog.call.event.add",
+      "description": "Add a new event to the system"
+    },
+    "evt.activitylog.call_event_list": {
+      "id": "evt.activitylog.call_event_list",
+      "name": "activitylog.call.event.list",
+      "description": "Lists the events of one object. Payload: domain, module, id_obj, offset?, limit?, sort? (`asc` | `desc`, default `desc`). Returns { events : ActivityLogEvent[] } with `data` included."
+    }
+  },
+  "id_owner": "user.7146fb62e9a458952246479bcca935f7.4hue",
+  "domain": "os3"
+}

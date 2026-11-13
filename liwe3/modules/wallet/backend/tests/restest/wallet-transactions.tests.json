@@ -1,0 +1,216 @@
+{
+	"actions": [
+		{
+			"title": "Create test wallet for transactions",
+			"method": "POST",
+			"url": "/api/wallet/create",
+			"body": {
+				"name": "Test Transaction Wallet",
+				"currency_code": "POINTS",
+				"description": "Wallet for testing transactions"
+			},
+			"fields": [["data.id", "tx_wallet_id"]]
+		},
+		{
+			"title": "Get initial balance (should be 0)",
+			"method": "GET",
+			"url": "/api/wallet/balance",
+			"body": {
+				"id": "%(tx_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.balance",
+					"value": 0
+				},
+				{
+					"field": "data.currency_code",
+					"value": "POINTS"
+				}
+			]
+		},
+		{
+			"title": "Get initial transaction count",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(tx_wallet_id)s"
+			},
+			"fields": [["#data", "init_transactions"]]
+		},
+		{
+			"title": "Credit 100 points to wallet",
+			"method": "POST",
+			"url": "/api/wallet/credit",
+			"body": {
+				"id_wallet": "%(tx_wallet_id)s",
+				"amount": 100000,
+				"description": "Initial bonus points",
+				"metadata": {
+					"reason": "signup_bonus"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.balance",
+					"value": 100000
+				}
+			]
+		},
+		{
+			"title": "Verify balance after credit",
+			"method": "GET",
+			"url": "/api/wallet/balance",
+			"body": {
+				"id": "%(tx_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "data.balance",
+					"value": 100000
+				}
+			]
+		},
+		{
+			"title": "Credit another 50 points",
+			"method": "POST",
+			"url": "/api/wallet/credit",
+			"body": {
+				"id_wallet": "%(tx_wallet_id)s",
+				"amount": 50000,
+				"description": "Referral bonus"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.balance",
+					"value": 150000
+				}
+			]
+		},
+		{
+			"title": "Debit 30 points from wallet",
+			"method": "POST",
+			"url": "/api/wallet/debit",
+			"body": {
+				"id_wallet": "%(tx_wallet_id)s",
+				"amount": 30000,
+				"description": "Purchase discount applied",
+				"metadata": {
+					"order_id": "ORD-12345"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.balance",
+					"value": 120000
+				}
+			]
+		},
+		{
+			"title": "Verify transaction count (3 transactions: 2 credits + 1 debit)",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(tx_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${init_transactions + 3}"
+				}
+			]
+		},
+		{
+			"title": "List only credit transactions",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(tx_wallet_id)s",
+				"transaction_type": "credit"
+			},
+			"tests": [
+				{
+					"field": "#data",
+					"value": 2
+				}
+			]
+		},
+		{
+			"title": "List only debit transactions",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(tx_wallet_id)s",
+				"transaction_type": "debit"
+			},
+			"tests": [
+				{
+					"field": "#data",
+					"value": 1
+				}
+			]
+		},
+		{
+			"title": "List transactions with pagination (limit 2)",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(tx_wallet_id)s",
+				"limit": 2,
+				"offset": 0
+			},
+			"tests": [
+				{
+					"field": "#data",
+					"value": 2
+				}
+			]
+		},
+		{
+			"title": "Debit remaining balance",
+			"method": "POST",
+			"url": "/api/wallet/debit",
+			"body": {
+				"id_wallet": "%(tx_wallet_id)s",
+				"amount": 120000,
+				"description": "Clear balance"
+			},
+			"tests": [
+				{
+					"field": "data.balance",
+					"value": 0
+				}
+			]
+		},
+		{
+			"title": "Delete test wallet (cleanup)",
+			"method": "DELETE",
+			"url": "/api/wallet/del",
+			"body": {
+				"id": "%(tx_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		}
+	]
+}

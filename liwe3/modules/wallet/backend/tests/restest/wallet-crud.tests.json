@@ -1,0 +1,234 @@
+{
+	"actions": [
+		{
+			"title": "Save current number of wallets in DB",
+			"method": "GET",
+			"url": "/api/wallet/list",
+			"fields": [["#data", "init_wallets"]]
+		},
+		{
+			"title": "Create a new wallet - POINTS",
+			"method": "POST",
+			"url": "/api/wallet/create",
+			"body": {
+				"name": "Loyalty Points",
+				"currency_code": "POINTS",
+				"description": "Customer loyalty points wallet",
+				"metadata": {
+					"type": "loyalty",
+					"tier": "gold"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.name",
+					"value": "Loyalty Points"
+				},
+				{
+					"field": "data.currency_code",
+					"value": "POINTS"
+				},
+				{
+					"field": "data.balance",
+					"value": 0
+				},
+				{
+					"field": "data.is_active",
+					"value": true
+				}
+			],
+			"fields": [["data.id", "wallet_points_id"]]
+		},
+		{
+			"title": "Create a second wallet - CREDITS",
+			"method": "POST",
+			"url": "/api/wallet/create",
+			"body": {
+				"name": "Virtual Credits",
+				"currency_code": "CREDITS",
+				"description": "Virtual currency for purchases"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.currency_code",
+					"value": "CREDITS"
+				}
+			],
+			"fields": [["data.id", "wallet_credits_id"]]
+		},
+		{
+			"title": "Verify wallet count increased by 2",
+			"method": "GET",
+			"url": "/api/wallet/list",
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${init_wallets + 2}"
+				}
+			]
+		},
+		{
+			"title": "Get wallet details",
+			"method": "GET",
+			"url": "/api/wallet/get",
+			"body": {
+				"id": "%(wallet_points_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.id",
+					"value": "%(wallet_points_id)s"
+				},
+				{
+					"field": "data.name",
+					"value": "Loyalty Points"
+				},
+				{
+					"field": "data.description",
+					"value": "Customer loyalty points wallet"
+				}
+			]
+		},
+		{
+			"title": "List wallets filtered by currency_code",
+			"method": "GET",
+			"url": "/api/wallet/list",
+			"body": {
+				"currency_code": "POINTS"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data[id='%(wallet_points_id)s'].currency_code",
+					"value": "POINTS"
+				}
+			]
+		},
+		{
+			"title": "Update wallet details",
+			"method": "PATCH",
+			"url": "/api/wallet/edit",
+			"body": {
+				"id": "%(wallet_points_id)s",
+				"name": "Premium Loyalty Points",
+				"description": "Premium tier loyalty points",
+				"metadata": {
+					"type": "loyalty",
+					"tier": "platinum"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.name",
+					"value": "Premium Loyalty Points"
+				},
+				{
+					"field": "data.description",
+					"value": "Premium tier loyalty points"
+				}
+			]
+		},
+		{
+			"title": "Deactivate wallet",
+			"method": "PATCH",
+			"url": "/api/wallet/edit",
+			"body": {
+				"id": "%(wallet_credits_id)s",
+				"is_active": false
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.is_active",
+					"value": false
+				}
+			]
+		},
+		{
+			"title": "List only active wallets",
+			"method": "GET",
+			"url": "/api/wallet/list",
+			"body": {
+				"is_active": true
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Delete CREDITS wallet",
+			"method": "DELETE",
+			"url": "/api/wallet/del",
+			"body": {
+				"id": "%(wallet_credits_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Verify wallet was deleted",
+			"method": "GET",
+			"url": "/api/wallet/list",
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${init_wallets + 1}"
+				}
+			]
+		},
+		{
+			"title": "Delete POINTS wallet (cleanup)",
+			"method": "DELETE",
+			"url": "/api/wallet/del",
+			"body": {
+				"id": "%(wallet_points_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Verify all test wallets deleted",
+			"method": "GET",
+			"url": "/api/wallet/list",
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${init_wallets}"
+				}
+			]
+		}
+	]
+}

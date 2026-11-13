@@ -1,0 +1,63 @@
+/* Custom styles for LiWE3 documentation */
+
+:root {
+	--md-primary-fg-color: #3f51b5;
+	--md-primary-fg-color--light: #5c6bc0;
+	--md-primary-fg-color--dark: #303f9f;
+	--md-accent-fg-color: #3f51b5;
+}
+
+/* Custom code block styling */
+.md-typeset code {
+	border-radius: 0.2rem;
+}
+
+/* Custom admonition styling */
+.md-typeset .admonition {
+	border-radius: 0.4rem;
+}
+
+/* Custom table styling */
+.md-typeset table:not([class]) {
+	border-radius: 0.4rem;
+	overflow: hidden;
+}
+
+/* Custom navigation styling */
+.md-nav__title {
+	font-weight: 700;
+}
+
+/* Custom logo/brand styling */
+.md-header__title {
+	font-weight: 600;
+}
+
+/* Highlight important code snippets */
+.md-typeset .highlight .hll {
+	background-color: #ffffcc;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--md-default-fg-color--lightest);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--md-default-fg-color--lighter);
+}
+
+/* Better spacing for nested lists */
+.md-typeset ul ul,
+.md-typeset ol ul,
+.md-typeset ul ol,
+.md-typeset ol ol {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}

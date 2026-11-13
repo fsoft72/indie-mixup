@@ -1,0 +1,36 @@
+{
+	"name": "@backend-modules/system",
+	"version": "1.0.0",
+	"description": "System module for domain and theme management",
+	"type": "module",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"test": "vitest run --passWithNoTests",
+		"test:watch": "vitest"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@backend/liwe3": "workspace:*",
+		"drizzle-orm": "^0.45.2",
+		"hono": "^4.12.9",
+		"zod": "^4.3.6"
+	},
+	"peerDependencies": {
+		"hono": "^4.12.9"
+	},
+	"devDependencies": {
+		"@types/node": "^25.5.0",
+		"typescript": "^6.0.2",
+		"vitest": "^4.1.2"
+	}
+}

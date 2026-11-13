@@ -1,0 +1,42 @@
+{
+	"name": "@frontend-modules/wallet",
+	"version": "0.0.1",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"!dist/**/*.test.*",
+		"!dist/**/*.spec.*"
+	],
+	"dependencies": {
+		"@frontend/liwe3": "workspace:*"
+	},
+	"peerDependencies": {
+		"@sveltejs/kit": "^2.55.0",
+		"svelte": "^5.55.1",
+		"svelte-hero-icons": "^5.2.0",
+		"zod": "^4.3.6"
+	},
+	"devDependencies": {
+		"@sveltejs/kit": "^2.55.0",
+		"@sveltejs/package": "^2.5.7",
+		"publint": "^0.3.18",
+		"svelte": "^5.55.1",
+		"svelte-hero-icons": "^5.2.0",
+		"typescript": "^6.0.2",
+		"vite": "^8.2.0",
+		"vitest": "^4.1.2",
+		"zod": "^4.3.6"
+	},
+	"scripts": {
+		"dev": "svelte-package -w -i src --types false",
+		"build": "svelte-package -i src && publint",
+		"prepublishOnly": "npm run build",
+		"test": "vitest run --passWithNoTests"
+	}
+}

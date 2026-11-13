@@ -1,0 +1,17 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"noEmit": true,
+		"paths": {
+			"@frontend/liwe3": ["./src"],
+			"@frontend/liwe3/*": ["./src/*"]
+		}
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.js",
+		"src/**/*.svelte",
+		"tests/**/*.ts"
+	]
+}

@@ -1,0 +1,264 @@
+{
+	"actions": [
+		{
+			"title": "Create source wallet for transfer tests",
+			"method": "POST",
+			"url": "/api/wallet/create",
+			"body": {
+				"name": "Source Wallet",
+				"currency_code": "POINTS",
+				"description": "Transfer source"
+			},
+			"fields": [["data.id", "source_wallet_id"]]
+		},
+		{
+			"title": "Create destination wallet for transfer tests",
+			"method": "POST",
+			"url": "/api/wallet/create",
+			"body": {
+				"name": "Destination Wallet",
+				"currency_code": "POINTS",
+				"description": "Transfer destination"
+			},
+			"fields": [["data.id", "dest_wallet_id"]]
+		},
+		{
+			"title": "Credit 500 points to source wallet",
+			"method": "POST",
+			"url": "/api/wallet/credit",
+			"body": {
+				"id_wallet": "%(source_wallet_id)s",
+				"amount": 500000,
+				"description": "Initial funding for transfer tests"
+			},
+			"tests": [
+				{
+					"field": "data.balance",
+					"value": 500000
+				}
+			]
+		},
+		{
+			"title": "Get source wallet transaction count before transfer",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(source_wallet_id)s"
+			},
+			"fields": [["#data", "source_tx_count"]]
+		},
+		{
+			"title": "Get destination wallet transaction count before transfer",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(dest_wallet_id)s"
+			},
+			"fields": [["#data", "dest_tx_count"]]
+		},
+		{
+			"title": "Transfer 200 points from source to destination",
+			"method": "POST",
+			"url": "/api/wallet/transfer",
+			"body": {
+				"id_wallet_from": "%(source_wallet_id)s",
+				"id_wallet_to": "%(dest_wallet_id)s",
+				"amount": 200000,
+				"description": "Test transfer between wallets",
+				"metadata": {
+					"transfer_type": "gift",
+					"note": "Test transfer"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.success",
+					"value": true
+				},
+				{
+					"field": "data.debit_transaction.transaction_type",
+					"value": "debit"
+				},
+				{
+					"field": "data.debit_transaction.amount",
+					"value": 200000
+				},
+				{
+					"field": "data.credit_transaction.transaction_type",
+					"value": "credit"
+				},
+				{
+					"field": "data.credit_transaction.amount",
+					"value": 200000
+				}
+			],
+			"fields": [
+				["data.debit_transaction.id", "debit_tx_id"],
+				["data.credit_transaction.id", "credit_tx_id"]
+			]
+		},
+		{
+			"title": "Verify source wallet balance after transfer",
+			"method": "GET",
+			"url": "/api/wallet/balance",
+			"body": {
+				"id": "%(source_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "data.balance",
+					"value": 300000
+				}
+			]
+		},
+		{
+			"title": "Verify destination wallet balance after transfer",
+			"method": "GET",
+			"url": "/api/wallet/balance",
+			"body": {
+				"id": "%(dest_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "data.balance",
+					"value": 200000
+				}
+			]
+		},
+		{
+			"title": "Verify source wallet has one more transaction (debit)",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(source_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${source_tx_count + 1}"
+				}
+			]
+		},
+		{
+			"title": "Verify destination wallet has one more transaction (credit)",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(dest_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${dest_tx_count + 1}"
+				}
+			]
+		},
+		{
+			"title": "Verify transfer transactions are linked",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(source_wallet_id)s",
+				"transaction_type": "debit"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Transfer another 100 points",
+			"method": "POST",
+			"url": "/api/wallet/transfer",
+			"body": {
+				"id_wallet_from": "%(source_wallet_id)s",
+				"id_wallet_to": "%(dest_wallet_id)s",
+				"amount": 100000,
+				"description": "Second transfer"
+			},
+			"tests": [
+				{
+					"field": "data.success",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Verify final source balance",
+			"method": "GET",
+			"url": "/api/wallet/balance",
+			"body": {
+				"id": "%(source_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "data.balance",
+					"value": 200000
+				}
+			]
+		},
+		{
+			"title": "Verify final destination balance",
+			"method": "GET",
+			"url": "/api/wallet/balance",
+			"body": {
+				"id": "%(dest_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "data.balance",
+					"value": 300000
+				}
+			]
+		},
+		{
+			"title": "List all transfer transactions for source wallet",
+			"method": "GET",
+			"url": "/api/wallet/transaction/list",
+			"body": {
+				"id_wallet": "%(source_wallet_id)s",
+				"transaction_type": "debit"
+			},
+			"tests": [
+				{
+					"field": "#data",
+					"value": 2
+				}
+			]
+		},
+		{
+			"title": "Delete source wallet (cleanup)",
+			"method": "DELETE",
+			"url": "/api/wallet/del",
+			"body": {
+				"id": "%(source_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Delete destination wallet (cleanup)",
+			"method": "DELETE",
+			"url": "/api/wallet/del",
+			"body": {
+				"id": "%(dest_wallet_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		}
+	]
+}

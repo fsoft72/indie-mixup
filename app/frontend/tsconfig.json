@@ -1,0 +1,22 @@
+{
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"moduleResolution": "bundler",
+		"baseUrl": ".",
+		"paths": {
+			"$liwe3/core": ["../../liwe3/frontend/core/index.ts"],
+			"$liwe3/core/*": ["../../liwe3/frontend/core/*"],
+			"$liwe3/frontend/*": ["../../liwe3/frontend/*"],
+			"$liwe3/modules/*": ["../../liwe3/modules/*/frontend"],
+			"$liwe3/common/*": ["../../liwe3/common/*"]
+		}
+	}
+}

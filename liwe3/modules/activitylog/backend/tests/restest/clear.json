@@ -1,0 +1,36 @@
+{
+	"system": {
+		"base_url": "http://localhost:8787",
+		"authorization_template": "Bearer %(token)s"
+	},
+	"actions": [
+		{
+			"action": "include",
+			"filename": "../../../../user/backend/tests/restest/admin-login.tests.json",
+			"exec": true
+		},
+		{
+			"method": "DELETE",
+			"url": "/api/activity_log/clear",
+			"body": {
+				"module": "user"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"method": "DELETE",
+			"url": "/api/activity_log/clear",
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		}
+	]
+}

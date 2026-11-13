@@ -1,0 +1,657 @@
+{
+	"id": "mod.9541e33cd771dd6ac15fd33dc2084120.exhp",
+	"name": "Notifier",
+	"doc": "# Notifier Module\n\nThe Notifier module provides a complete **event-driven notification system** with user preferences and flexible delivery options.\n\n## Key Features\n\n- **Event-driven notifications** - Other modules can emit events to create notifications via the `notifier.call.create` event\n- **Snooze functionality** - Users can postpone notifications (default: 7 days)\n- **Dismiss permanently** - Users can dismiss notifications they don't want to see again\n- **User preferences** - Users can configure which event types trigger notifications\n- **Toast UI** - Notifications displayed as toasts with customizable duration (2 minutes)\n- **Polling system** - Frontend polls for new notifications every 30 seconds\n- **Multi-tenant** - Domain-scoped notifications for multi-tenancy support\n\n## Notification Lifecycle\n\n1. A notification is created (via API or event) with status `pending`\n2. When the frontend polls, pending notifications are returned and auto-marked as `shown`\n3. The user can **dismiss** (permanent) or **snooze** (temporary, re-appears after N days)\n4. Snoozed notifications return to the pending queue once `snooze_until` has passed\n\n## Notification Types\n\nFour UI styling types: `info` (blue), `success` (green), `warning` (yellow), `error` (red).\n\n## Event Types\n\nEvent types are arbitrary strings defined by consuming modules. Common examples:\n- `user.login`, `user.password_expiring`\n- `comment.mention`, `comment.reply`\n- `system.maintenance`, `system.update`\n- `gdpr.expiring`, `license.expiring`\n\n## Inter-Module Integration\n\nOther modules create notifications by calling the `notifier.call.create` event:\n\n```typescript\nawait liwe_event_call(app, 'notifier.create', {\n  id_user: user.id,\n  event_type: 'comment.mention',\n  title: 'You were mentioned',\n  message: 'Someone mentioned you in a comment',\n  notification_type: 'info',\n  data: { id_comment: comment.id },\n  domain: user.domain\n});\n```\n\n## Configuration Defaults\n\n- **Polling interval**: 30 seconds\n- **Toast duration**: 2 minutes (120 seconds)\n- **Default snooze period**: 7 days",
+	"short_descr": "User notification management system",
+	"version": 5,
+	"modified": 0,
+	"locked_by": "",
+	"endpoints": {
+		"endp.notifier.add": {
+			"id": "endp.notifier.add",
+			"method": "POST",
+			"url": "/notifier/add",
+			"short_descr": "Create a new notification",
+			"description": "## Create a New Notification\n\nCreates a new notification for a specific user. The notification is stored with `pending` status and will be delivered on the next frontend polling cycle.\n\n### Behavior\n\n- The notification `status` is automatically set to `pending`\n- The `created` and `updated` timestamps are set to the current time\n- A unique `id` is auto-generated for the notification\n- The `domain` is inherited from the authenticated user's context\n- After creation, the `notifier.created` event is emitted\n\n### Notification Types\n\n| Type | UI Style | Use Case |\n|------|----------|----------|\n| `info` | Blue | General information |\n| `success` | Green | Positive confirmation |\n| `warning` | Yellow | Caution or expiring items |\n| `error` | Red | Critical alerts |\n\nIf `notification_type` is omitted, it defaults to `info`.\n\n### The `data` Field\n\nThe optional `data` parameter accepts arbitrary JSON for passing extra context to the frontend (e.g., IDs for deep linking, counts, metadata).\n\n### Example Request Body\n\n```json\n{\n  \"id_user\": \"usr_abc123\",\n  \"event_type\": \"comment.mention\",\n  \"title\": \"You were mentioned\",\n  \"message\": \"John mentioned you in a comment\",\n  \"notification_type\": \"info\",\n  \"data\": { \"id_comment\": \"cmt_456\" }\n}\n```",
+			"parameters": [
+				{
+					"id": "param.notifier.add.id_user",
+					"type": "str",
+					"name": "id_user",
+					"description": "User ID who should receive the notification",
+					"is_required": true,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "",
+					"value": ""
+				},
+				{
+					"id": "param.notifier.add.event_type",
+					"type": "str",
+					"name": "event_type",
+					"description": "Event type that triggered this notification",
+					"is_required": true,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "",
+					"value": ""
+				},
+				{
+					"id": "param.notifier.add.title",
+					"type": "string",
+					"name": "title",
+					"description": "Notification title",
+					"is_required": true,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "",
+					"value": ""
+				},
+				{
+					"id": "param.notifier.add.message",
+					"type": "string",
+					"name": "message",
+					"description": "Notification message",
+					"is_required": true,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "",
+					"value": ""
+				},
+				{
+					"id": "param.notifier.add.notification_type",
+					"type": "str",
+					"name": "notification_type",
+					"description": "Notification type for UI styling: 'info', 'success', 'warning', 'error'",
+					"is_required": false,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "info",
+					"value": ""
+				},
+				{
+					"id": "param.notifier.add.data",
+					"type": "json",
+					"name": "data",
+					"description": "Additional data as JSON",
+					"is_required": false,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "",
+					"value": ""
+				}
+			],
+			"returnType": "Notification",
+			"returnName": "",
+			"is_array": false,
+			"permissions": {
+				"public": false,
+				"logged": true,
+				"admins": false,
+				"perm.notifier.add": true
+			}
+		},
+		"endp.notifier.list": {
+			"id": "endp.notifier.list",
+			"method": "GET",
+			"url": "/notifier/list",
+			"short_descr": "Get pending notifications",
+			"description": "## Get Pending Notifications\n\nRetrieves the list of actionable notifications for the currently authenticated user. This endpoint is designed for **frontend polling** (default: every 30 seconds).\n\n### Selection Criteria\n\nA notification is returned if it matches **any** of these conditions:\n- Status is `pending` (never shown to the user yet)\n- Status is `snoozed` **and** `snooze_until` timestamp has passed (snooze expired)\n\nNotifications with status `dismissed` or `shown` are **never** returned.\n\n### Side Effects\n\n- All returned notifications are automatically updated to `shown` status\n- The `updated` timestamp is refreshed for each returned notification\n\n### Ordering & Limits\n\n- Results are ordered by `created` date (newest first)\n- The `limit` query parameter controls the maximum number of results (default: 10)\n\n### Example Response\n\n```json\n{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"ntf_abc123\",\n      \"id_user\": \"usr_xyz\",\n      \"event_type\": \"comment.mention\",\n      \"title\": \"New Comment\",\n      \"message\": \"You were mentioned in a comment\",\n      \"status\": \"pending\",\n      \"notification_type\": \"info\",\n      \"data\": { \"id_comment\": \"cmt_456\" },\n      \"domain\": \"mydomain\",\n      \"created\": \"2026-03-13T10:00:00Z\",\n      \"updated\": \"2026-03-13T10:00:00Z\"\n    }\n  ]\n}\n```",
+			"parameters": [
+				{
+					"id": "param.notifier.list.limit",
+					"type": "int",
+					"name": "limit",
+					"description": "Maximum number of notifications to return",
+					"is_required": false,
+					"is_private": false,
+					"is_array": false,
+					"is_query": true,
+					"query": true,
+					"default": "10",
+					"value": ""
+				}
+			],
+			"returnType": "Notification",
+			"returnName": "",
+			"is_array": true,
+			"permissions": {
+				"public": false,
+				"logged": true,
+				"admins": false,
+				"perm.notifier.list": true
+			}
+		},
+		"endp.notifier.dismiss": {
+			"id": "endp.notifier.dismiss",
+			"method": "POST",
+			"url": "/notifier/dismiss",
+			"short_descr": "Dismiss a notification permanently",
+			"description": "## Dismiss a Notification\n\nPermanently dismisses a notification. Once dismissed, the notification will **never** be returned by the `/notifier/list` endpoint again.\n\n### Behavior\n\n- Sets the notification `status` to `dismissed`\n- Updates the `updated` timestamp\n- Emits the `notifier.dismissed` event with the notification data\n- The notification remains in the database for audit purposes but is excluded from all queries\n\n### Authorization\n\n- The user can only dismiss notifications belonging to them (`id_user` must match the authenticated user)\n- Returns `false` if the notification does not exist or does not belong to the user\n\n### Example Request Body\n\n```json\n{\n  \"id\": \"ntf_abc123\"\n}\n```\n\n### Returns\n\n`true` if the notification was successfully dismissed, `false` otherwise.",
+			"parameters": [
+				{
+					"id": "param.notifier.dismiss.id",
+					"type": "str",
+					"name": "id",
+					"description": "Notification ID to dismiss",
+					"is_required": true,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "",
+					"value": ""
+				}
+			],
+			"returnType": "boolean",
+			"returnName": "",
+			"is_array": false,
+			"permissions": {
+				"public": false,
+				"logged": true,
+				"admins": false,
+				"perm.notifier.dismiss": true
+			}
+		},
+		"endp.notifier.snooze": {
+			"id": "endp.notifier.snooze",
+			"method": "POST",
+			"url": "/notifier/snooze",
+			"short_descr": "Snooze a notification",
+			"description": "## Snooze a Notification\n\nTemporarily hides a notification for a specified number of days. After the snooze period expires, the notification will reappear in the `/notifier/list` results.\n\n### Behavior\n\n- Sets the notification `status` to `snoozed`\n- Calculates `snooze_until` as the current time plus the specified number of days\n- Updates the `updated` timestamp\n- Emits the `notifier.snoozed` event with the notification data\n\n### Snooze Expiration\n\nWhen the `snooze_until` timestamp passes, the notification is automatically picked up again by the `/notifier/list` endpoint. No background job is required - the list query checks for expired snoozes at read time.\n\n### Authorization\n\n- The user can only snooze notifications belonging to them (`id_user` must match the authenticated user)\n\n### Example Request Body\n\n```json\n{\n  \"id\": \"ntf_abc123\",\n  \"days\": 14\n}\n```\n\n### Returns\n\nThe `snooze_until` Unix timestamp indicating when the notification will reappear:\n\n```json\n{\n  \"success\": true,\n  \"snooze_until\": 1742342400\n}\n```",
+			"parameters": [
+				{
+					"id": "param.notifier.snooze.id",
+					"type": "str",
+					"name": "id",
+					"description": "Notification ID to snooze",
+					"is_required": true,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "",
+					"value": ""
+				},
+				{
+					"id": "param.notifier.snooze.days",
+					"type": "int",
+					"name": "days",
+					"description": "Number of days to snooze",
+					"is_required": false,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "7",
+					"value": ""
+				}
+			],
+			"returnType": "json",
+			"returnName": "snooze_until",
+			"is_array": false,
+			"permissions": {
+				"public": false,
+				"logged": true,
+				"admins": false,
+				"perm.notifier.snooze": true
+			}
+		},
+		"endp.notifier.settings.delete": {
+			"id": "endp.notifier.settings.delete",
+			"method": "DELETE",
+			"url": "/notifier/settings/delete",
+			"short_descr": "Delete a notification setting",
+			"description": "## Delete a Notification Setting\n\nDeletes a notification preference setting by ID. Only the owner of the setting can delete it.\n\n### Behavior\n\n- Verifies the setting exists and belongs to the authenticated user\n- Removes the `NotificationSetting` record from the database\n- Returns `true` on successful deletion\n- Returns 404 if the setting does not exist or does not belong to the user\n\n### Authorization\n\n- The user can only delete settings belonging to them (`id_user` must match the authenticated user)\n- Domain scoping is enforced\n\n### Example Request Body\n\n```json\n{\n  \"id\": \"nts_abc123\"\n}\n```\n\n### Returns\n\n`true` if the setting was successfully deleted.",
+			"parameters": [
+				{
+					"id": "param.notifier.settings.delete.id",
+					"type": "str",
+					"name": "id",
+					"description": "Setting ID to delete",
+					"is_required": true,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "",
+					"value": ""
+				}
+			],
+			"returnType": "boolean",
+			"returnName": "",
+			"is_array": false,
+			"permissions": {
+				"public": false,
+				"logged": true,
+				"admins": false,
+				"perm.notifier.settings_delete": true
+			}
+		},
+		"endp.notifier.settings.get": {
+			"id": "endp.notifier.settings.get",
+			"method": "GET",
+			"url": "/notifier/settings/get",
+			"short_descr": "Get notification settings",
+			"description": "## Get Notification Settings\n\nRetrieves the notification preference settings for the currently authenticated user. Returns a list of event types the user has configured, along with their enabled/disabled state.\n\n### Behavior\n\n- Returns all `NotificationSetting` records matching the current user's `id_user` and `domain`\n- If the user has never configured any settings, an empty array is returned\n- Event types not present in the response are considered **enabled by default** (opt-out model)\n\n### Use Case\n\nThis endpoint powers the notification preferences UI where users can toggle which event types they want to receive notifications for (e.g., disable `comment.mention` but keep `system.maintenance`).\n\n### Example Response\n\n```json\n{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"nst_abc123\",\n      \"id_user\": \"usr_xyz\",\n      \"event_type\": \"comment.mention\",\n      \"enabled\": true,\n      \"domain\": \"mydomain\"\n    },\n    {\n      \"id\": \"nst_def456\",\n      \"id_user\": \"usr_xyz\",\n      \"event_type\": \"system.maintenance\",\n      \"enabled\": false,\n      \"domain\": \"mydomain\"\n    }\n  ]\n}\n```",
+			"parameters": [],
+			"returnType": "NotificationSetting",
+			"returnName": "",
+			"is_array": true,
+			"permissions": {
+				"public": false,
+				"logged": true,
+				"admins": false,
+				"perm.notifier.settings_view": true,
+				"perm.notifier.list": false,
+				"perm.notifier.dismiss": false,
+				"perm.notifier.snooze": false,
+				"perm.notifier.settings_update": false
+			}
+		},
+		"endp.notifier.settings.update": {
+			"id": "endp.notifier.settings.update",
+			"method": "PATCH",
+			"url": "/notifier/settings/update",
+			"short_descr": "Update notification setting",
+			"description": "## Update Notification Setting\n\nCreates or updates a notification preference for a specific event type. Allows users to opt in or out of notifications for individual event types.\n\n### Behavior\n\n- If a setting for the given `event_type` already exists for the user, it is **updated** (upsert)\n- If no setting exists, a new `NotificationSetting` record is **created**\n- The `domain` is inherited from the authenticated user's context\n- When `enabled` is set to `false`, future notifications of that `event_type` will **not** be created for this user\n\n### Opt-Out Model\n\nThe system uses an **opt-out** model: all event types are enabled by default. Users explicitly disable the ones they do not want. Setting `enabled: true` restores the default behavior.\n\n### Example Request Body\n\n```json\n{\n  \"event_type\": \"comment.mention\",\n  \"enabled\": false\n}\n```\n\n### Example Response\n\n```json\n{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"nst_abc123\",\n    \"id_user\": \"usr_xyz\",\n    \"event_type\": \"comment.mention\",\n    \"enabled\": false,\n    \"domain\": \"mydomain\"\n  }\n}\n```",
+			"parameters": [
+				{
+					"id": "param.notifier.settings.event_type",
+					"type": "str",
+					"name": "event_type",
+					"description": "Event type to configure",
+					"is_required": true,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "",
+					"value": ""
+				},
+				{
+					"id": "param.notifier.settings.enabled",
+					"type": "boolean",
+					"name": "enabled",
+					"description": "Whether to enable or disable notifications for this event type",
+					"is_required": true,
+					"is_private": false,
+					"is_array": false,
+					"is_query": false,
+					"query": false,
+					"default": "",
+					"value": ""
+				}
+			],
+			"returnType": "NotificationSetting",
+			"returnName": "",
+			"is_array": false,
+			"permissions": {
+				"public": false,
+				"logged": true,
+				"admins": false,
+				"perm.notifier.settings_update": true,
+				"perm.notifier.list": false,
+				"perm.notifier.dismiss": false,
+				"perm.notifier.snooze": false,
+				"perm.notifier.settings_view": false
+			}
+		}
+	},
+	"functions": {},
+	"enums": {
+		"enum.notifier.status": {
+			"id": "enum.notifier.status",
+			"name": "NotificationStatus",
+			"description": "Notification status values",
+			"values": [
+				{
+					"id": "enum.notifier.status.pending",
+					"name": "pending",
+					"value": "pending"
+				},
+				{
+					"id": "enum.notifier.status.dismissed",
+					"name": "dismissed",
+					"value": "dismissed"
+				},
+				{
+					"id": "enum.notifier.status.snoozed",
+					"name": "snoozed",
+					"value": "snoozed"
+				},
+				{
+					"id": "enum.notifier.status.shown",
+					"name": "shown",
+					"value": "shown"
+				}
+			]
+		},
+		"enum.notifier.type": {
+			"id": "enum.notifier.type",
+			"name": "NotificationType",
+			"description": "Notification type for UI styling",
+			"values": [
+				{
+					"id": "enum.notifier.type.info",
+					"name": "info",
+					"value": "info"
+				},
+				{
+					"id": "enum.notifier.type.success",
+					"name": "success",
+					"value": "success"
+				},
+				{
+					"id": "enum.notifier.type.warning",
+					"name": "warning",
+					"value": "warning"
+				},
+				{
+					"id": "enum.notifier.type.error",
+					"name": "error",
+					"value": "error"
+				}
+			]
+		}
+	},
+	"types": {
+		"typ.notifier.notification": {
+			"id": "typ.notifier.notification",
+			"name": "Notification",
+			"description": "A notification to be displayed to the user",
+			"doc": "User notification with status tracking and snooze functionality",
+			"db_table": "notifications",
+			"db_clear": false,
+			"fields": [
+				{
+					"id": "fld.notifier.notification.id",
+					"name": "id",
+					"type": "str",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "main ID",
+					"index": "u",
+					"size": 64,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.notification.id_user",
+					"name": "id_user",
+					"type": "str",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "User ID who should receive this notification",
+					"index": "i",
+					"size": 64,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.notification.event_type",
+					"name": "event_type",
+					"type": "str",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Event type that triggered this notification",
+					"index": "i",
+					"size": 0,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.notification.title",
+					"name": "title",
+					"type": "string",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Notification title",
+					"index": "",
+					"size": 0,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.notification.message",
+					"name": "message",
+					"type": "string",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Notification message",
+					"index": "",
+					"size": 0,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.notification.status",
+					"name": "status",
+					"type": "str",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Status: 'pending', 'dismissed', 'snoozed', 'shown'",
+					"index": "i",
+					"size": 20,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.notification.snooze_until",
+					"name": "snooze_until",
+					"type": "int",
+					"is_array": false,
+					"is_required": false,
+					"is_private": false,
+					"description": "Snooze until timestamp (null if not snoozed)",
+					"index": "",
+					"size": 0,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.notification.data",
+					"name": "data",
+					"type": "json",
+					"is_array": false,
+					"is_required": false,
+					"is_private": false,
+					"description": "Additional data as JSON",
+					"index": "",
+					"size": 0,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.notification.notification_type",
+					"name": "notification_type",
+					"type": "str",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Notification type for UI: 'info', 'success', 'warning', 'error'",
+					"index": "",
+					"size": 20,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.notification.domain",
+					"name": "domain",
+					"type": "str",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Domain field for multi-tenancy",
+					"index": "i",
+					"size": 0,
+					"min_length": 0
+				},
+				{
+					"id": "fld.mmopoxci.begn",
+					"name": "created",
+					"type": "datetime",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Notification created date",
+					"index": "m",
+					"size": 0,
+					"min_length": 0
+				},
+				{
+					"id": "fld.mmopoy9x.d5et",
+					"name": "updated",
+					"type": "datetime",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Notification updated date",
+					"index": "m",
+					"size": 0,
+					"min_length": 0
+				}
+			]
+		},
+		"typ.notifier.setting": {
+			"id": "typ.notifier.setting",
+			"name": "NotificationSetting",
+			"description": "User notification preferences for event types",
+			"doc": "Configure which event types trigger notifications for a user",
+			"db_table": "notification_settings",
+			"db_clear": false,
+			"fields": [
+				{
+					"id": "fld.notifier.setting.id",
+					"name": "id",
+					"type": "str",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "main ID",
+					"index": "u",
+					"size": 64,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.setting.id_user",
+					"name": "id_user",
+					"type": "str",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "User ID",
+					"index": "i",
+					"size": 64,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.setting.event_type",
+					"name": "event_type",
+					"type": "str",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Event type to configure",
+					"index": "i",
+					"size": 0,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.setting.enabled",
+					"name": "enabled",
+					"type": "boolean",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Whether this event type is enabled for notifications",
+					"index": "",
+					"size": 0,
+					"min_length": 0
+				},
+				{
+					"id": "fld.notifier.setting.domain",
+					"name": "domain",
+					"type": "str",
+					"is_array": false,
+					"is_required": true,
+					"is_private": false,
+					"description": "Domain field for multi-tenancy",
+					"index": "i",
+					"size": 0,
+					"min_length": 0
+				}
+			]
+		}
+	},
+	"permissions": {
+		"perm.notifier.add": {
+			"id": "perm.notifier.add",
+			"name": "notifier.add",
+			"description": "Can create notifications"
+		},
+		"perm.notifier.list": {
+			"id": "perm.notifier.list",
+			"name": "notifier.list",
+			"description": "Can list notifications"
+		},
+		"perm.notifier.dismiss": {
+			"id": "perm.notifier.dismiss",
+			"name": "notifier.dismiss",
+			"description": "Can dismiss notifications"
+		},
+		"perm.notifier.snooze": {
+			"id": "perm.notifier.snooze",
+			"name": "notifier.snooze",
+			"description": "Can snooze notifications"
+		},
+		"perm.notifier.settings_view": {
+			"id": "perm.notifier.settings_view",
+			"name": "notifier.settings_view",
+			"description": "Can view notification settings"
+		},
+		"perm.notifier.settings_update": {
+			"id": "perm.notifier.settings_update",
+			"name": "notifier.settings_update",
+			"description": "Can update notification settings"
+		},
+		"perm.notifier.settings_delete": {
+			"id": "perm.notifier.settings_delete",
+			"name": "notifier.settings_delete",
+			"description": "Can delete notification settings"
+		}
+	},
+	"events": {
+		"evt.notifier.create": {
+			"id": "evt.notifier.create",
+			"name": "notifier.call.create",
+			"description": "Create a notification (callable by other modules)"
+		},
+		"evt.notifier.created": {
+			"id": "evt.notifier.created",
+			"name": "notifier.created",
+			"description": "Emitted when a notification is created"
+		},
+		"evt.notifier.dismissed": {
+			"id": "evt.notifier.dismissed",
+			"name": "notifier.dismissed",
+			"description": "Emitted when a notification is dismissed"
+		},
+		"evt.notifier.snoozed": {
+			"id": "evt.notifier.snoozed",
+			"name": "notifier.snoozed",
+			"description": "Emitted when a notification is snoozed"
+		}
+	},
+	"id_owner": "user.7146fb62e9a458952246479bcca935f7.4hue",
+	"domain": "os3"
+}

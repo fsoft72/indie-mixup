@@ -1,0 +1,17 @@
+# Rules of THIS app for scripts/liwe3-update.sh.
+#
+# Copy this file to scripts/data/liwe3-update.local.conf and edit it. The real
+# file is never overwritten by an update (the framework rules live in
+# liwe3-update.defaults.conf and are always taken from the latest cf-liwe3-ng).
+# Both files are merged: here you only ADD rules.
+#
+# [skip]            paths that are NEVER copied from cf-liwe3-ng into this app
+# [copy-if-missing] paths that are copied ONLY when they do not already exist here
+#
+# An entry ending with "/" matches the whole directory, any other entry an exact file.
+
+[skip]
+# .githooks/
+
+[copy-if-missing]
+# scripts/db_push.sh

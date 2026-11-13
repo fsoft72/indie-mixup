@@ -1,0 +1,71 @@
+{
+	"compilerOptions": {
+		"target": "es2022",
+		"lib": [
+			"dom",
+			"dom.iterable",
+			"es2017",
+			"es2020"
+		],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"resolvePackageJsonExports": true,
+		"resolvePackageJsonImports": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"checkJs": true,
+		"sourceMap": true,
+		"baseUrl": ".",
+		"paths": {
+			"@backend/liwe3": [
+				"./liwe3/backend/core/src"
+			],
+			"@backend/liwe3/*": [
+				"./liwe3/backend/core/*"
+			],
+			"@frontend/liwe3": [
+				"./liwe3/frontend/core/src"
+			],
+			"@frontend/liwe3/*": [
+				"./liwe3/frontend/core/src/*"
+			],
+			"@liwe3/thumbnailer": [
+				"./liwe3/backend/thumbnailer/src"
+			],
+			"@liwe3/thumbnailer/*": [
+				"./liwe3/backend/thumbnailer/src/*"
+			],
+			"@backend-modules/*": [
+				"./liwe3/modules/*/backend/src",
+				"./app/modules/*/backend/src",
+				"./playground/modules/*/backend/src"
+			],
+			"@frontend-modules/*": [
+				"./liwe3/modules/*/frontend/src",
+				"./app/modules/*/frontend/src",
+				"./playground/modules/*/frontend/src"
+			]
+		}
+	},
+	"include": [
+		"liwe3/**/*.ts",
+		"liwe3/**/*.js",
+		"liwe3/**/*.svelte",
+		"app/**/*.ts",
+		"app/**/*.js",
+		"app/**/*.svelte"
+	],
+	"exclude": [
+		"node_modules",
+		"**/node_modules",
+		"**/dist",
+		"**/.svelte-kit"
+	]
+}

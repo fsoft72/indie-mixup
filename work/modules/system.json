@@ -1,0 +1,968 @@
+{
+  "id": "mod.d2f4a365687ac5e2f7437023262239ec.4avd",
+  "doc": "",
+  "endpoints": {
+    "endp.l0qs2oru.0.37r2rn9jv2f": {
+      "id": "endp.l0qs2oru.0.37r2rn9jv2f",
+      "method": "GET",
+      "url": "/system/domains/list",
+      "short_descr": "List all visible domains",
+      "description": "List all visible domains",
+      "parameters": [],
+      "returnType": "SystemDomain",
+      "is_array": true,
+      "returnName": "domains",
+      "permissions": {
+        "perm.l1kiacm7.0.9vz0hyyuva": true,
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.l1ekabfm.0.z8d6i6qa77": false,
+        "perm.l1kihe0j.0.1b3rot86j85": false
+      }
+    },
+    "endp.l0qs7z31.0.d6za4xo21qo": {
+      "id": "endp.l0qs7z31.0.d6za4xo21qo",
+      "method": "POST",
+      "url": "/system/admin/domain/add",
+      "short_descr": "Adds a domain in the system",
+      "description": "Adds a new domain to the System.",
+      "parameters": [
+        {
+          "id": "param.l0qs8nwd.0.yzejq360189",
+          "name": "code",
+          "type": "str",
+          "description": "the domain unique code",
+          "required": true,
+          "private": false
+        },
+        {
+          "id": "param.l0qs8yrh.0.9oz0b5xuqef",
+          "name": "name",
+          "type": "str",
+          "description": "the domain name",
+          "required": true,
+          "private": false
+        },
+        {
+          "id": "param.l0qs9chh.0.tdr88juxdf",
+          "name": "visible",
+          "type": "boolean",
+          "description": "if the domain is visible or not [default: true]",
+          "required": false,
+          "private": false
+        }
+      ],
+      "returnType": "SystemDomain",
+      "is_array": false,
+      "returnName": "domain",
+      "permissions": {
+        "perm.l1kiacm7.0.9vz0hyyuva": true
+      }
+    },
+    "endp.l0qvll37.0.nj89pq1hh5c": {
+      "id": "endp.l0qvll37.0.nj89pq1hh5c",
+      "method": "DELETE",
+      "url": "/system/admin/domain/del",
+      "short_descr": "Deletes a domain from the system",
+      "description": "Delete a domain from the system. You must specify the domain `code`.\n\n1. **Determine Children:** Find all domains where `code` starts with `deleted_domain_code:`.\n\n2. **Cascade Delete:** Delete all child domains recursively **without confirmation**.\n\n3. **User Deletion:** Delete all users where `user.domain` equals the deleted domain code or any deleted child domain code **without confirmation**.\n\n4. **Parent Update:**\n\n   - Determine parent domain using `get_parent_domain_code(deleted_domain_code)`\n   - If parent exists, update parent's `tiers_allocated` by subtracting the deleted domain's `total_max_tiers`\n\n5. **Event Chain:** \n  - The system `SYSTEM_EVENT_DOMAIN_DEL` event is triggered with domain full `code`\n  - The standard `USER_EVENT_DELETE` event should be triggered for each user to allow other modules to clean up related data.\n",
+      "parameters": [
+        {
+          "id": "param.l0qvmglr.0.6y0g6iqpswf",
+          "name": "code",
+          "type": "str",
+          "description": "the domain unique code",
+          "required": false,
+          "private": false,
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false
+        }
+      ],
+      "returnType": "boolean",
+      "is_array": false,
+      "returnName": "id_domain",
+      "permissions": {
+        "perm.l1kiacm7.0.9vz0hyyuva": true,
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.l1ekabfm.0.z8d6i6qa77": false,
+        "perm.l1kihe0j.0.1b3rot86j85": false,
+        "perm.mh7cr7le.k8la": false,
+        "perm.mh7czeem.64hm": false,
+        "perm.mh9e6560.6v9z": false
+      }
+    },
+    "endp.l0qvmxv4.0.dxiab7cvoxd": {
+      "id": "endp.l0qvmxv4.0.dxiab7cvoxd",
+      "method": "GET",
+      "url": "/system/admin/domains/list",
+      "short_descr": "List all domains",
+      "description": "List all domains",
+      "parameters": [],
+      "returnType": "SystemDomainAdmin",
+      "is_array": true,
+      "returnName": "domains",
+      "permissions": {
+        "perm.l1kiacm7.0.9vz0hyyuva": true,
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.l1ekabfm.0.z8d6i6qa77": false,
+        "perm.l1kihe0j.0.1b3rot86j85": false
+      }
+    },
+    "endp.lhoe9157.0.f7zzfxijy6k": {
+      "id": "endp.lhoe9157.0.f7zzfxijy6k",
+      "method": "POST",
+      "url": "/system/email/test",
+      "short_descr": "Test email sending",
+      "description": "This endpoint tests email sending.\n\nYou can specify the destination email address to send the message to, but the message itself is defined by the app.",
+      "parameters": [
+        {
+          "id": "param.lhoeavtn.0.xll84u2fepi",
+          "name": "email",
+          "type": "str",
+          "description": "Destination email address",
+          "required": true,
+          "private": false
+        }
+      ],
+      "permissions": {
+        "logged": true
+      },
+      "returnType": "boolean",
+      "is_array": false,
+      "returnName": "result"
+    },
+    "endp.ll3esrkb.0.4sexfwf941h": {
+      "id": "endp.ll3esrkb.0.4sexfwf941h",
+      "method": "GET",
+      "url": "/system/admin/permissions/list",
+      "short_descr": "Returns all permissions available on the system",
+      "description": "Returns all the permissions available in the System.\nThe list depends also on the user's permissions:\n- If the user has `system.admin`, the endpoint will return **all permissions** available\n- if the user doesn't have `system.admin` the endpoint will return **only the permissions the user already has**.\n\nPermissions are returned in an object with: `module name` as key and a string list of permissions available for that module.",
+      "parameters": [],
+      "permissions": {
+        "logged": true,
+        "public": false,
+        "admins": false,
+        "perm.l1ekabfm.0.z8d6i6qa77": false,
+        "perm.l1kiacm7.0.9vz0hyyuva": false,
+        "perm.l1kihe0j.0.1b3rot86j85": false
+      },
+      "returnType": "json",
+      "is_array": false,
+      "returnName": "permissions"
+    },
+    "endp.lppmysx7.0.xmm5ay6cs": {
+      "id": "endp.lppmysx7.0.xmm5ay6cs",
+      "method": "GET",
+      "url": "/system/domain/create/invite",
+      "short_descr": "Creates an invitation token for a domain",
+      "description": "This endpoint creates an invitation token for a domain.\n\nThe invitation can have an `expire` date, so you can create temporary tokens.\nThe `expire` field is expressed in `minutes`. If you specify a value different that `0`, the token will last the `expire` minutes.\nIf the `expire` is set to `0` (default), the token does not expire.",
+      "parameters": [
+        {
+          "id": "param.lppn26b1.0.llmxrmn3l8",
+          "name": "code",
+          "type": "str",
+          "description": "The Domain unique code",
+          "required": true,
+          "private": false,
+          "query": false,
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false
+        },
+        {
+          "id": "param.lppn2hdl.0.knmsy30q43f",
+          "name": "expire",
+          "type": "int",
+          "description": "The amount of minutes the link is valid",
+          "required": false,
+          "private": false,
+          "query": false,
+          "default": "0",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false
+        }
+      ],
+      "permissions": {
+        "logged": true,
+        "public": false,
+        "admins": false,
+        "perm.l1ekabfm.0.z8d6i6qa77": false,
+        "perm.l1kiacm7.0.9vz0hyyuva": false,
+        "perm.l1kihe0j.0.1b3rot86j85": false
+      },
+      "returnType": "str",
+      "is_array": false,
+      "returnName": "token"
+    },
+    "endp.869d555012bf09c0a8be56f0b7079cc2.46mv": {
+      "id": "endp.869d555012bf09c0a8be56f0b7079cc2.46mv",
+      "method": "GET",
+      "url": "/system/uptime",
+      "short_descr": "Returns the system uptime (in seconds)",
+      "description": "Returns the system uptime (in seconds)",
+      "returnType": "number",
+      "is_array": false,
+      "returnName": "uptime",
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.l1ekabfm.0.z8d6i6qa77": false,
+        "perm.l1kiacm7.0.9vz0hyyuva": false,
+        "perm.l1kihe0j.0.1b3rot86j85": false
+      },
+      "parameters": []
+    },
+    "endp.mh7cu29s.j307": {
+      "id": "endp.mh7cu29s.j307",
+      "method": "POST",
+      "url": "/system/admin/domain/create_root",
+      "short_descr": "Generate a new root multi-tier.",
+      "description": "Generate a new root multi-tier. Only the users with `system.admin` and domain set to `system` can create a root multi-tier.\nThe root multi-tier is a new tier code without any prefix.  \n\n1. Generate complete domain `code` using `generate_domain_segment_code()`. \n2. Insert the domain with `tiers_allocated: 0`, and the provided `total_max_tiers`. \n3. Must use the `system.admin` permission check and also check that current user domain is only `system`.",
+      "parameters": [
+        {
+          "id": "param.mh7cxe4f.dqb1",
+          "type": "str",
+          "name": "name",
+          "description": "The new multi-tier name",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mh7cxryf.6dpy",
+          "type": "number",
+          "name": "total_max_tiers",
+          "description": "How many sub-tiers this domain can create",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "0",
+          "value": ""
+        },
+        {
+          "id": "param.mh8sbzir.egc7",
+          "type": "str",
+          "name": "code",
+          "description": "The domain base code",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "SystemDomainAdmin",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.l1ekabfm.0.z8d6i6qa77": true,
+        "perm.l1kiacm7.0.9vz0hyyuva": false,
+        "perm.l1kihe0j.0.1b3rot86j85": false,
+        "perm.mh7cr7le.k8la": false,
+        "perm.mh7czeem.64hm": false,
+        "perm.mh9e6560.6v9z": false
+      }
+    },
+    "endp.mh7d0s48.ehn3": {
+      "id": "endp.mh7d0s48.ehn3",
+      "method": "POST",
+      "url": "/system/domain/subdomain/create",
+      "short_descr": "Create a subdomain",
+      "description": "- **1. Authentication:** Check for `domain.multi-tier.create_sub` in `req.user.perms`. \n- **2. Get Parent Domain:** Parent domain is `req.user.domain`. \n- **3. Tier Validation:** Validate that `tiers_allocated <= (parent.total_max_tiers - parent.tiers_allocated)`. \n- **4. Domain Creation:** Generate unique code segment: \n  - form `new_domain_code` as `req.user.domain:generated_code`\n  - insert new domain with `total_max_tiers: tiers_allocated`, `tiers_allocated: 0`, `name: name`\n- **5. Update Parent:** Update parent domain's `tiers_allocated += tiers_allocated`. \n- **6. User Auto-Provisioning:** Create new user: \n  - Username: `${new_domain_code}-admin`\n  - Email: `${new_domain_code}-admin@example.com`\n  - Domain: `new_domain_code`\n  - Permissions: `[\"domain.multi-tier.create-sub\"]`\n  - Password: `sha512(mkid('pwd'))`\n  - Enabled: `true`\n  - Language: `req.user.language`",
+      "parameters": [
+        {
+          "id": "param.mh7d5vb0.7q0f",
+          "type": "str",
+          "name": "name",
+          "description": "Sub domain name",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mh7d63gk.453n",
+          "type": "number",
+          "name": "tiers_allocated",
+          "description": "Number of tiers that can be allocated",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "SystemDomain",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.l1ekabfm.0.z8d6i6qa77": false,
+        "perm.l1kiacm7.0.9vz0hyyuva": false,
+        "perm.l1kihe0j.0.1b3rot86j85": false,
+        "perm.mh7cr7le.k8la": false,
+        "perm.mh7czeem.64hm": true
+      }
+    },
+    "endp.mh7d7yx7.jn4h": {
+      "id": "endp.mh7d7yx7.jn4h",
+      "method": "GET",
+      "url": "/system/domain/subdomain/list_managed",
+      "short_descr": "List all domains and subdomains managed",
+      "description": "List all managed subdomains for the current user.\nIt is not possible to specify a subdomain, since it is taken by the user domain\n\n- **1. Context:** Use the current user's domain: `user_domain_code = req.user.domain`\n- **2. Database Query:** Query `COLL_SYSTEM_DOMAINS` for all records where: \n  - (a) `code` equals `user_domain_code` (own domain), OR (b) `code` starts with `${user_domain_code}:` (direct and nested children). If `deep=false`, only return domains where `code` matches `${user_domain_code}:[^:]+$` (direct children only, no nested). \n- **3. Return:** The list of matching domain objects.",
+      "parameters": [
+        {
+          "id": "param.mh7dzgg0.auy6",
+          "type": "boolean",
+          "name": "deep",
+          "description": "If list should return all codes",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "SystemDomainAdmin",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.l1ekabfm.0.z8d6i6qa77": false,
+        "perm.l1kiacm7.0.9vz0hyyuva": false,
+        "perm.l1kihe0j.0.1b3rot86j85": false,
+        "perm.mh7cr7le.k8la": true,
+        "perm.mh7czeem.64hm": false
+      }
+    },
+    "endp.mh7ddfx5.rbp": {
+      "id": "endp.mh7ddfx5.rbp",
+      "method": "POST",
+      "url": "/system/domain/user/assign_role",
+      "short_descr": "Assign role (multi-tier or user) to a user inside a subdomain",
+      "description": "Allows subdomain admins to assign or remove `multi-tier` user permission to a user.\nIf `multi-tier` is set to a user, he/she will be able to set new sub tiers.\n\n- **1. Authorization:** Ensure `req.user` has `system.multi-tier.create-sub`\n- **2. Get Target User:** Retrieve the user with `id_user` \n- **3. Scope Check:** Verify that the target user's `domain` field either equals `req.user.domain` or starts with `req.user.domain:` (is in a subdomain). \n- **4. Update User:** Set the target user's `perms` array: `multi-tier` maps to `[\"system.multi-tier.create-sub\"]`, and `user` maps to an empty array `[]`",
+      "parameters": [
+        {
+          "id": "param.mh7dgpac.bilh",
+          "type": "str",
+          "name": "id_user",
+          "description": "The user to assign role to",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mh7dj1a7.3s7y",
+          "type": "str",
+          "name": "role",
+          "description": "The user role (`multi-tier | user`)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.l1ekabfm.0.z8d6i6qa77": false,
+        "perm.l1kiacm7.0.9vz0hyyuva": false,
+        "perm.l1kihe0j.0.1b3rot86j85": false,
+        "perm.mh7cr7le.k8la": false,
+        "perm.mh7czeem.64hm": true
+      }
+    },
+    "endp.mocfg45f9.0.d4671f2544": {
+      "id": "endp.mocfg45f9.0.d4671f2544",
+      "method": "GET",
+      "url": "/system/admin/config/fields",
+      "short_descr": "Editable config fields",
+      "description": "Returns the editable config groups in FormCreator format, with the current effective value of each field as its default. The list of editable keys is fixed in the backend.",
+      "parameters": [],
+      "returnType": "SystemConfigGroup",
+      "is_array": true,
+      "returnName": "groups",
+      "permissions": {
+        "perm.l1ekabfm.0.z8d6i6qa77": true
+      }
+    },
+    "endp.mocfg51d9.0.dd4cbc67f2": {
+      "id": "endp.mocfg51d9.0.dd4cbc67f2",
+      "method": "POST",
+      "url": "/system/admin/config/set",
+      "short_descr": "Override config values",
+      "description": "Stores overrides for the given dotted keys (all or nothing: an unlisted key or a value of the wrong type rejects the whole request) and returns the refreshed groups.",
+      "parameters": [
+        {
+          "id": "param.mocfg3a18.0.75e326847f",
+          "type": "json",
+          "name": "values",
+          "description": "Object with dotted config keys as keys and the new values",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "SystemConfigGroup",
+      "is_array": true,
+      "returnName": "groups",
+      "permissions": {
+        "perm.l1ekabfm.0.z8d6i6qa77": true
+      }
+    },
+    "endp.mocfge084.0.a53eaced9c": {
+      "id": "endp.mocfge084.0.a53eaced9c",
+      "method": "POST",
+      "url": "/system/admin/config/reset",
+      "short_descr": "Remove config overrides",
+      "description": "Removes the overrides of the given keys, so their value falls back to config.json, and returns the refreshed groups.",
+      "parameters": [
+        {
+          "id": "param.mocfg721b.0.8e50f011a6",
+          "type": "str",
+          "name": "keys",
+          "description": "Dotted config keys to reset",
+          "is_required": true,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "SystemConfigGroup",
+      "is_array": true,
+      "returnName": "groups",
+      "permissions": {
+        "perm.l1ekabfm.0.z8d6i6qa77": true
+      }
+    }
+  },
+  "functions": {
+    "fn.l1kk1ft9.0.kdpsmoxzq3": {
+      "id": "fn.l1kk1ft9.0.kdpsmoxzq3",
+      "name": "system_domain_get_default",
+      "short_descr": "Gets the default domain",
+      "description": "This function returns a `SystemDomain` structure by its id.",
+      "parameters": [],
+      "returnType": "SystemDomain",
+      "is_array": false
+    },
+    "fn.l1kk2bp3.0.ggf8kwx0jxv": {
+      "id": "fn.l1kk2bp3.0.ggf8kwx0jxv",
+      "name": "system_domain_get_by_id",
+      "short_descr": "Gets a domain by its id",
+      "description": "This function returns a `SystemDomain` structure by its id.",
+      "parameters": [
+        {
+          "id": "param.l1kk2m08.0.pruvvh2782",
+          "name": "id",
+          "type": "str",
+          "description": "The Domain id",
+          "required": true
+        }
+      ],
+      "returnType": "SystemDomain",
+      "is_array": false
+    },
+    "fn.l1kk3awl.0.1dqtrwq56ut": {
+      "id": "fn.l1kk3awl.0.1dqtrwq56ut",
+      "name": "system_domain_get_by_code",
+      "short_descr": "Gets a domain by its code",
+      "description": "This function returns a `SystemDomain` structure by its code.",
+      "parameters": [
+        {
+          "id": "param.l1kk3kw1.0.hqupkkqo9q",
+          "name": "code",
+          "type": "str",
+          "description": "The Domain code",
+          "required": true
+        }
+      ],
+      "returnType": "SystemDomain",
+      "is_array": false
+    },
+    "fn.l1kk45oa.0.tcee8geygw": {
+      "id": "fn.l1kk45oa.0.tcee8geygw",
+      "name": "system_domain_get_by_session",
+      "short_descr": "Gets a domain by user session",
+      "description": "This function returns a `SystemDomain` structure by its code.",
+      "parameters": [
+        {
+          "id": "param.l1kk4gsq.0.5iu2a0rdv9u",
+          "name": "req",
+          "type": "ilrequest",
+          "description": "The current session request",
+          "required": true
+        }
+      ],
+      "returnType": "SystemDomain",
+      "is_array": false
+    },
+    "fn.l1kk5a3b.0.szg50v4jdem": {
+      "id": "fn.l1kk5a3b.0.szg50v4jdem",
+      "name": "system_db_init",
+      "short_descr": "Initializes system module",
+      "description": "This function initializes the module database tables.",
+      "parameters": [
+        {
+          "id": "param.l1kk5jj2.0.rhcazrhve1",
+          "name": "liwe",
+          "type": "iliwe",
+          "description": "LiWE full config",
+          "required": true
+        }
+      ],
+      "returnType": "boolean",
+      "is_array": false
+    },
+    "fn.ll3ewrww.0.s8yhyt40bi": {
+      "id": "fn.ll3ewrww.0.s8yhyt40bi",
+      "name": "system_permissions_register",
+      "short_descr": "Add module's permissions to the system",
+      "description": "This function is called by every module during the initialization phase.\nThe module calls this function to pass its permissions and descriptions to the system.\n\nThis data is consumed by `/system/admin/permissions/list` endpoint",
+      "parameters": [
+        {
+          "id": "param.ll3ez7fj.0.00lj2trx7d2z5",
+          "name": "module",
+          "type": "str",
+          "description": "The module name",
+          "required": true
+        },
+        {
+          "id": "param.ll3ezdpb.0.6a7brvofj0h",
+          "name": "perms",
+          "type": "json",
+          "description": "The module permissions",
+          "required": true
+        }
+      ],
+      "returnType": "boolean",
+      "is_array": false
+    }
+  },
+  "modified": false,
+  "name": "System",
+  "permissions": {
+    "perm.l1ekabfm.0.z8d6i6qa77": {
+      "id": "perm.l1ekabfm.0.z8d6i6qa77",
+      "name": "system.admin",
+      "description": "The super user permission to do everything"
+    },
+    "perm.l1kiacm7.0.9vz0hyyuva": {
+      "id": "perm.l1kiacm7.0.9vz0hyyuva",
+      "name": "system.domain",
+      "description": "The user can operate on system domains"
+    },
+    "perm.l1kihe0j.0.1b3rot86j85": {
+      "id": "perm.l1kihe0j.0.1b3rot86j85",
+      "name": "system.theme",
+      "description": "The user can manage system themes"
+    },
+    "perm.mh7cr7le.k8la": {
+      "id": "perm.mh7cr7le.k8la",
+      "name": "system.multi-tier",
+      "description": "Ability to create subdomains and assign roles within their domain hierarchy"
+    },
+    "perm.mh7czeem.64hm": {
+      "id": "perm.mh7czeem.64hm",
+      "name": "system.multi-tier.create-sub",
+      "description": "Can create a subdomain inside a multi-tier domain"
+    },
+    "perm.mh9e6560.6v9z": {
+      "id": "perm.mh9e6560.6v9z",
+      "name": "system.role_change",
+      "description": "Can change the role of a user  (multi-tier | user)"
+    }
+  },
+  "short_descr": "The basic system module used by all Apps",
+  "types": {
+    "type.l0qepm6o.0.k51mqtf1e9": {
+      "id": "type.l0qepm6o.0.k51mqtf1e9",
+      "name": "SystemDomain",
+      "description": "The multi-tier domain",
+      "doc": "",
+      "db_table": "system_domains",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.l0qeq9br.0.j7e10d9733j",
+          "name": "code",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The domain unique code",
+          "index": "u",
+          "size": 30,
+          "min_length": 0
+        },
+        {
+          "id": "fld.l0qeqhg0.0.b1dthejqjj",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The domain name",
+          "index": "",
+          "size": 50,
+          "min_length": 0
+        },
+        {
+          "id": "fld.l0qeqok0.0.qpelh5gxoc",
+          "name": "visible",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "If the domain is visible",
+          "index": "y",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mh7cn6jn.bb4y",
+          "name": "total_max_tiers",
+          "type": "num",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Maximum number of tiers this domain can handle",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mh7cnzl6.iey0",
+          "name": "tiers_allocated",
+          "type": "num",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The sum of `total_max_tiers` values of all **direct children** of this domain. Dynamically updated when children are created or deleted",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "type.lpnt4sza.0.hm6hfos9bxu": {
+      "id": "type.lpnt4sza.0.hm6hfos9bxu",
+      "name": "SystemDomainAdmin",
+      "description": "The multi-tier domain",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "field.lpnt4sza.0.fgfgb3riw7e",
+          "name": "code",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The domain unique code",
+          "index": "u",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "field.lpnt4sza.0.3wqu2btevbb",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The domain name",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "field.lpnt4sza.0.6fbytegrrfp",
+          "name": "visible",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "If the domain is visible",
+          "index": "y",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mh9dyu4j.8bf1",
+          "name": "tiers_allocated",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Number of allocated tiers",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mh9dz7sr.jqw1",
+          "name": "total_max_tiers",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Total tiers the domain can create",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.lppbrn3s.0.hjmgv4qs4y": {
+      "id": "typ.lppbrn3s.0.hjmgv4qs4y",
+      "name": "SystemDomainPublic",
+      "description": "The public info for a Domain",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.lppbrztd.0.78ffdcr0o6v",
+          "name": "code",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.lppbs2c0.0.sp9jul2ydbn",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "type.l0qer80v.0.eq90lb03qfl": {
+      "id": "type.l0qer80v.0.eq90lb03qfl",
+      "name": "SystemTheme",
+      "description": "Handling of system theme settings",
+      "doc": "",
+      "db_table": "system_themes",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.l0qerp1s.0.wqkf8nl57b",
+          "name": "code",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The domain code",
+          "index": "u",
+          "size": "30",
+          "min_length": 0
+        },
+        {
+          "id": "fld.l0qerxu8.0.bjupsul059k",
+          "name": "data",
+          "type": "json",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The Theme data",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "type.mocfga1f2.0.d4805bfe89": {
+      "id": "type.mocfga1f2.0.d4805bfe89",
+      "name": "SystemConfigOverride",
+      "description": "A runtime override of a config.json value, global to the whole installation (no domain)",
+      "doc": "",
+      "db_table": "system_config_overrides",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mocfgc2a2.0.be5dc06440",
+          "name": "key",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Dotted path of the overridden config key (e.g. jwt.expiresIn)",
+          "index": "u",
+          "size": 100,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mocfgbee4.0.0687f2fa03",
+          "name": "value",
+          "type": "json",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The overriding value, stored as JSON so its type is preserved",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "type.mocfg8e15.0.c123dfbf52": {
+      "id": "type.mocfg8e15.0.c123dfbf52",
+      "name": "SystemConfigGroup",
+      "description": "A group of editable config fields, in FormCreator format",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mocfg1793.0.b530f64223",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Group identifier",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mocfgc97d.0.a54902ebe5",
+          "name": "label",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Group label",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mocfg73ee.0.f4c23da2f7",
+          "name": "fields",
+          "type": "json",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "FormCreator fields of the group, with the current effective value as default",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    }
+  },
+  "version": 27,
+  "events": {
+    "evt.mh8unysh.kc90": {
+      "id": "evt.mh8unysh.kc90",
+      "name": "system.domain_create",
+      "description": "A new domain has been created"
+    },
+    "evt.mh8uocgd.2462": {
+      "id": "evt.mh8uocgd.2462",
+      "name": "system.subdomain_create",
+      "description": "A new subdomain has been created"
+    },
+    "evt.mh8uotyx.kn9s": {
+      "id": "evt.mh8uotyx.kn9s",
+      "name": "system.domain_delete",
+      "description": "A domain has been deleted"
+    },
+    "evt.mh9e6vrb.a7or": {
+      "id": "evt.mh9e6vrb.a7or",
+      "name": "system.user_perm_add",
+      "description": "Add a permission to a user  (id_user, perm)"
+    },
+    "evt.mh9e76n3.dfjq": {
+      "id": "evt.mh9e76n3.dfjq",
+      "name": "system.user_perm_del",
+      "description": "Remove a permission to a user (id_user, perm)"
+    },
+    "evt.mhauvhi5.eedd": {
+      "id": "evt.mhauvhi5.eedd",
+      "name": "system.call.user.add",
+      "description": "Ask user module to add a new user to the system (user)"
+    },
+    "evt.mhsrm5hd.d1e0": {
+      "id": "evt.mhsrm5hd.d1e0",
+      "name": "system.call.domain.create",
+      "description": "Ask the system to create a new domain"
+    },
+    "evt.mhsrmnze.6396": {
+      "id": "evt.mhsrmnze.6396",
+      "name": "system.call.subdomain.create",
+      "description": "Ask the system to create a new subdomain"
+    },
+    "evt.mpzbf41y.hpim": {
+      "id": "evt.mpzbf41y.hpim",
+      "name": "system.call.max_tiers.set",
+      "description": "Set max tiers for given domain"
+    }
+  },
+  "domain": "os3",
+  "id_owner": "user.4e3cccf20d3afbb0070e52f33c09c40a.7x96",
+  "enums": {}
+}

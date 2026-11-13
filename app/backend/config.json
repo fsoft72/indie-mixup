@@ -1,0 +1,34 @@
+{
+	"site": {
+		"secret": "{{SITE_SECRET}}",
+		"name": "My App",
+		"debugKey": "{{DEBUG_KEY}}",
+		"enableDebugAsAdmin": "{{DEBUG_AS_ADMIN}}",
+		"adminKey": "{{ADMIN_KEY}}"
+	},
+	"jwt": {
+		"secret": "{{JWT_SECRET}}",
+		"expiresIn": "60m"
+	},
+	"system": {
+		"username": "{{SYSTEM_ADMIN_USERNAME}}",
+		"password": "{{SYSTEM_ADMIN_PASSWORD}}",
+		"domain": "{{SYSTEM_DOMAIN}}"
+	},
+	"log": {
+		"level": "{{LOG_LEVEL}}",
+		"includeStack": "{{LOG_INCLUDE_STACK}}",
+		"prettyPrint": "{{LOG_PRETTY_PRINT}}"
+	},
+	"db": {
+		"secret": "{{DB_SECRET}}"
+	},
+	"ses": {
+		"access_key": "{{AWS_SES_ACCESS_KEY}}",
+		"secret_key": "{{AWS_SES_SECRET_KEY}}",
+		"region": "{{AWS_SES_REGION}}",
+		"fromEmail": "{{SES_FROM_EMAIL}}",
+		"fromName": "{{SES_FROM_NAME}}",
+		"verificationUrl": "{{SES_VERIFICATION_URL}}"
+	}
+}

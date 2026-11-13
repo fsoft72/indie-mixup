@@ -1,0 +1,1140 @@
+{
+  "id": "mod.cd5b678e3700f926f2d19d204437e796.5pib",
+  "name": "Wallet",
+  "doc": "# Wallet Module\n\n## Overview\n\nThe Wallet module is a robust financial management system designed for the LiWE3 ecosystem. It allows applications to manage virtual currencies, loyalty points, and credit systems with high precision and accountability.\n\nAt its core, the module operates on a **Double-Entry-inspired ledger system**. Every change to a wallet's balance is recorded as a permanent `WalletTransaction`, ensuring a complete audit trail. This makes the system suitable for applications requiring financial reconciliation, such as e-commerce platforms, gaming economies, or corporate credit systems.\n\n### Key Concepts\n\n*   **Multi-Wallet Support:** A single user can own multiple wallets. While each wallet tracks a specific `currency_code`, a user can have multiple wallets with the same currency (e.g., a \"Savings\" USD wallet and an \"Expenses\" USD wallet). Each wallet maintains its own independent balance and unique ID.\n*   **Atomic Transactions:** Operations like transfers between wallets are handled atomically. A transfer creates two linked transaction records (a debit from the source and a credit to the destination), ensuring that funds are never \"lost\" in transit.\n*   **Domain Scoping:** Wallets are scoped to specific domains, allowing for isolated economies within the same system instance.\n*   **Active/Inactive States:** Wallets can be deactivated without deleting their history, which is the recommended way to \"close\" a wallet while maintaining audit compliance.\n*   **Currency Precision (Integer-based):** All amounts (balances, credits, debits) are stored as **integers** with a **precision of 1000**. This means that a value of `$1.23` is internally represented as `1230`. This approach avoids floating-point rounding errors and ensures absolute mathematical accuracy.\n\n---\n\n## Example Usage Flows\n\n### Flow A: E-commerce \"Store Credit\" Refund\nWhen a customer returns an item, the system can credit their \"Store Credit\" wallet instead of a traditional bank refund.\n\n1.  **Check for existing wallet:** List the user's wallets filtered by `currency_code: 'USD'`.\n2.  **Create if missing:** If no USD wallet exists, create one named \"Store Credit\".\n3.  **Credit the amount:** Call `/wallet/credit` with the refund amount (e.g., `50000` for `$50.00`) and a description like \"Refund for Order #12345\".\n\n### Flow B: Peer-to-Peer Point Transfer\nUsers in a community app might want to send \"Karma Points\" to each other.\n\n1.  **Validate Source:** The app checks the sender's balance via `/wallet/balance`.\n2.  **Execute Transfer:** Call `/wallet/transfer` providing the `id_wallet_from` (sender) and `id_wallet_to` (recipient). Amount must be an integer (e.g., `1000` for 1 point).\n3.  **Audit:** Both users will see a new entry in their `/wallet/transaction/list`.\n\n---\n\n## Detailed Endpoint Reference\n\n### Wallet Management\n\n#### 1. Create a New Wallet\n**POST** `/wallet/create`\n\nInitializes a new balance for a user. By default, all new wallets start with a balance of `0`.\n\n*   **name**: A friendly name (e.g., \"Personal Savings\").\n*   **currency_code**: A string identifier. While usually 3 chars (ISO), it can be any string like `GOLD` or `LIFETIME_XP`.\n*   **metadata**: A JSON object for storing external references, such as a legacy system ID or user preferences.\n\n**Example CURL:**\n```bash\ncurl -X POST https://api.example.com/wallet/create \\\n  -H \"Authorization: Bearer <token>\" \\\n  -d '{\"name\": \"Main Wallet\", \"currency_code\": \"USD\"}'\n```\n\n---\n\n### Transaction Operations\n\n#### 2. Credit (Adding Funds)\n**POST** `/wallet/credit`\n\nThis is the primary way to inject funds into the system (e.g., after a successful payment). \n\n*   **Strict Validation:** The `amount` must be a positive **integer** (precision 1000).\n*   **Side Effects:** Increases the `balance` field on the `Wallet` object and generates a `WalletTransaction` of type `credit`.\n\n#### 3. Debit (Spending Funds)\n**POST** `/wallet/debit`\n\nUsed when a user purchases something or withdraws funds.\n\n*   **Balance Check:** The system automatically rejects the request with an error if `amount > current_balance`. \n*   **Precision:** All operations use integer arithmetic with precision 1000.\n\n#### 4. Transfer (Moving Funds)\n**POST** `/wallet/transfer`\n\nThe most secure way to move value between two wallets.\n\n*   **Requirement:** Both wallets must use the same `currency_code`. You cannot transfer `USD` into a `POINTS` wallet directly.\n*   **Transparency:** The `id_related_transaction` field in the resulting transactions allows developers to trace the origin/destination of the transfer.\n\n---\n\n## Transaction History & Auditing\n\n### Listing Transactions\n**GET** `/wallet/transaction/list`\n\nTo build a \"Account Statement\" UI, use this endpoint. It supports:\n*   **Pagination:** Use `limit` and `offset` to handle large histories.\n*   **Date Filtering:** Narrow down results using `date_start` and `date_end` ISO strings.\n*   **Type Filtering:** Show only 'transfers' or 'credits' to help users find specific events.\n\n---\n\n## Core Data Structures\n\n### Wallet Object\n| Field | Type | Description |\n| :--- | :--- | :--- |\n| `id` | `str` | Unique ID |\n| `balance` | `int` | Current available funds (precision 1000) |\n| `currency_code` | `str` | e.g. 'USD', 'POINTS' |\n| `is_active` | `bool` | Whether operations are allowed |\n\n### WalletTransaction Object\n| Field | Type | Description |\n| :--- | :--- | :--- |\n| `transaction_type` | `str` | 'credit', 'debit', or 'transfer' |\n| `amount` | `int` | Value of the operation (precision 1000) |\n| `balance_before` | `int` | Audit state before change (precision 1000) |\n| `balance_after` | `int` | Audit state after change (precision 1000) |\n| `id_related_transaction` | `str` | Link to the other half of a transfer |\n\n---\n\n## Security & Permissions\n\nThe module enforces strict access control:\n*   **Ownership:** By default, users can only see and interact with wallets they own.\n*   **Administrative Overrides:** Users with the `wallet.admin` permission can perform operations on *any* wallet in their domain, which is essential for customer support and system-level adjustments.\n*   **Immutability:** Transaction records cannot be edited or deleted via the API once created. If a mistake is made, a \"reversal\" transaction (a counter-credit or counter-debit) must be issued.\n",
+  "short_descr": "Manages user wallets with points and currencies",
+  "version": 3,
+  "modified": 0,
+  "locked_by": "",
+  "endpoints": {
+    "endp.mwlt0100.crt1": {
+      "id": "endp.mwlt0100.crt1",
+      "method": "POST",
+      "url": "/wallet/create",
+      "short_descr": "Create a new wallet",
+      "description": "Create a new wallet for the authenticated user.\n\nEach wallet has a unique currency/points type identifier, a name for easy recognition, and an optional description.\nThe initial balance is set to 0 by default.\n\n**Required permissions:** `wallet.create`",
+      "parameters": [
+        {
+          "id": "param.mwlt0101.nam1",
+          "type": "str",
+          "name": "name",
+          "description": "Wallet display name",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0102.cur1",
+          "type": "str",
+          "name": "currency_code",
+          "description": "Currency or points type code (e.g., 'USD', 'POINTS', 'CREDITS')",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0103.dsc1",
+          "type": "str",
+          "name": "description",
+          "description": "Optional wallet description",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0104.met1",
+          "type": "json",
+          "name": "metadata",
+          "description": "Optional metadata for the wallet",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "Wallet",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mwlt0001.crt1": true,
+        "perm.mwlt0002.edt1": false,
+        "perm.mwlt0003.del1": false,
+        "perm.mwlt0004.trn1": false,
+        "perm.mwlt0005.trf1": false,
+        "perm.mwlt0006.adm1": false
+      }
+    },
+    "endp.mwlt0200.lst1": {
+      "id": "endp.mwlt0200.lst1",
+      "method": "GET",
+      "url": "/wallet/list",
+      "short_descr": "List all user wallets",
+      "description": "Return a list of all wallets belonging to the authenticated user.\n\nOptional filters:\n- `currency_code`: Filter by specific currency/points type\n- `is_active`: Filter by active/inactive status\n\nResults are sorted by creation date (newest first) by default.\n\n**Required permissions:** Logged-in user",
+      "parameters": [
+        {
+          "id": "param.mwlt0201.cur1",
+          "type": "str",
+          "name": "currency_code",
+          "description": "Filter by currency code",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0202.act1",
+          "type": "boolean",
+          "name": "is_active",
+          "description": "Filter by active status",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "Wallet",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mwlt0001.crt1": false,
+        "perm.mwlt0002.edt1": false,
+        "perm.mwlt0003.del1": false,
+        "perm.mwlt0004.trn1": false,
+        "perm.mwlt0005.trf1": false,
+        "perm.mwlt0006.adm1": false
+      }
+    },
+    "endp.mwlt0300.get1": {
+      "id": "endp.mwlt0300.get1",
+      "method": "GET",
+      "url": "/wallet/get",
+      "short_descr": "Get wallet details",
+      "description": "Retrieve detailed information about a specific wallet.\n\nUsers can only access their own wallets unless they have `wallet.admin` permission.\n\n**Required permissions:** Logged-in user (owns wallet) or `wallet.admin`",
+      "parameters": [
+        {
+          "id": "param.mwlt0301.id01",
+          "type": "str",
+          "name": "id",
+          "description": "Wallet ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "Wallet",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mwlt0001.crt1": false,
+        "perm.mwlt0002.edt1": false,
+        "perm.mwlt0003.del1": false,
+        "perm.mwlt0004.trn1": false,
+        "perm.mwlt0005.trf1": false,
+        "perm.mwlt0006.adm1": false
+      }
+    },
+    "endp.mwlt0400.edt1": {
+      "id": "endp.mwlt0400.edt1",
+      "method": "PATCH",
+      "url": "/wallet/edit",
+      "short_descr": "Update wallet details",
+      "description": "Update wallet information such as name, description, or active status.\n\n**Note:** Normal users can update their wallet information, while administrators have the ability to modify other users' wallet details as needed. This feature allows for easy customization and organization within the platform.\n\n**Note:** Balance cannot be modified through this endpoint. Use credit/debit endpoints for balance changes.\n\n**Required permissions:** `wallet.edit`",
+      "parameters": [
+        {
+          "id": "param.mwlt0401.id01",
+          "type": "str",
+          "name": "id",
+          "description": "Wallet ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0402.nam1",
+          "type": "str",
+          "name": "name",
+          "description": "New wallet name",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0403.dsc1",
+          "type": "str",
+          "name": "description",
+          "description": "New wallet description",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0404.act1",
+          "type": "boolean",
+          "name": "is_active",
+          "description": "Set wallet active status",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0405.met1",
+          "type": "json",
+          "name": "metadata",
+          "description": "Update wallet metadata",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "Wallet",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mwlt0002.edt1": true,
+        "perm.mwlt0001.crt1": false,
+        "perm.mwlt0003.del1": false,
+        "perm.mwlt0004.trn1": false,
+        "perm.mwlt0005.trf1": false,
+        "perm.mwlt0006.adm1": false
+      }
+    },
+    "endp.mwlt0500.del1": {
+      "id": "endp.mwlt0500.del1",
+      "method": "DELETE",
+      "url": "/wallet/del",
+      "short_descr": "Delete a wallet",
+      "description": "Permanently delete a wallet and all its transaction history.\n\n**Warning:** This action cannot be undone. Consider deactivating the wallet instead if you need to preserve history.\n\n**Required permissions:** `wallet.delete`",
+      "parameters": [
+        {
+          "id": "param.mwlt0501.id01",
+          "type": "str",
+          "name": "id",
+          "description": "Wallet ID to delete",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mwlt0003.del1": true
+      }
+    },
+    "endp.mwlt0600.crd1": {
+      "id": "endp.mwlt0600.crd1",
+      "method": "POST",
+      "url": "/wallet/credit",
+      "short_descr": "Add funds to wallet",
+      "description": "Credit (add) funds to a wallet. Creates a transaction record for audit trail.\n\nThe `amount` must be positive. A transaction description and optional metadata can be included for record-keeping.\n\n**Required permissions:** `wallet.transact`",
+      "parameters": [
+        {
+          "id": "param.mwlt0601.id01",
+          "type": "str",
+          "name": "id_wallet",
+          "description": "Wallet ID to credit",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0602.amt1",
+          "type": "int",
+          "name": "amount",
+          "description": "Amount to credit (must be positive, precision 1000)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0603.dsc1",
+          "type": "str",
+          "name": "description",
+          "description": "Transaction description",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0604.met1",
+          "type": "json",
+          "name": "metadata",
+          "description": "Optional transaction metadata",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "WalletBalance",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mwlt0004.trn1": true,
+        "perm.mwlt0001.crt1": false,
+        "perm.mwlt0002.edt1": false,
+        "perm.mwlt0003.del1": false,
+        "perm.mwlt0005.trf1": false,
+        "perm.mwlt0006.adm1": false
+      }
+    },
+    "endp.mwlt0700.dbt1": {
+      "id": "endp.mwlt0700.dbt1",
+      "method": "POST",
+      "url": "/wallet/debit",
+      "short_descr": "Remove funds from wallet",
+      "description": "Debit (remove) funds from a wallet. Creates a transaction record for audit trail.\n\nThe `amount` must be positive and cannot exceed the current wallet balance.\n\n**Required permissions:** `wallet.transact`",
+      "parameters": [
+        {
+          "id": "param.mwlt0701.id01",
+          "type": "str",
+          "name": "id_wallet",
+          "description": "Wallet ID to debit",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0702.amt1",
+          "type": "int",
+          "name": "amount",
+          "description": "Amount to debit (must be positive and <= balance, precision 1000)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0703.dsc1",
+          "type": "str",
+          "name": "description",
+          "description": "Transaction description",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0704.met1",
+          "type": "json",
+          "name": "metadata",
+          "description": "Optional transaction metadata",
+          "is_required": false,
+          "is_private": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": "",
+          "is_array": false
+        }
+      ],
+      "returnType": "WalletBalance",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mwlt0004.trn1": true,
+        "perm.mwlt0001.crt1": false,
+        "perm.mwlt0002.edt1": false,
+        "perm.mwlt0003.del1": false,
+        "perm.mwlt0005.trf1": false,
+        "perm.mwlt0006.adm1": false
+      }
+    },
+    "endp.mwlt0800.trf1": {
+      "id": "endp.mwlt0800.trf1",
+      "method": "POST",
+      "url": "/wallet/transfer",
+      "short_descr": "Transfer funds between wallets",
+      "description": "Transfer funds from one wallet to another.\n\nBoth wallets must:\n- Belong to the same domain\n- Use the same currency_code\n- Source wallet must have sufficient balance\n\nCreates two transaction records (debit from source, credit to destination) for complete audit trail.\n\n**Required permissions:** `wallet.transfer`",
+      "parameters": [
+        {
+          "id": "param.mwlt0801.src1",
+          "type": "str",
+          "name": "id_wallet_from",
+          "description": "Source wallet ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0802.dst1",
+          "type": "str",
+          "name": "id_wallet_to",
+          "description": "Destination wallet ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0803.amt1",
+          "type": "int",
+          "name": "amount",
+          "description": "Amount to transfer (must be positive, precision 1000)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0804.dsc1",
+          "type": "str",
+          "name": "description",
+          "description": "Transfer description",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0805.met1",
+          "type": "json",
+          "name": "metadata",
+          "description": "Optional transfer metadata",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "WalletTransferResult",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mwlt0005.trf1": true,
+        "perm.mwlt0001.crt1": false,
+        "perm.mwlt0002.edt1": false,
+        "perm.mwlt0003.del1": false,
+        "perm.mwlt0004.trn1": false,
+        "perm.mwlt0006.adm1": false
+      }
+    },
+    "endp.mwlt0900.txl1": {
+      "id": "endp.mwlt0900.txl1",
+      "method": "GET",
+      "url": "/wallet/transaction/list",
+      "short_descr": "List wallet transactions",
+      "description": "Return transaction history for a specific wallet with pagination support.\n\nTransactions are returned in descending order (newest first) by default.\n\nOptional filters:\n- `transaction_type`: Filter by 'credit', 'debit', or 'transfer'\n- `date_start` / `date_end`: Filter by date range\n\n**Required permissions:** Logged-in user (owns wallet) or `wallet.admin`",
+      "parameters": [
+        {
+          "id": "param.mwlt0901.id01",
+          "type": "str",
+          "name": "id_wallet",
+          "description": "Wallet ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0902.ofs1",
+          "type": "int",
+          "name": "offset",
+          "description": "Pagination offset",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "0",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0903.lmt1",
+          "type": "int",
+          "name": "limit",
+          "description": "Pagination limit (max results per page)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "50",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0904.typ1",
+          "type": "str",
+          "name": "transaction_type",
+          "description": "Filter by transaction type: 'credit', 'debit', 'transfer'",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0905.ds01",
+          "type": "datetime",
+          "name": "date_start",
+          "description": "Filter transactions from this date",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mwlt0906.de01",
+          "type": "datetime",
+          "name": "date_end",
+          "description": "Filter transactions until this date",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "WalletTransaction",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mwlt0001.crt1": false,
+        "perm.mwlt0002.edt1": false,
+        "perm.mwlt0003.del1": false,
+        "perm.mwlt0004.trn1": false,
+        "perm.mwlt0005.trf1": false,
+        "perm.mwlt0006.adm1": false
+      }
+    },
+    "endp.mwlt1000.bal1": {
+      "id": "endp.mwlt1000.bal1",
+      "method": "GET",
+      "url": "/wallet/balance",
+      "short_descr": "Get current wallet balance",
+      "description": "Return the current balance for a specific wallet.\n\nThis is a lightweight endpoint that only returns the balance value without full wallet details.\n\n**Required permissions:** Logged-in user (owns wallet) or `wallet.admin`",
+      "parameters": [
+        {
+          "id": "param.mwlt1001.id01",
+          "type": "str",
+          "name": "id",
+          "description": "Wallet ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "WalletBalance",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mwlt0001.crt1": false,
+        "perm.mwlt0002.edt1": false,
+        "perm.mwlt0003.del1": false,
+        "perm.mwlt0004.trn1": false,
+        "perm.mwlt0005.trf1": false,
+        "perm.mwlt0006.adm1": false
+      }
+    }
+  },
+  "functions": {},
+  "enums": {},
+  "types": {
+    "typ.mwlt1000.wlt1": {
+      "id": "typ.mwlt1000.wlt1",
+      "name": "Wallet",
+      "description": "A user wallet containing points or currency",
+      "doc": "Represents a wallet that can hold various types of points or currencies.\n\nEach wallet is scoped to a specific domain and user, and tracks a single currency type.\nMultiple wallets can exist for the same user with different currency types.",
+      "db_table": "wallet_wallets",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mwlt1001.id01",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Wallet unique ID",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt1002.dmn1",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Domain this wallet belongs to",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt1003.usr1",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "User ID who owns this wallet",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt1004.nam1",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Wallet display name",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt1005.cur1",
+          "name": "currency_code",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Currency or points type code (e.g., 'USD', 'POINTS', 'CREDITS')",
+          "index": "m",
+          "size": 16,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt1006.bal1",
+          "name": "balance",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Current wallet balance (precision 1000)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt1007.dsc1",
+          "name": "description",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Optional wallet description",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt1008.act1",
+          "name": "is_active",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Whether the wallet is active",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt1009.met1",
+          "name": "metadata",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Optional metadata for the wallet",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.msselb6j.9gt7",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Wallet created date",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.msselc1f.k6yj",
+          "name": "updated",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Wallet updated date",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mwlt2000.trn1": {
+      "id": "typ.mwlt2000.trn1",
+      "name": "WalletTransaction",
+      "description": "A transaction record for wallet operations",
+      "doc": "Records all changes to wallet balances for audit trail and reconciliation.\n\nEach transaction captures:\n- The amount and type (credit/debit/transfer)\n- Balance before and after the operation\n- Description and optional metadata\n- Related wallet ID and optional related transaction (for transfers)",
+      "db_table": "wallet_transactions",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mwlt2001.id01",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Transaction unique ID",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt2002.dmn1",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Domain this transaction belongs to",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt2003.wlt1",
+          "name": "id_wallet",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Wallet ID this transaction belongs to",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt2004.usr1",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "User ID who owns the wallet",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt2005.typ1",
+          "name": "transaction_type",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Transaction type: 'credit', 'debit', 'transfer'",
+          "index": "m",
+          "size": 16,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt2006.amt1",
+          "name": "amount",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Transaction amount (always positive, precision 1000)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt2007.bb01",
+          "name": "balance_before",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Wallet balance before transaction (precision 1000)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt2008.ba01",
+          "name": "balance_after",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Wallet balance after transaction (precision 1000)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt2009.dsc1",
+          "name": "description",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Transaction description",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt2010.rel1",
+          "name": "id_related_transaction",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Related transaction ID (for transfers)",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt2011.met1",
+          "name": "metadata",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Optional transaction metadata",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.msselm2j.gave",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "WalletTransaction created date",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.msselmu3.8ac9",
+          "name": "updated",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "WalletTransaction updated date",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mwlt3000.trf1": {
+      "id": "typ.mwlt3000.trf1",
+      "name": "WalletTransferResult",
+      "description": "Result of a wallet transfer operation",
+      "doc": "Contains both transaction records created during a transfer operation.\n\nA transfer creates two transactions:\n- Debit from source wallet\n- Credit to destination wallet\n\nBoth transactions are linked via id_related_transaction field.",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mwlt3001.suc1",
+          "name": "success",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Whether transfer succeeded",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt3002.dbt1",
+          "name": "debit_transaction",
+          "type": "WalletTransaction",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Debit transaction from source wallet",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt3003.crd1",
+          "name": "credit_transaction",
+          "type": "WalletTransaction",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Credit transaction to destination wallet",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mwlt4000.bal1": {
+      "id": "typ.mwlt4000.bal1",
+      "name": "WalletBalance",
+      "description": "Current balance information for a wallet",
+      "doc": "Lightweight response containing just the current balance and currency information.",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mwlt4001.id01",
+          "name": "id_wallet",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Wallet ID",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt4002.bal1",
+          "name": "balance",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Current balance (precision 1000)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mwlt4003.cur1",
+          "name": "currency_code",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Currency or points type code",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    }
+  },
+  "permissions": {
+    "perm.mwlt0001.crt1": {
+      "id": "perm.mwlt0001.crt1",
+      "name": "wallet.create",
+      "description": "Can create new wallets"
+    },
+    "perm.mwlt0002.edt1": {
+      "id": "perm.mwlt0002.edt1",
+      "name": "wallet.edit",
+      "description": "Can edit wallet details"
+    },
+    "perm.mwlt0003.del1": {
+      "id": "perm.mwlt0003.del1",
+      "name": "wallet.delete",
+      "description": "Can delete wallets"
+    },
+    "perm.mwlt0004.trn1": {
+      "id": "perm.mwlt0004.trn1",
+      "name": "wallet.transact",
+      "description": "Can credit or debit wallet funds"
+    },
+    "perm.mwlt0005.trf1": {
+      "id": "perm.mwlt0005.trf1",
+      "name": "wallet.transfer",
+      "description": "Can transfer funds between wallets"
+    },
+    "perm.mwlt0006.adm1": {
+      "id": "perm.mwlt0006.adm1",
+      "name": "wallet.admin",
+      "description": "Full administrative access to all wallets"
+    }
+  },
+  "events": {
+    "evt.mwlt0001.crt1": {
+      "id": "evt.mwlt0001.crt1",
+      "name": "wallet.create",
+      "description": "A new wallet has been created"
+    },
+    "evt.mwlt0002.upd1": {
+      "id": "evt.mwlt0002.upd1",
+      "name": "wallet.update",
+      "description": "A wallet has been updated"
+    },
+    "evt.mwlt0003.del1": {
+      "id": "evt.mwlt0003.del1",
+      "name": "wallet.delete",
+      "description": "A wallet has been deleted"
+    },
+    "evt.mwlt0004.crd1": {
+      "id": "evt.mwlt0004.crd1",
+      "name": "wallet.credit",
+      "description": "Funds have been credited to a wallet"
+    },
+    "evt.mwlt0005.dbt1": {
+      "id": "evt.mwlt0005.dbt1",
+      "name": "wallet.debit",
+      "description": "Funds have been debited from a wallet"
+    },
+    "evt.mwlt0006.trf1": {
+      "id": "evt.mwlt0006.trf1",
+      "name": "wallet.transfer",
+      "description": "A transfer between wallets has been completed"
+    },
+    "evt.mwlt0007.bal1": {
+      "id": "evt.mwlt0007.bal1",
+      "name": "wallet.balance_low",
+      "description": "Wallet balance has fallen below a threshold (optional event for integrations)"
+    }
+  },
+  "id_owner": "user.7146fb62e9a458952246479bcca935f7.4hue",
+  "domain": "os3"
+}

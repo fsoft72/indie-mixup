@@ -1,0 +1,30 @@
+{
+  "name": "APP_NAME-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "sleep 1 && wrangler dev",
+    "start": "sleep 5 && wrangler dev",
+    "deploy:stage": "pnpm -F APP_NAME-frontend build && wrangler deploy --env stage",
+    "deploy:prod": "pnpm -F APP_NAME-frontend build && wrangler deploy --env prod",
+    "test": "vitest",
+    "cf-typegen": "wrangler types",
+    "migrations:dev": "wrangler d1 migrations apply APP_NAME-dev --local",
+    "migrations:test": "wrangler d1 migrations apply APP_NAME-test --local",
+    "migrations:stage": "wrangler d1 migrations apply APP_NAME-stage --env=stage --remote",
+    "migrations:prod": "wrangler d1 migrations apply APP_NAME-prod --env=prod --remote"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.14.0",
+    "concurrently": "^9.2.1",
+    "typescript": "^6.0.2",
+    "vitest": "~4.1.2",
+    "wrangler": "^4.79.0"
+  },
+  "dependencies": {
+    "@backend/liwe3": "workspace:*",
+    "@backend-modules/user": "workspace:*",
+    "hono": "^4.12.30",
+    "zod": "^4.4.3"
+  }
+}

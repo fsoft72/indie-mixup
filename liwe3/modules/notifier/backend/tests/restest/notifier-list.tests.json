@@ -1,0 +1,44 @@
+{
+	"actions": [
+		{
+			"title": "Get pending notifications (default limit)",
+			"method": "GET",
+			"url": "/api/notifier/list",
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			],
+			"fields": [["#data", "init_notifications"]]
+		},
+		{
+			"title": "Get pending notifications with limit=5",
+			"method": "GET",
+			"url": "/api/notifier/list",
+			"params": {
+				"limit": 5
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Get pending notifications with limit=1",
+			"method": "GET",
+			"url": "/api/notifier/list",
+			"params": {
+				"limit": 1
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		}
+	]
+}

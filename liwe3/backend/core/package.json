@@ -1,0 +1,27 @@
+{
+	"name": "@backend/liwe3",
+	"version": "0.1.0",
+	"private": true,
+	"main": "src/index.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc -b ../../../tsconfig.backend.json --watch",
+		"test": "vitest run --passWithNoTests",
+		"test:watch": "vitest",
+		"cf-typegen": "wrangler types"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.21.3",
+		"typescript": "^6.0.2",
+		"vitest": "~4.1.2",
+		"wrangler": "^4.123.0"
+	},
+	"dependencies": {
+		"aws4fetch": "^1.0.20",
+		"drizzle-orm": "^0.45.2",
+		"hono": "^4.12.9",
+		"mime": "^4.1.0",
+		"ulid": "^3.0.2",
+		"zod": "^4.3.6"
+	}
+}

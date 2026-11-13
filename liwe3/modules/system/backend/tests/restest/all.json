@@ -1,0 +1,24 @@
+{
+	"system": {
+		"base_url": "http://localhost:8787",
+		"authorization_template": "Bearer %(token)s"
+	},
+	"actions": [
+		{
+			"action": "include",
+			"filename": "../../../../user/backend/tests/restest/admin-login.tests.json",
+			"exec": true
+		},
+		{
+			"action": "include",
+			"filename": "test-enter.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"action": "include",
+			"filename": "config.tests.json",
+			"exec": true
+		}
+	]
+}

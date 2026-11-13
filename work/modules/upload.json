@@ -1,0 +1,611 @@
+{
+  "id": "mod.mi8l7czy.kmpp",
+  "name": "Upload",
+  "doc": "",
+  "short_descr": "The upload module is responsible for uploading files in multi-chunk mode",
+  "version": 14,
+  "modified": 0,
+  "locked_by": "",
+  "endpoints": {
+    "endp.mi8l97cj.45qc": {
+      "id": "endp.mi8l97cj.45qc",
+      "method": "POST",
+      "url": "/upload/initiate",
+      "short_descr": "Start multipart upload",
+      "description": "Start a multi-part upload\n\nThe optional parameter name `folder` is for the virtual destination folder of the bucket. By default, if not specified, it will be `uploads`\n\nThe bucket folder will be prefixed by the user `domain` name internally, so for eg. if the user belongs to the 'test' domain and folder is `profiles`, the final folder name will be `test/profiles`",
+      "parameters": [
+        {
+          "id": "param.mi8l9xl4.4m2q",
+          "type": "str",
+          "name": "fileName",
+          "description": "The file's filename",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mi8la65p.7lgc",
+          "type": "str",
+          "name": "fileType",
+          "description": "The file's file type",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.miahhdhi.5m3u",
+          "type": "str",
+          "name": "folder",
+          "description": "The destination folder",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "uploads",
+          "value": ""
+        }
+      ],
+      "returnType": "UploadMultipartInfo",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mi8l7vsz.26r2": false,
+        "perm.mibhp4ef.hixc": false
+      }
+    },
+    "endp.mi8le1oh.3cv5": {
+      "id": "endp.mi8le1oh.3cv5",
+      "method": "POST",
+      "url": "/upload/part",
+      "short_descr": "Upload a part of the file",
+      "description": "Upload a part of the file.\nPart is uploaded in raw binary data\nHeaders must contain these special headers:\n  - X-Upload-Id\n  - X-Key\n  - X-Part-Number\n\nBody is a raw binary data\n\n\n *                                      Returns: {partNumber: number, etag: string}",
+      "parameters": [],
+      "returnType": "UploadMultipartPart",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mi8l7vsz.26r2": false,
+        "perm.mibhp4ef.hixc": false
+      }
+    },
+    "endp.mi8lqoke.e0j5": {
+      "id": "endp.mi8lqoke.e0j5",
+      "method": "POST",
+      "url": "/upload/complete",
+      "short_descr": "Complete multipart upload",
+      "description": "",
+      "parameters": [
+        {
+          "id": "param.mi8lr9tz.l06k",
+          "type": "str",
+          "name": "uploadId",
+          "description": "The upload id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mi8lrm86.eewf",
+          "type": "str",
+          "name": "key",
+          "description": "The file key",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mi8lrsls.exsr",
+          "type": "json",
+          "name": "parts",
+          "description": "Parts description",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UploadMultipartComplete",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mi8l7vsz.26r2": false,
+        "perm.mibhp4ef.hixc": false
+      }
+    },
+    "endp.mi8ltkor.jaq5": {
+      "id": "endp.mi8ltkor.jaq5",
+      "method": "POST",
+      "url": "/upload/abort",
+      "short_descr": "Abort multipart upload and cleanup parts",
+      "description": "Abort multipart upload and cleanup parts",
+      "parameters": [
+        {
+          "id": "param.mi8lu265.hhap",
+          "type": "str",
+          "name": "uploadId",
+          "description": "The upload id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mi8luadt.39k4",
+          "type": "str",
+          "name": "key",
+          "description": "The file key",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mi8l7vsz.26r2": false,
+        "perm.mibhp4ef.hixc": false
+      }
+    },
+    "endp.miahr80g.a04p": {
+      "id": "endp.miahr80g.a04p",
+      "method": "GET",
+      "url": "/upload/list",
+      "short_descr": "List all file inside a specific folder",
+      "description": "List all files inside a specific folder\nIf the list is too long, it will be truncated. In this case, the call will return `truncated` set to true and a `cursor` string that can be passed to another call to `/upload/list` to obtain another part of the list",
+      "parameters": [
+        {
+          "id": "param.miahrzrr.e1v5",
+          "type": "str",
+          "name": "folder",
+          "description": "The folder to be listed",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.miahy5c9.iqoa",
+          "type": "str",
+          "name": "cursor",
+          "description": "The cursor for truncated lists",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.miai07ra.6ldx",
+          "type": "int",
+          "name": "limit",
+          "description": "Maximum number of objects to retrieve per call",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UploadFileList",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mi8l7vsz.26r2": false
+      }
+    },
+    "endp.mibhlrqi.cfg3": {
+      "id": "endp.mibhlrqi.cfg3",
+      "method": "DELETE",
+      "url": "/upload/del",
+      "short_descr": "Remove one or more files",
+      "description": "Remove one or more files from the bucket\nAt the moment, `pattern` is quite simple: it just supports '*' char\n\nIf `pattern` points to a folder name, all files under that folder will be deleted.",
+      "parameters": [
+        {
+          "id": "param.mibhminj.epzq",
+          "type": "str",
+          "name": "pattern",
+          "description": "The pattern of files to be removed",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mi8l7vsz.26r2": false,
+        "perm.mibhp4ef.hixc": false
+      }
+    },
+    "endp.mig5t87y.3p89": {
+      "id": "endp.mig5t87y.3p89",
+      "method": "GET",
+      "url": "/upload/get",
+      "short_descr": "Return a file by key",
+      "description": "Return a file by key\nThe key can be a full key with domain (eg. `domain|path|original_filename`) or a partial name without domain, like `path|original_filename`. In the second case, the domain will be added by the endpoint before retrieval.\nEndpoint tries to set the right mime-type and filename\n\nThe optional `variant` may be `file` | `thumb`    if it is `thumb` the image thumbnail is returned.",
+      "parameters": [
+        {
+          "id": "param.mig5tyxv.7zp5",
+          "type": "str",
+          "name": "key",
+          "description": "The full or partial key",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mig665fk.2neq",
+          "type": "str",
+          "name": "variant",
+          "description": "The `variant` for the file",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mi8l7vsz.26r2": false,
+        "perm.mibhp4ef.hixc": false
+      }
+    }
+  },
+  "functions": {},
+  "enums": {},
+  "types": {
+    "typ.mi8lb9l1.ky9f": {
+      "id": "typ.mi8lb9l1.ky9f",
+      "name": "UploadMultipartInfo",
+      "description": "Information about multi-part upload",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mi8lc3mw.9kzq",
+          "name": "uploadId",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The unique multipart id",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mi8lccc6.bhc1",
+          "name": "key",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The unique upload key",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mi8lgr68.1r4g": {
+      "id": "typ.mi8lgr68.1r4g",
+      "name": "UploadMultipartPart",
+      "description": "Information about a single part of a multipart upload",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mi8lhk0n.2r99",
+          "name": "partNumber",
+          "type": "num",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The part number",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mi8lhuti.9rz3",
+          "name": "etag",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The chunk etag",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ],
+      "doc": "Contains information about a single chunk (part) of the upload\n"
+    },
+    "typ.mi8lohed.7abv": {
+      "id": "typ.mi8lohed.7abv",
+      "name": "UploadMultipartComplete",
+      "description": "Data returned when an upload completes",
+      "doc": "{success: true, key: string, size: number, etag: string}",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mi8lp1fw.e1mc",
+          "name": "success",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Flag T/F if upload successfully completed",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mi8lphtb.655f",
+          "name": "key",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The file key",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mi8lpyeo.hixt",
+          "name": "size",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The file size in bytes",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mi8lq80x.360y",
+          "name": "etag",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The file etag",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.miai157i.37pr": {
+      "id": "typ.miai157i.37pr",
+      "name": "UploadFile",
+      "description": "A file inside the Upload module",
+      "doc": "This is a shortened version of `R2Object` type\n",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.miai3wnm.wvr",
+          "name": "key",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The object's full name (path)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.miai4c0r.xdd",
+          "name": "etag",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The ETag for the object, which is a hash of its contents",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.miai5d8a.fzbw",
+          "name": "size",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The size of the object in bytes",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.miai5qtv.a7to",
+          "name": "version",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The object's version string",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.miai64gh.ej2g",
+          "name": "uploaded",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The date and time the object was last modified/uploaded",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.miai88rd.8fu6": {
+      "id": "typ.miai88rd.8fu6",
+      "name": "UploadFileList",
+      "description": "A list of files returned by  Upload bucket",
+      "doc": "Result for the `/upload/list` endpoint.\n\nSome notes:\n\n- `truncated`: is boolean indicating whether the list of results was truncated. If `true`, there are more objects matching the request that were not returned, and the `cursor` property will be present.\n- `cursor`: an optional string token used for pagination. It is present **only if `truncated` is `true`**. To fetch the next page of results, you must pass this cursor string into the `cursor` option of your subsequent `/upload/list` call\n\nNOTE: at the moment (for performance reasons) there is no way to know how many objects are saved inside a specific *folder*.\n",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.miai97mo.7xbs",
+          "name": "objects",
+          "type": "UploadFile",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "An array containing the list of objects",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.miai9ny8.e74f",
+          "name": "truncated",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "A flag T/F indicating whether the list of results was truncated",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.miaiahkj.gfq5",
+          "name": "cursor",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "A string token used for pagination",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    }
+  },
+  "permissions": {
+    "perm.mi8l7vsz.26r2": {
+      "id": "perm.mi8l7vsz.26r2",
+      "name": "upload.send_file",
+      "description": "The user can upload a file"
+    },
+    "perm.mibhp4ef.hixc": {
+      "id": "perm.mibhp4ef.hixc",
+      "name": "upload.delete",
+      "description": "The user can delete files and folder"
+    }
+  },
+  "events": {
+    "evt.mi8l8d2g.8vqj": {
+      "id": "evt.mi8l8d2g.8vqj",
+      "name": "upload.file_complete",
+      "description": "A file has been successfully uploaded"
+    },
+    "evt.mi92vz80.tv9": {
+      "id": "evt.mi92vz80.tv9",
+      "name": "upload.abort",
+      "description": "Upload has been aborted"
+    },
+    "evt.upload.count": {
+      "id": "evt.upload.count",
+      "name": "upload.call.count",
+      "description": "Count the files inside one or more folders (callable by other modules). Payload: { domain: string, folders: string[] }. Returns { counts: Record<string, number> }, one entry per requested folder. Folders are relative, the domain prefix is added internally"
+    },
+    "evt.upload.list": {
+      "id": "evt.upload.list",
+      "name": "upload.call.list",
+      "description": "List the files inside a single folder (callable by other modules). Payload: { domain: string, folder: string }. Returns UploadFileList. The folder is relative, the domain prefix is added internally"
+    },
+    "evt.upload.del": {
+      "id": "evt.upload.del",
+      "name": "upload.call.del",
+      "description": "Delete a file or a complete folder (callable by other modules). Payload: { pattern: string } (same param as upload_del). Forwards the payload to the upload_del method with the caller ctx and returns its response untouched. The pattern must belong to the domain of the caller"
+    }
+  },
+  "id_owner": "user.4e3cccf20d3afbb0070e52f33c09c40a.7x96",
+  "domain": "system"
+}

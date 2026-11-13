@@ -1,0 +1,28 @@
+{
+	"run-once": true,
+	"actions": [
+		{
+			"title": "Enter test mode (clean)",
+			"method": "post",
+			"url": "/api/system/admin/test/enter",
+			"auth": true,
+			"body": { "clean": true },
+			"tests": [
+				{ "field": "ok", "value": true },
+				{ "field": "data.test_mode", "value": true }
+			],
+			"fields": [
+				["data.token", "token"],
+				["data.token", "admin_token"]
+			]
+		},
+		{
+			"title": "Re-fetch admin id from the freshly seeded test DB",
+			"method": "get",
+			"url": "/api/user/me",
+			"fields": [
+				["data.id", "id_admin"]
+			]
+		}
+	]
+}

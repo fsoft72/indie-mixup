@@ -1,0 +1,147 @@
+{
+	"actions": [
+		{
+			"method": "GET",
+			"url": "/api/activity_log/list",
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			],
+			"fields": [
+				["#data", "events_count"]
+			]
+		},
+		{
+			"method": "POST",
+			"url": "/api/activity_log/add",
+			"body": {
+				"event": "test.1",
+				"module": "test"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.module",
+					"value": "test"
+				}
+			],
+			"fields": [
+				["data.id", "id_event_1"]
+			]
+		},
+		{
+			"method": "GET",
+			"url": "/api/activity_log/list",
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data[id='%(id_event_1)s'].id",
+					"value": "%(id_event_1)s"
+				},
+				{
+					"field": "#data",
+					"value": "${ events_count + 1 }"
+				}
+			]
+		},
+		{
+			"method": "POST",
+			"url": "/api/activity_log/add",
+			"body": {
+				"event": "test.1",
+				"module": "test",
+				"data": {
+					"a": 1,
+					"b": "Hello"
+				}
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.module",
+					"value": "test"
+				}
+			],
+			"fields": [
+				["data.id", "id_event_2"]
+			]
+		},
+		{
+			"method": "GET",
+			"url": "/api/activity_log/list",
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data[id='%(id_event_2)s'].id",
+					"value": "%(id_event_2)s"
+				},
+				{
+					"field": "data[id='%(id_event_2)s'].data.a",
+					"value": 1
+				},
+				{
+					"field": "data[id='%(id_event_2)s'].data.b",
+					"value": "Hello"
+				},
+				{
+					"field": "#data",
+					"value": "${ events_count + 2 }"
+				}
+			]
+		},
+		{
+			"method": "DELETE",
+			"url": "/api/activity_log/del",
+			"body": {
+				"id": "%(id_event_1)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"method": "DELETE",
+			"url": "/api/activity_log/del",
+			"body": {
+				"id": "%(id_event_2)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"method": "GET",
+			"url": "/api/activity_log/list",
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "#data",
+					"value": "${ events_count }"
+				}
+			]
+		}
+	]
+}

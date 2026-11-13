@@ -1,0 +1,95 @@
+import { browser } from '$app/environment';
+import { runeDebug } from '../utils/runes.svelte';
+
+export type Language = 'it_IT' | 'en_US' | 'es_ES' | 'fr_FR' | 'de_DE' | 'pt_PT' | 'sv_SE';
+
+type Translations = {
+	[key : string] : {
+		[key in Language]? : string;
+	};
+};
+
+type TranslationsInfo = {
+	translations : Translations;
+	language : Language;
+};
+
+const defaultTranslations : Translations = {
+	hello_world: {
+		it_IT: 'Ciao mondo',
+		en_US: 'Hello World',
+	},
+	login: {
+		it_IT: 'Accedi',
+	},
+	logout: {
+		it_IT: 'Esci',
+	},
+};
+
+// this function normalize the key with:
+// - lowercase
+// - replaces multiple spaces with a single underscore
+// - removes all characters that are not a-z0-9
+const _createKey = ( key : string ) => {
+	return key.toLowerCase().replace( /  */g, '_' ).replace( /[^a-z0-9_]/g, '' );
+};
+
+const _getLanguage = () => {
+	if ( browser ) {
+		const lang = navigator.language;
+		return ( lang.replace( '-', '_' ) ) as Language;
+	}
+	return 'en_US';
+};
+
+const store : TranslationsInfo = $state( {
+	language: _getLanguage(),
+	translations: defaultTranslations,
+} );
+
+const ops = {
+	get language() {
+		return store.language;
+	},
+	set language ( language : Language ) {
+		store.language = language;
+	},
+	get translations() {
+		return store.translations;
+	},
+	_ ( key : string ) {
+		// if current language is en_US, return the key as is
+		if ( store.language === 'en_US' ) return key;
+
+		const k = _createKey( key );
+		console.log( '=== K: ', k, store.language );
+		return store.translations[k]?.[store.language] ?? key;
+	},
+	_t ( key : string, language : Language ) {
+		const k = _createKey( key );
+		return store.translations[k]?.[language] ?? key;
+	},
+	addMulti ( key : string, translations : { [key in Language] : string } ) {
+		const k = _createKey( key );
+		store.translations[k] = translations;
+	},
+
+	update ( translations : Translations ) {
+		Object.assign( store.translations, translations );
+	},
+
+	add ( key : string, translation : string, language? : Language ) {
+		if ( !language ) language = store.language;
+
+		const k = _createKey( key );
+		if ( !store.translations[k] ) store.translations[k] = {};
+		store.translations[k][language] = translation;
+	},
+
+	debug () {
+		runeDebug( { translations: store.translations, lang: store.language } );
+	},
+};
+
+export default ops;

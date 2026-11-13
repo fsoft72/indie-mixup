@@ -1,0 +1,21 @@
+{
+	"name": "@liwe3/docs",
+	"version": "1.0.0",
+	"description": "LiWE3 Monorepo Documentation",
+	"private": true,
+	"scripts": {
+		"docs:serve": "mkdocs serve",
+		"docs:build": "mkdocs build",
+		"docs:deploy": "mkdocs gh-deploy",
+		"docs:clean": "rm -rf website",
+		"docs:install": "pip install -r requirements.txt"
+	},
+	"keywords": [
+		"documentation",
+		"mkdocs",
+		"cloudflare-workers",
+		"liwe3"
+	],
+	"author": "LiWE3 Team",
+	"license": "MIT"
+}

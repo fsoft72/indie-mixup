@@ -1,0 +1,25 @@
+# Example secrets file - copy to .dev.vars, .dev.vars.stage, and .dev.vars.prod
+# and fill in the appropriate values for each environment
+
+SITE_SECRET=your-site-secret-here-please-change-32
+DEBUG_KEY=your-debug-key-here-please-change-me-32
+DEBUG_AS_ADMIN=false
+ADMIN_KEY=your-admin-key-here-please-change-me-32
+JWT_SECRET=your-jwt-secret-here-please-change-me-32
+
+LOG_LEVEL=info
+LOG_INCLUDE_STACK=false
+LOG_PRETTY_PRINT=true
+
+SYSTEM_ADMIN_USERNAME=admin
+SYSTEM_ADMIN_PASSWORD=admin
+SYSTEM_DOMAIN=system
+
+DB_SECRET=secret
+
+AWS_SES_ACCESS_KEY=debug
+AWS_SES_SECRET_KEY=a
+AWS_SES_REGION=a
+SES_FROM_EMAIL=a
+SES_FROM_NAME=a
+SES_VERIFICATION_URL=a

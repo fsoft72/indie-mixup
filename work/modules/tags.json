@@ -1,0 +1,2407 @@
+{
+  "id": "mod.57ccfc4867f13bd41a2478c65f0971b6.92gy",
+  "doc": "Comprehensive tagging system for objects across modules",
+  "endpoints": {
+    "endp.mgtags.list": {
+      "id": "endp.mgtags.list",
+      "method": "GET",
+      "url": "/tags/list",
+      "short_descr": "List all tags with pagination",
+      "description": "Retrieves a paginated list of tags from the database. Results can be filtered by category and active status, and ordered by various fields.",
+      "parameters": [
+        {
+          "id": "param.mgtags.list.limit",
+          "type": "int",
+          "name": "limit",
+          "description": "Maximum number of tags to return (1-100, default 20)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "20",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.list.offset",
+          "type": "int",
+          "name": "offset",
+          "description": "Starting row for pagination (0+, default 0)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "0",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.list.category",
+          "type": "str",
+          "name": "category",
+          "description": "Optional category filter",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.list.active_only",
+          "type": "boolean",
+          "name": "active_only",
+          "description": "Whether to include only active tags",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "true",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.list.order_by",
+          "type": "str",
+          "name": "order_by",
+          "description": "Field to order by: name, created, updated, weight",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "name",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.list.order_direction",
+          "type": "str",
+          "name": "order_direction",
+          "description": "Sort direction: asc or desc",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "asc",
+          "value": ""
+        }
+      ],
+      "returnType": "TagListResult",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgtags.read": true,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.add": {
+      "id": "endp.mgtags.add",
+      "method": "POST",
+      "url": "/tags/tag/add",
+      "short_descr": "Add a new tag to the system",
+      "description": "Creates a new tag with the provided information. If no slug is provided, it will be auto-generated from the tag name by converting to lowercase, replacing spaces with dashes, and removing non-alphanumeric characters.",
+      "parameters": [
+        {
+          "id": "param.mgtags.add.name",
+          "type": "str",
+          "name": "name",
+          "description": "Required tag name (min 1 character)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.add.slug",
+          "type": "str",
+          "name": "slug",
+          "description": "Optional URL-friendly slug (auto-generated if not provided)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.add.description",
+          "type": "str",
+          "name": "description",
+          "description": "Optional tag description",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.add.color",
+          "type": "str",
+          "name": "color",
+          "description": "Optional hex color code (must be valid 6-digit hex)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.add.category",
+          "type": "str",
+          "name": "category",
+          "description": "Optional tag category for organization",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.add.weight",
+          "type": "float",
+          "name": "weight",
+          "description": "Tag weight for relevance calculations (0-10, default 1.0)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "1.0",
+          "value": ""
+        }
+      ],
+      "returnType": "TagAddResult",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgtags.read": false,
+        "perm.mgtags.create": true,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.obj.add": {
+      "id": "endp.mgtags.obj.add",
+      "method": "POST",
+      "url": "/tags/obj/add",
+      "short_descr": "Assign a tag to an object",
+      "description": "Creates a tag assignment relationship between a tag (identified by slug) and an object (identified by module and object ID). The assignment includes a relevance score and metadata about who created it and when.",
+      "parameters": [
+        {
+          "id": "param.mgtags.obj.add.tag_slug",
+          "type": "str",
+          "name": "tag_slug",
+          "description": "Required tag slug to identify the tag",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.obj.add.id_object",
+          "type": "str",
+          "name": "id_object",
+          "description": "Required object identifier",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.obj.add.module",
+          "type": "str",
+          "name": "module",
+          "description": "Required module name that owns the object",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.obj.add.relevance",
+          "type": "float",
+          "name": "relevance",
+          "description": "Relevance score between 0 and 1 (default 1.0)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "1.0",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.obj.add.auto_tagged",
+          "type": "boolean",
+          "name": "auto_tagged",
+          "description": "Whether tag was auto-assigned (default false)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "false",
+          "value": ""
+        }
+      ],
+      "returnType": "TagObjectResult",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgtags.read": false,
+        "perm.mgtags.create": true,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.obj.del": {
+      "id": "endp.mgtags.obj.del",
+      "method": "DELETE",
+      "url": "/tags/obj/del",
+      "short_descr": "Remove a tag from an object",
+      "description": "Deletes the relationship between a tag and an object, effectively untagging the object. The tag itself remains in the system.",
+      "parameters": [
+        {
+          "id": "param.mgtags.obj.del.tag_slug",
+          "type": "str",
+          "name": "tag_slug",
+          "description": "Required tag slug to identify the tag to remove",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.obj.del.id_object",
+          "type": "str",
+          "name": "id_object",
+          "description": "Required object identifier",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.obj.del.module",
+          "type": "str",
+          "name": "module",
+          "description": "Required module name that owns the object",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "TagRemoveResult",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgtags.read": false,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": true,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.obj.list": {
+      "id": "endp.mgtags.obj.list",
+      "method": "GET",
+      "url": "/tags/obj/list",
+      "short_descr": "Get all tags assigned to an object",
+      "description": "Returns a list of all tags associated with an object, including tag details and assignment metadata like relevance scores and creation timestamps.",
+      "parameters": [
+        {
+          "id": "param.mgtags.obj.list.id_object",
+          "type": "str",
+          "name": "id_object",
+          "description": "Required object identifier",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.obj.list.module",
+          "type": "str",
+          "name": "module",
+          "description": "Required module name that owns the object",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.obj.list.active_only",
+          "type": "boolean",
+          "name": "active_only",
+          "description": "Whether to include only active tags (default true)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "true",
+          "value": ""
+        }
+      ],
+      "returnType": "TagListByObjectResult",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgtags.read": true,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.find.by.tags": {
+      "id": "endp.mgtags.find.by.tags",
+      "method": "POST",
+      "url": "/tags/find/by/tags",
+      "short_descr": "Find objects that have specific tags",
+      "description": "Searches for objects within a target module that are tagged with the specified tags. Can match objects that have 'any' or 'all' of the provided tags, and calculates affinity scores based on tag weights and relevance scores.",
+      "parameters": [
+        {
+          "id": "param.mgtags.find.by.tags.tag_slugs",
+          "type": "str",
+          "name": "tag_slugs",
+          "description": "Array of tag slugs to search for (min 1 required)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.tags.target_module",
+          "type": "str",
+          "name": "target_module",
+          "description": "Module to search within",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.tags.match_type",
+          "type": "str",
+          "name": "match_type",
+          "description": "Whether to match 'any' or 'all' tags",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "any",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.tags.min_affinity_score",
+          "type": "float",
+          "name": "min_affinity_score",
+          "description": "Minimum affinity score for results (0+)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "0.1",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.tags.limit",
+          "type": "int",
+          "name": "limit",
+          "description": "Maximum results to return (1-100)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "20",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.tags.exclude_objects",
+          "type": "str",
+          "name": "exclude_objects",
+          "description": "Object IDs to exclude from results",
+          "is_required": false,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.tags.active_tags_only",
+          "type": "boolean",
+          "name": "active_tags_only",
+          "description": "Whether to consider only active tags",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "true",
+          "value": ""
+        }
+      ],
+      "returnType": "TagFindByTagsResult",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgtags.read": true,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.find.by.affinity": {
+      "id": "endp.mgtags.find.by.affinity",
+      "method": "POST",
+      "url": "/tags/find/by/affinity",
+      "short_descr": "Find objects similar to a source object",
+      "description": "Finds objects in the target module that share tags with the source object, calculating affinity scores based on shared tag relevance and weights. Useful for finding similar or related objects.",
+      "parameters": [
+        {
+          "id": "param.mgtags.find.by.affinity.source_id_object",
+          "type": "str",
+          "name": "source_id_object",
+          "description": "Source object ID to find similar objects for",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.affinity.source_module",
+          "type": "str",
+          "name": "source_module",
+          "description": "Module containing the source object",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.affinity.target_module",
+          "type": "str",
+          "name": "target_module",
+          "description": "Module to search for similar objects in",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.affinity.min_affinity_score",
+          "type": "float",
+          "name": "min_affinity_score",
+          "description": "Minimum affinity score (0+, default 0.3)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "0.3",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.affinity.limit",
+          "type": "int",
+          "name": "limit",
+          "description": "Maximum results to return (1-100, default 10)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "10",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.find.by.affinity.exclude_objects",
+          "type": "str",
+          "name": "exclude_objects",
+          "description": "Object IDs to exclude from results",
+          "is_required": false,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "TagFindByAffinityResult",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgtags.read": true,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.search": {
+      "id": "endp.mgtags.search",
+      "method": "POST",
+      "url": "/tags/search",
+      "short_descr": "Search tags by name, slug, or description",
+      "description": "Performs a text search across tag names, slugs, and descriptions. Results can be filtered by category and active status, with pagination support.",
+      "parameters": [
+        {
+          "id": "param.mgtags.search.query",
+          "type": "str",
+          "name": "query",
+          "description": "Optional search query (searches name, slug, description)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.search.category",
+          "type": "str",
+          "name": "category",
+          "description": "Optional category filter",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.search.active_only",
+          "type": "boolean",
+          "name": "active_only",
+          "description": "Whether to include only active tags",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "true",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.search.limit",
+          "type": "int",
+          "name": "limit",
+          "description": "Maximum results to return (1-100, default 20)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "20",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.search.offset",
+          "type": "int",
+          "name": "offset",
+          "description": "Results offset for pagination (0+, default 0)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "0",
+          "value": ""
+        }
+      ],
+      "returnType": "TagSearchResult",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgtags.read": true,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.relevance.update": {
+      "id": "endp.mgtags.relevance.update",
+      "method": "PATCH",
+      "url": "/tags/relevance/update",
+      "short_descr": "Update tag relevance score",
+      "description": "Modifies the relevance score for an existing tag-object relationship. The relevance score affects how the tag appears in searches and calculations.",
+      "parameters": [
+        {
+          "id": "param.mgtags.relevance.update.tag_slug",
+          "type": "str",
+          "name": "tag_slug",
+          "description": "Tag slug to identify the tag",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.relevance.update.id_object",
+          "type": "str",
+          "name": "id_object",
+          "description": "Object identifier",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.relevance.update.module",
+          "type": "str",
+          "name": "module",
+          "description": "Module name that owns the object",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.relevance.update.relevance",
+          "type": "float",
+          "name": "relevance",
+          "description": "New relevance score (0-1)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "TagUpdateRelevanceResult",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgtags.read": false,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": true,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.stats": {
+      "id": "endp.mgtags.stats",
+      "method": "POST",
+      "url": "/tags/stats",
+      "short_descr": "Get tag usage statistics",
+      "description": "Provides detailed statistics about tag usage including total usage counts, average relevance scores, module breakdown, and auto vs manual tagging ratios.",
+      "parameters": [
+        {
+          "id": "param.mgtags.stats.tag_slug",
+          "type": "str",
+          "name": "tag_slug",
+          "description": "Optional specific tag slug to get stats for",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.stats.category",
+          "type": "str",
+          "name": "category",
+          "description": "Optional category filter",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.stats.module",
+          "type": "str",
+          "name": "module",
+          "description": "Optional module filter",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.stats.include_inactive",
+          "type": "boolean",
+          "name": "include_inactive",
+          "description": "Whether to include inactive tags",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "false",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.stats.limit",
+          "type": "int",
+          "name": "limit",
+          "description": "Maximum results to return (1-100, default 20)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "20",
+          "value": ""
+        }
+      ],
+      "returnType": "TagStatsResult",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgtags.read": true,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.bulk.add": {
+      "id": "endp.mgtags.bulk.add",
+      "method": "POST",
+      "url": "/tags/bulk/add",
+      "short_descr": "Add multiple tags to an object",
+      "description": "Efficiently assigns multiple tags to a single object in a single operation. Can optionally overwrite existing tag assignments and provides detailed results about successes and failures.",
+      "parameters": [
+        {
+          "id": "param.mgtags.bulk.add.tag_slugs",
+          "type": "str",
+          "name": "tag_slugs",
+          "description": "Array of tag slugs to add (min 1 required)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.bulk.add.id_object",
+          "type": "str",
+          "name": "id_object",
+          "description": "Object identifier",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.bulk.add.module",
+          "type": "str",
+          "name": "module",
+          "description": "Module name that owns the object",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.bulk.add.relevance",
+          "type": "float",
+          "name": "relevance",
+          "description": "Relevance score for all tags (0-1, default 1.0)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "1.0",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.bulk.add.auto_tagged",
+          "type": "boolean",
+          "name": "auto_tagged",
+          "description": "Whether tags were auto-assigned",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "false",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.bulk.add.overwrite_existing",
+          "type": "boolean",
+          "name": "overwrite_existing",
+          "description": "Whether to remove existing tags first",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "false",
+          "value": ""
+        }
+      ],
+      "returnType": "TagBulkAddResult",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgtags.read": false,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.bulk.del": {
+      "id": "endp.mgtags.bulk.del",
+      "method": "DELETE",
+      "url": "/tags/bulk/del",
+      "short_descr": "Remove multiple tags from an object",
+      "description": "Efficiently removes multiple tag assignments from a single object. Only removes tags that actually exist and are assigned to the object.",
+      "parameters": [
+        {
+          "id": "param.mgtags.bulk.del.tag_slugs",
+          "type": "str",
+          "name": "tag_slugs",
+          "description": "Array of tag slugs to remove (min 1 required)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.bulk.del.id_object",
+          "type": "str",
+          "name": "id_object",
+          "description": "Object identifier",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.bulk.del.module",
+          "type": "str",
+          "name": "module",
+          "description": "Module name that owns the object",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "TagBulkRemoveResult",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgtags.read": false,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.list.by.module": {
+      "id": "endp.mgtags.list.by.module",
+      "method": "POST",
+      "url": "/tags/list/by/module",
+      "short_descr": "List objects in a module with tag information",
+      "description": "Retrieves objects from a specific module along with their tag counts, average relevance scores, and tag lists. Useful for getting an overview of how objects in a module are tagged.",
+      "parameters": [
+        {
+          "id": "param.mgtags.list.by.module.module",
+          "type": "str",
+          "name": "module",
+          "description": "Module name to search within",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.list.by.module.tag_slugs",
+          "type": "str",
+          "name": "tag_slugs",
+          "description": "Optional tag slugs to filter by",
+          "is_required": false,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.list.by.module.min_tag_count",
+          "type": "int",
+          "name": "min_tag_count",
+          "description": "Minimum number of tags an object must have",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "0",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.list.by.module.max_tag_count",
+          "type": "int",
+          "name": "max_tag_count",
+          "description": "Optional maximum number of tags an object can have",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.list.by.module.limit",
+          "type": "int",
+          "name": "limit",
+          "description": "Maximum results to return (1-1000, default 100)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "100",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.list.by.module.offset",
+          "type": "int",
+          "name": "offset",
+          "description": "Results offset for pagination (0+, default 0)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "0",
+          "value": ""
+        }
+      ],
+      "returnType": "TagListByModuleResult",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgtags.read": true,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    },
+    "endp.mgtags.merge": {
+      "id": "endp.mgtags.merge",
+      "method": "PATCH",
+      "url": "/tags/merge",
+      "short_descr": "Merge two tags together",
+      "description": "Consolidates two tags by moving all object assignments from the source tag to the target tag, then deactivating the source tag. Handles duplicate assignments gracefully by removing them instead of failing.",
+      "parameters": [
+        {
+          "id": "param.mgtags.merge.source_tag_slug",
+          "type": "str",
+          "name": "source_tag_slug",
+          "description": "Tag slug to merge from (will be deactivated)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgtags.merge.target_tag_slug",
+          "type": "str",
+          "name": "target_tag_slug",
+          "description": "Tag slug to merge to (receives all assignments)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "TagMergeResult",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgtags.read": false,
+        "perm.mgtags.create": false,
+        "perm.mgtags.update": false,
+        "perm.mgtags.delete": false,
+        "perm.mgtags.admin": true
+      }
+    }
+  },
+  "enums": {},
+  "functions": {},
+  "modified": false,
+  "name": "Tags",
+  "permissions": {
+    "perm.mgtags.read": {
+      "id": "perm.mgtags.read",
+      "name": "tags.read",
+      "description": "View and search tags and tagged objects"
+    },
+    "perm.mgtags.create": {
+      "id": "perm.mgtags.create",
+      "name": "tags.create",
+      "description": "Create new tags and add tags to objects"
+    },
+    "perm.mgtags.update": {
+      "id": "perm.mgtags.update",
+      "name": "tags.update",
+      "description": "Update tag relevance and merge tags"
+    },
+    "perm.mgtags.delete": {
+      "id": "perm.mgtags.delete",
+      "name": "tags.delete",
+      "description": "Remove tags from objects and delete tags"
+    },
+    "perm.mgtags.admin": {
+      "id": "perm.mgtags.admin",
+      "name": "tags.admin",
+      "description": "Full administrative access to tags system including bulk operations"
+    }
+  },
+  "short_descr": "Tag objects",
+  "types": {
+    "typ.mgtags.tag": {
+      "id": "typ.mgtags.tag",
+      "name": "Tag",
+      "description": "The main tag table",
+      "doc": "",
+      "db_table": "tags",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tag.id",
+          "name": "id",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Primary key, auto-incremented",
+          "index": "u",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tag.name",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Tag name",
+          "index": "m",
+          "size": 100,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tag.slug",
+          "name": "slug",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "URL-friendly slug",
+          "index": "m",
+          "size": 100,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tag.description",
+          "name": "description",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Tag description",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tag.color",
+          "name": "color",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Hex color code for visual representation",
+          "index": "",
+          "size": 7,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tag.category",
+          "name": "category",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Tag category for organization",
+          "index": "m",
+          "size": 50,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tag.weight",
+          "name": "weight",
+          "type": "float",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Tag weight for relevance calculations",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tag.is_active",
+          "name": "is_active",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Whether the tag is active",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tag.created",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Creation timestamp",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tag.updated",
+          "name": "updated",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Last update timestamp",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tag.updated_by",
+          "name": "updated_by",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User ID who last updated the tag",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mjdzohqa.8z4m",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Tag domain",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.taggable": {
+      "id": "typ.mgtags.taggable",
+      "name": "Taggable",
+      "description": "Tag assignment table (many-to-many relationship)",
+      "doc": "This table stores the relationship between tags and objects across different modules",
+      "db_table": "taggables",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.taggable.id",
+          "name": "id",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Primary key, auto-incremented",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.taggable.tag_id",
+          "name": "tag_id",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Foreign key to tags table",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.taggable.module",
+          "name": "module",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Module name that owns the tagged object",
+          "index": "m",
+          "size": 50,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.taggable.id_object",
+          "name": "id_object",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Object ID within the module",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.taggable.relevance_score",
+          "name": "relevance_score",
+          "type": "float",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Relevance score of the tag to the object (0-1)",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.taggable.created",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Assignment creation timestamp",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.taggable.updated",
+          "name": "updated",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Last update timestamp",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.taggable.updated_by",
+          "name": "updated_by",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User ID who last updated the assignment",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.taggable.auto_tagged",
+          "name": "auto_tagged",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Whether the tag was automatically assigned",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.taglistresult": {
+      "id": "typ.mgtags.taglistresult",
+      "name": "TagListResult",
+      "description": "Return type for tag listing",
+      "doc": "Contains paginated tag list and total count",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.taglistresult.tags",
+          "name": "tags",
+          "type": "Tag",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "Array of tags",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.taglistresult.total",
+          "name": "total",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Total count of tags matching filters",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagaddresult": {
+      "id": "typ.mgtags.tagaddresult",
+      "name": "TagAddResult",
+      "description": "Return type for tag creation",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagaddresult.tag",
+          "name": "tag",
+          "type": "Tag",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The created tag",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagobjectresult": {
+      "id": "typ.mgtags.tagobjectresult",
+      "name": "TagObjectResult",
+      "description": "Return type for tag assignment",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagobjectresult.taggable",
+          "name": "taggable",
+          "type": "Taggable",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The created tag assignment",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagremoveresult": {
+      "id": "typ.mgtags.tagremoveresult",
+      "name": "TagRemoveResult",
+      "description": "Return type for tag removal",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagremoveresult.removed",
+          "name": "removed",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Whether the tag was successfully removed",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagremoveresult.message",
+          "name": "message",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Result message",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.taglistbyobjectresult": {
+      "id": "typ.mgtags.taglistbyobjectresult",
+      "name": "TagListByObjectResult",
+      "description": "Return type for object tag listing",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.taglistbyobjectresult.tags",
+          "name": "tags",
+          "type": "TagWithAssignmentInfo",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "Array of tags with assignment metadata",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagwithassignmentinfo": {
+      "id": "typ.mgtags.tagwithassignmentinfo",
+      "name": "TagWithAssignmentInfo",
+      "description": "Tag information with assignment metadata",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.tagId",
+          "name": "tagId",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Tag ID",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.tagName",
+          "name": "tagName",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Tag name",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.tagSlug",
+          "name": "tagSlug",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Tag slug",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.category",
+          "name": "category",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Tag category",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.color",
+          "name": "color",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Tag color",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.weight",
+          "name": "weight",
+          "type": "float",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Tag weight",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.relevanceScore",
+          "name": "relevanceScore",
+          "type": "float",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Relevance score of assignment",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.created",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Assignment creation date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.updated",
+          "name": "updated",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Assignment update date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.updated_by",
+          "name": "updated_by",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User who updated assignment",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagwithassignmentinfo.auto_tagged",
+          "name": "auto_tagged",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Whether auto-tagged",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagfindbytagsresult": {
+      "id": "typ.mgtags.tagfindbytagsresult",
+      "name": "TagFindByTagsResult",
+      "description": "Return type for finding objects by tags",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagfindbytagsresult.objects",
+          "name": "objects",
+          "type": "ObjectWithAffinity",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "Array of objects with affinity scores",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.objectwithaffinity": {
+      "id": "typ.mgtags.objectwithaffinity",
+      "name": "ObjectWithAffinity",
+      "description": "Object found by tag search with affinity information",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.objectwithaffinity.module",
+          "name": "module",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Module name",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithaffinity.id_object",
+          "name": "id_object",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Object ID",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithaffinity.affinityScore",
+          "name": "affinityScore",
+          "type": "float",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Calculated affinity score",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithaffinity.matchingTags",
+          "name": "matchingTags",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Number of matching tags",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithaffinity.tagDetails",
+          "name": "tagDetails",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Comma-separated tag details",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagfindbyaffinityresult": {
+      "id": "typ.mgtags.tagfindbyaffinityresult",
+      "name": "TagFindByAffinityResult",
+      "description": "Return type for finding objects by affinity",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagfindbyaffinityresult.objects",
+          "name": "objects",
+          "type": "ObjectWithAffinityScore",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "Array of objects with affinity scores",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.objectwithaffinityscore": {
+      "id": "typ.mgtags.objectwithaffinityscore",
+      "name": "ObjectWithAffinityScore",
+      "description": "Object found by affinity search with scoring information",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.objectwithaffinityscore.module",
+          "name": "module",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Module name",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithaffinityscore.id_object",
+          "name": "id_object",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Object ID",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithaffinityscore.affinityScore",
+          "name": "affinityScore",
+          "type": "float",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Calculated affinity score",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithaffinityscore.matchingTags",
+          "name": "matchingTags",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Number of matching tags",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithaffinityscore.tagDetails",
+          "name": "tagDetails",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Comma-separated tag details",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagsearchresult": {
+      "id": "typ.mgtags.tagsearchresult",
+      "name": "TagSearchResult",
+      "description": "Return type for tag search",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagsearchresult.tags",
+          "name": "tags",
+          "type": "Tag",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "Array of matching tags",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagupdaterelevanceresult": {
+      "id": "typ.mgtags.tagupdaterelevanceresult",
+      "name": "TagUpdateRelevanceResult",
+      "description": "Return type for tag relevance update",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagupdaterelevanceresult.updated",
+          "name": "updated",
+          "type": "Taggable",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The updated tag assignment",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagstatsresult": {
+      "id": "typ.mgtags.tagstatsresult",
+      "name": "TagStatsResult",
+      "description": "Return type for tag statistics",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagstatsresult.stats",
+          "name": "stats",
+          "type": "TagUsageStats",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "Array of tag usage statistics",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagusagestats": {
+      "id": "typ.mgtags.tagusagestats",
+      "name": "TagUsageStats",
+      "description": "Tag usage statistics",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagusagestats.tagId",
+          "name": "tagId",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Tag ID",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagusagestats.tagName",
+          "name": "tagName",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Tag name",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagusagestats.tagSlug",
+          "name": "tagSlug",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Tag slug",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagusagestats.category",
+          "name": "category",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Tag category",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagusagestats.weight",
+          "name": "weight",
+          "type": "float",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Tag weight",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagusagestats.totalUsage",
+          "name": "totalUsage",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Total number of times tag is used",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagusagestats.avgRelevance",
+          "name": "avgRelevance",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Average relevance score",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagusagestats.moduleBreakdown",
+          "name": "moduleBreakdown",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Comma-separated module usage breakdown",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagusagestats.autoTaggedCount",
+          "name": "autoTaggedCount",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Number of auto-tagged assignments",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagusagestats.manualTaggedCount",
+          "name": "manualTaggedCount",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Number of manually tagged assignments",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagusagestats.lastUsed",
+          "name": "lastUsed",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Timestamp of last use",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagbulkaddresult": {
+      "id": "typ.mgtags.tagbulkaddresult",
+      "name": "TagBulkAddResult",
+      "description": "Return type for bulk tag addition",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagbulkaddresult.tagged",
+          "name": "tagged",
+          "type": "json",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "Array of successfully tagged objects",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagbulkaddresult.errors",
+          "name": "errors",
+          "type": "json",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "Array of errors that occurred",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagbulkaddresult.summary",
+          "name": "summary",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Summary message",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagbulkremoveresult": {
+      "id": "typ.mgtags.tagbulkremoveresult",
+      "name": "TagBulkRemoveResult",
+      "description": "Return type for bulk tag removal",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagbulkremoveresult.removed_count",
+          "name": "removed_count",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Number of tags removed",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagbulkremoveresult.message",
+          "name": "message",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Result message",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.taglistbymoduleresult": {
+      "id": "typ.mgtags.taglistbymoduleresult",
+      "name": "TagListByModuleResult",
+      "description": "Return type for module object listing",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.taglistbymoduleresult.objects",
+          "name": "objects",
+          "type": "ObjectWithTagInfo",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "Array of objects with tag information",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.objectwithtaginfo": {
+      "id": "typ.mgtags.objectwithtaginfo",
+      "name": "ObjectWithTagInfo",
+      "description": "Object with aggregated tag information",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.objectwithtaginfo.id_object",
+          "name": "id_object",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Object ID",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithtaginfo.tagCount",
+          "name": "tagCount",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Number of tags",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithtaginfo.avgRelevance",
+          "name": "avgRelevance",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Average relevance score",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithtaginfo.tagList",
+          "name": "tagList",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Comma-separated tag names",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.objectwithtaginfo.tagSlugs",
+          "name": "tagSlugs",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Comma-separated tag slugs",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgtags.tagmergeresult": {
+      "id": "typ.mgtags.tagmergeresult",
+      "name": "TagMergeResult",
+      "description": "Return type for tag merging",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgtags.tagmergeresult.merged_count",
+          "name": "merged_count",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Number of assignments merged",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagmergeresult.skipped_count",
+          "name": "skipped_count",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Number of duplicate assignments skipped",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgtags.tagmergeresult.message",
+          "name": "message",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Result message",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    }
+  },
+  "version": 3,
+  "events": {
+    "evt.tags.list_by_objects": {
+      "id": "evt.tags.list_by_objects",
+      "name": "tags.call.list_by_objects",
+      "description": "List the active tags of many objects at once (callable by other modules). Payload: { module: string, ids: string[] }. Returns { tags: Record<string, Tag[]> }, one entry per requested id (empty array when the object has no active tags)"
+    },
+    "evt.tags.find_objects_by_tag": {
+      "id": "evt.tags.find_objects_by_tag",
+      "name": "tags.call.find_objects_by_tag",
+      "description": "Find the objects of a module carrying an active tag (callable by other modules). Payload: { module: string, tag_slug: string }. Returns { ids: string[] }. Tags are not domain scoped: callers MUST intersect the ids with their own domain-filtered rows"
+    },
+    "evt.tags.tag_add": {
+      "id": "evt.tags.tag_add",
+      "name": "tags.call.tag_add",
+      "description": "Callable by other modules: forwards the payload (same params as tag_add) to the tag_add method and returns its response untouched"
+    },
+    "evt.tags.obj_add": {
+      "id": "evt.tags.obj_add",
+      "name": "tags.call.obj_add",
+      "description": "Callable by other modules: forwards the payload (same params as tag_object) to the tag_object method and returns its response untouched"
+    },
+    "evt.tags.obj_del": {
+      "id": "evt.tags.obj_del",
+      "name": "tags.call.obj_del",
+      "description": "Callable by other modules: forwards the payload (same params as tag_remove_object) to the tag_remove_object method and returns its response untouched"
+    }
+  },
+  "id_owner": "user.7146fb62e9a458952246479bcca935f7.4hue",
+  "domain": "os3"
+}

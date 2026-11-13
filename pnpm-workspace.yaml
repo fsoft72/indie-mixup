@@ -1,0 +1,9 @@
+packages:
+    - app/*
+    - liwe3/backend/*
+    - liwe3/frontend/*
+    - liwe3/modules/*/*
+allowBuilds:
+    esbuild: true
+    sharp: true
+    workerd: true

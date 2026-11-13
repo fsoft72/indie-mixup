@@ -1,0 +1,45 @@
+{
+	"system": {
+		"base_url": "http://localhost:8787",
+		"authorization_template": "Bearer %(token)s",
+		"stop_on_error": false
+	},
+	"actions": [
+		{
+			"rem": "=== Authentication ==="
+		},
+		{
+			"action": "include",
+			"filename": "../../../../user/backend/tests/restest/admin-login.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"rem": "=== Notification Settings Tests ==="
+		},
+		{
+			"action": "include",
+			"filename": "notifier-settings.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"rem": "=== Notification List Tests ==="
+		},
+		{
+			"action": "include",
+			"filename": "notifier-list.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"rem": "=== Error Handling Tests ==="
+		},
+		{
+			"action": "include",
+			"filename": "notifier-errors.tests.json",
+			"exec": true,
+			"show_filename": true
+		}
+	]
+}

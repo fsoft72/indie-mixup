@@ -1,0 +1,327 @@
+{
+	"actions": [
+		{
+			"rem": "=== Pre-cleanup: remove any leftover test settings ==="
+		},
+		{
+			"title": "Upsert test.event.alpha to get its ID",
+			"method": "PATCH",
+			"url": "/api/notifier/settings/update",
+			"body": {
+				"event_type": "test.event.alpha",
+				"enabled": false
+			},
+			"fields": [["data.id", "cleanup_alpha_id"]]
+		},
+		{
+			"title": "Upsert test.event.beta to get its ID",
+			"method": "PATCH",
+			"url": "/api/notifier/settings/update",
+			"body": {
+				"event_type": "test.event.beta",
+				"enabled": false
+			},
+			"fields": [["data.id", "cleanup_beta_id"]]
+		},
+		{
+			"title": "Upsert test.event.gamma to get its ID",
+			"method": "PATCH",
+			"url": "/api/notifier/settings/update",
+			"body": {
+				"event_type": "test.event.gamma",
+				"enabled": false
+			},
+			"fields": [["data.id", "cleanup_gamma_id"]]
+		},
+		{
+			"title": "Pre-cleanup: delete alpha",
+			"method": "DELETE",
+			"url": "/api/notifier/settings/delete",
+			"body": {
+				"id": "%(cleanup_alpha_id)s"
+			}
+		},
+		{
+			"title": "Pre-cleanup: delete beta",
+			"method": "DELETE",
+			"url": "/api/notifier/settings/delete",
+			"body": {
+				"id": "%(cleanup_beta_id)s"
+			}
+		},
+		{
+			"title": "Pre-cleanup: delete gamma",
+			"method": "DELETE",
+			"url": "/api/notifier/settings/delete",
+			"body": {
+				"id": "%(cleanup_gamma_id)s"
+			}
+		},
+		{
+			"rem": "=== Actual tests start here ==="
+		},
+		{
+			"title": "Get initial notification settings count",
+			"method": "GET",
+			"url": "/api/notifier/settings/get",
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			],
+			"fields": [["#data", "init_settings"]]
+		},
+		{
+			"title": "Create setting - disable test.event.alpha",
+			"method": "PATCH",
+			"url": "/api/notifier/settings/update",
+			"body": {
+				"event_type": "test.event.alpha",
+				"enabled": false
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.event_type",
+					"value": "test.event.alpha"
+				},
+				{
+					"field": "data.enabled",
+					"value": false
+				}
+			],
+			"fields": [["data.id", "setting_alpha_id"]]
+		},
+		{
+			"title": "Verify settings count increased by 1",
+			"method": "GET",
+			"url": "/api/notifier/settings/get",
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "#data",
+					"value": "${init_settings + 1}"
+				}
+			]
+		},
+		{
+			"title": "Verify setting alpha exists in list",
+			"method": "GET",
+			"url": "/api/notifier/settings/get",
+			"tests": [
+				{
+					"field": "data[id='%(setting_alpha_id)s'].event_type",
+					"value": "test.event.alpha"
+				},
+				{
+					"field": "data[id='%(setting_alpha_id)s'].enabled",
+					"value": false
+				}
+			]
+		},
+		{
+			"title": "Create setting - enable test.event.beta",
+			"method": "PATCH",
+			"url": "/api/notifier/settings/update",
+			"body": {
+				"event_type": "test.event.beta",
+				"enabled": true
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.event_type",
+					"value": "test.event.beta"
+				},
+				{
+					"field": "data.enabled",
+					"value": true
+				}
+			],
+			"fields": [["data.id", "setting_beta_id"]]
+		},
+		{
+			"title": "Verify settings count increased by 2",
+			"method": "GET",
+			"url": "/api/notifier/settings/get",
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${init_settings + 2}"
+				}
+			]
+		},
+		{
+			"title": "Update setting alpha - toggle to enabled",
+			"method": "PATCH",
+			"url": "/api/notifier/settings/update",
+			"body": {
+				"event_type": "test.event.alpha",
+				"enabled": true
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.event_type",
+					"value": "test.event.alpha"
+				},
+				{
+					"field": "data.enabled",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Verify update - alpha is now enabled",
+			"method": "GET",
+			"url": "/api/notifier/settings/get",
+			"tests": [
+				{
+					"field": "data[id='%(setting_alpha_id)s'].enabled",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Verify count unchanged after upsert (still +2)",
+			"method": "GET",
+			"url": "/api/notifier/settings/get",
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${init_settings + 2}"
+				}
+			]
+		},
+		{
+			"title": "Update setting alpha back to disabled",
+			"method": "PATCH",
+			"url": "/api/notifier/settings/update",
+			"body": {
+				"event_type": "test.event.alpha",
+				"enabled": false
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.enabled",
+					"value": false
+				}
+			]
+		},
+		{
+			"title": "Verify alpha is disabled again",
+			"method": "GET",
+			"url": "/api/notifier/settings/get",
+			"tests": [
+				{
+					"field": "data[id='%(setting_alpha_id)s'].enabled",
+					"value": false
+				}
+			]
+		},
+		{
+			"title": "Create third setting - disable test.event.gamma",
+			"method": "PATCH",
+			"url": "/api/notifier/settings/update",
+			"body": {
+				"event_type": "test.event.gamma",
+				"enabled": false
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				},
+				{
+					"field": "data.event_type",
+					"value": "test.event.gamma"
+				}
+			],
+			"fields": [["data.id", "setting_gamma_id"]]
+		},
+		{
+			"title": "Verify all three settings exist",
+			"method": "GET",
+			"url": "/api/notifier/settings/get",
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${init_settings + 3}"
+				}
+			]
+		},
+		{
+			"rem": "=== Cleanup: delete all test settings ==="
+		},
+		{
+			"title": "Delete setting alpha (cleanup)",
+			"method": "DELETE",
+			"url": "/api/notifier/settings/delete",
+			"body": {
+				"id": "%(setting_alpha_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Delete setting beta (cleanup)",
+			"method": "DELETE",
+			"url": "/api/notifier/settings/delete",
+			"body": {
+				"id": "%(setting_beta_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Delete setting gamma (cleanup)",
+			"method": "DELETE",
+			"url": "/api/notifier/settings/delete",
+			"body": {
+				"id": "%(setting_gamma_id)s"
+			},
+			"tests": [
+				{
+					"field": "ok",
+					"value": true
+				}
+			]
+		},
+		{
+			"title": "Verify settings count back to initial",
+			"method": "GET",
+			"url": "/api/notifier/settings/get",
+			"tests": [
+				{
+					"field": "#data",
+					"value": "${init_settings}"
+				}
+			]
+		}
+	]
+}

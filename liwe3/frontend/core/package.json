@@ -1,0 +1,62 @@
+{
+	"name": "@frontend/liwe3",
+	"version": "0.0.1",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./dist/index.js"
+		},
+		"./stores/app.svelte": {
+			"types": "./dist/stores/app.svelte.d.ts",
+			"svelte": "./dist/stores/app.svelte.js"
+		},
+		"./stores/LocalizationStore.svelte": {
+			"types": "./dist/stores/LocalizationStore.svelte.d.ts",
+			"svelte": "./dist/stores/LocalizationStore.svelte.js"
+		},
+		"./*": {
+			"types": "./dist/*.d.ts",
+			"svelte": "./dist/*"
+		}
+	},
+	"files": [
+		"dist",
+		"!dist/**/*.test.*",
+		"!dist/**/*.spec.*"
+	],
+	"peerDependencies": {
+		"@sveltejs/kit": "^2.55.0",
+		"svelte": "^5.55.1",
+		"svelte-hero-icons": "^5.2.0"
+	},
+	"devDependencies": {
+		"@sveltejs/kit": "^2.55.0",
+		"@sveltejs/package": "^2.5.7",
+		"@sveltejs/vite-plugin-svelte": "^7.2.0",
+		"@testing-library/jest-dom": "^7.0.1",
+		"@testing-library/svelte": "^5.4.2",
+		"@testing-library/user-event": "^14.6.3",
+		"@types/qrcode": "^1.5.6",
+		"jsdom": "^30.0.1",
+		"publint": "^0.3.18",
+		"svelte": "^5.55.1",
+		"svelte-check": "^4.7.4",
+		"typescript": "^6.0.2",
+		"vite": "^8.2.0",
+		"vitest": "^4.1.2",
+		"zod": "^4.3.6"
+	},
+	"scripts": {
+		"dev": "svelte-package -w -i src --types false",
+		"build": "svelte-package -i src && publint",
+		"prepublishOnly": "npm run build",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test": "vitest run --passWithNoTests"
+	},
+	"dependencies": {
+		"qrcode": "^1.5.4",
+		"zod": "^4.3.6"
+	}
+}
