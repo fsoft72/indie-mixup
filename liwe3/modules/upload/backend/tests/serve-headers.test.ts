@@ -119,3 +119,50 @@ describe('upload get: safe serving headers', () => {
 		expect( h.get( 'content-disposition' ) ).toBe( 'attachment; filename="a_b__c.html"' );
 	});
 });
+
+describe('upload get: range requests', () => {
+	/** Builds a ctx whose bucket honours the range option like R2 does. */
+	const ranged_ctx = ( key : string, range_header : string | null ) : LiWECtx => {
+		const bucket = {
+			get: async ( k : string, opts? : { range? : Headers } ) => {
+				if ( k !== key ) return null;
+				const partial = !!opts?.range;
+				return {
+					key: k,
+					size: 1000,
+					body: 'BODY',
+					httpEtag: '"e"',
+					range: partial ? { offset: 100, length: 200 } : undefined,
+					writeHttpMetadata: ( h : Headers ) => h.set( 'content-type', 'video/mp4' ),
+				};
+			},
+		};
+		const headers = new Headers( range_header ? { range: range_header } : {} );
+
+		return {
+			app: { env: { UPLOAD_BUCKET: bucket }, cfg: { system: { domain: 'dom-a' } } } as never,
+			c: { req: { header: ( n : string ) => headers.get( n ) ?? undefined, raw: { headers } } } as never,
+			sessionId: null,
+			session: async () => null,
+			user: async () => null,
+		};
+	};
+
+	it('a range request is answered with 206 and a content-range', async () => {
+		const key = 'dom-a|site|v.mp4';
+		const res = await upload_get( ranged_ctx( key, 'bytes=100-299' ), { key } );
+
+		expect( res.response!.status ).toBe( 206 );
+		expect( res.response!.headers.get( 'content-range' ) ).toBe( 'bytes 100-299/1000' );
+		expect( res.response!.headers.get( 'content-length' ) ).toBe( '200' );
+		expect( res.response!.headers.get( 'accept-ranges' ) ).toBe( 'bytes' );
+	});
+
+	it('a plain request is a 200 that advertises range support', async () => {
+		const key = 'dom-a|site|v.mp4';
+		const res = await upload_get( ranged_ctx( key, null ), { key } );
+
+		expect( res.response!.status ).toBe( 200 );
+		expect( res.response!.headers.get( 'accept-ranges' ) ).toBe( 'bytes' );
+	});
+});

@@ -2,6 +2,10 @@
 import { FormCreator, type FormField } from '@frontend/liwe3';
 import { GameGrid, Icon, type IndieGameCard, indiegame_list } from '@frontend-modules/indiegame';
 import { onMount } from 'svelte';
+import { env } from '$env/dynamic/public';
+
+/** Hero video, stored in R2 under the `site` folder of the system domain */
+const HERO_VIDEO_URL = `${env.PUBLIC_LIWE_SERVER ?? ''}/api/upload/get?key=${encodeURIComponent( 'site|indiemixup.mp4' )}`;
 
 const PAGE_SIZE = 24;
 const SEARCH_DELAY_MS = 300;
@@ -58,13 +62,7 @@ onMount( () => load( true ) );
 		</div>
 	</div>
 	<div class="art">
-		<iframe
-			src="https://www.youtube-nocookie.com/embed/LTFE68Sc1BQ?autoplay=1&mute=1&loop=1&playlist=LTFE68Sc1BQ&controls=0&disablekb=1&fs=0&modestbranding=1&iv_load_policy=3&playsinline=1&rel=0"
-			title="Indie Mixup video"
-			tabindex="-1"
-			allow="autoplay; encrypted-media; picture-in-picture"
-			referrerpolicy="strict-origin-when-cross-origin"
-		></iframe>
+		<video src={HERO_VIDEO_URL} autoplay muted loop playsinline preload="auto" disablepictureinpicture tabindex="-1" aria-label="Indie Mixup video"></video>
 	</div>
 </section>
 
@@ -99,14 +97,14 @@ onMount( () => load( true ) );
 	background: var(--liwe3-surface-sunken);
 	box-shadow: 0 0 40px color-mix(in oklch, var(--liwe3-secondary) 30%, transparent);
 }
-.art iframe {
+.art video {
 	position: absolute;
 	inset: 0;
 	width: 100%;
 	height: 100%;
 	border: 0;
+	object-fit: cover;
 	pointer-events: none;
-	transform: scale(1.18);
 }
 @media (max-width: 52rem) {
 	.hero {

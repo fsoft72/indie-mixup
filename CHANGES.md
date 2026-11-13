@@ -2,6 +2,13 @@
 
 ## 2026-11-13
 
+### app: hero video served from R2
+
+- `assets/indiemixup.mp4` uploaded to the prod bucket as `system|site|indiemixup.mp4` (`wrangler r2 object put ... --remote`). The file itself is not committed.
+- Home hero: the YouTube iframe is replaced by a muted, looping, autoplaying `<video>` pointing to `/api/upload/get?key=site|indiemixup.mp4`. No zoom or crop (`object-fit: cover`).
+- `upload_get` (inside its `f2c` block) now honours `Range` requests (206, `Content-Range`, `Accept-Ranges`): Safari and iOS do not play video without it. Tests in `serve-headers.test.ts`.
+- Local dev needs the same object in the local R2 to show the video.
+
 ### app: production setup for indiemixup.org
 
 - `app/backend/wrangler.jsonc` `env.prod`: real D1 (`indie-mixup-prod`), KV and R2 (`indie-mixup-bucket-prod`, binding `UPLOAD_BUCKET`) ids, `ALLOWED_ORIGINS` and custom domains `indiemixup.org` and `www.indiemixup.org`.

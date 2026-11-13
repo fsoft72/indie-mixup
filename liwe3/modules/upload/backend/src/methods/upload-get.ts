@@ -72,13 +72,28 @@ export const upload_get = async ( ctx : LiWECtx, params : UploadGetParams, sys? 
 		console.warn( `upload_get: thumbnail missing for '${finalKey}', serving original` );
 	}
 
-	// 3b. Fetch the original from R2
-	const object = await bucket.get( finalKey );
+	// 3b. Fetch the original from R2 (honouring a Range request: Safari and iOS refuse to play video without it)
+	const rangeHeader = ctx.c?.req.header( 'range' );
+	const object = await bucket.get( finalKey, rangeHeader ? { range: ctx.c!.req.raw.headers } : undefined );
 
 	if ( !object ) return responseError( 'File not found', 404, 'FILE_NOT_FOUND' );
 
 	// 4. Return stream with correct headers
-	return _streamObject( object );
+	const streamed = _streamObject( object );
+	if ( !streamed.response ) return streamed;
+	streamed.response.headers.set( 'accept-ranges', 'bytes' );
+
+	const range = ( object as { range? : { offset? : number; length? : number; suffix? : number } } ).range;
+	if ( !rangeHeader || !range ) return streamed;
+
+	const size = object.size;
+	const offset = range.offset ?? ( range.suffix !== undefined ? Math.max( 0, size - range.suffix ) : 0 );
+	const length = range.length ?? ( size - offset );
+	const partialHeaders = new Headers( streamed.response.headers );
+	partialHeaders.set( 'content-range', `bytes ${offset}-${offset + length - 1}/${size}` );
+	partialHeaders.set( 'content-length', String( length ) );
+	streamed.response = new Response( object.body, { status: 206, headers: partialHeaders } );
+	return streamed;
 	/*=== f2c_end upload_get ===*/
 };
 
