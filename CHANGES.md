@@ -4,7 +4,7 @@
 
 ### app: YouTube video in the home hero
 
-- The decorative sun/grid circle on the right of the hero in `app/frontend/src/routes/+page.svelte` is replaced by a 16:9 YouTube embed (`LTFE68Sc1BQ`) served from `youtube-nocookie.com` (privacy-enhanced mode, no cookies until play). The video is now shown on mobile too, below the text.
+- The decorative sun/grid circle on the right of the hero in `app/frontend/src/routes/+page.svelte` is replaced by a 16:9 YouTube embed (`LTFE68Sc1BQ`) served from `youtube-nocookie.com` (privacy-enhanced mode, no cookies until play). The video is now shown on mobile too, below the text. It autoplays muted in a loop, without controls (`controls=0`, `pointer-events: none`) and is scaled 1.18x inside the clipped frame to crop the YouTube title bar.
 
 ### app: admin pages for users, roles and games
 

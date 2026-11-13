@@ -59,12 +59,11 @@ onMount( () => load( true ) );
 	</div>
 	<div class="art">
 		<iframe
-			src="https://www.youtube-nocookie.com/embed/LTFE68Sc1BQ?rel=0"
+			src="https://www.youtube-nocookie.com/embed/LTFE68Sc1BQ?autoplay=1&mute=1&loop=1&playlist=LTFE68Sc1BQ&controls=0&disablekb=1&fs=0&modestbranding=1&iv_load_policy=3&playsinline=1&rel=0"
 			title="Indie Mixup video"
-			loading="lazy"
-			allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+			tabindex="-1"
+			allow="autoplay; encrypted-media; picture-in-picture"
 			referrerpolicy="strict-origin-when-cross-origin"
-			allowfullscreen
 		></iframe>
 	</div>
 </section>
@@ -106,6 +105,8 @@ onMount( () => load( true ) );
 	width: 100%;
 	height: 100%;
 	border: 0;
+	pointer-events: none;
+	transform: scale(1.18);
 }
 @media (max-width: 52rem) {
 	.hero {
