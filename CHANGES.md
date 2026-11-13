@@ -7,6 +7,7 @@
 - `app/backend/wrangler.jsonc` `env.prod`: real D1 (`indie-mixup-prod`), KV and R2 (`indie-mixup-bucket-prod`, binding `UPLOAD_BUCKET`) ids, `ALLOWED_ORIGINS` and custom domains `indiemixup.org` and `www.indiemixup.org`.
 - The prod D1 schema was created from the local schema (there is no `drizzle` migrations folder, so `migrations:*` scripts do not work).
 - `deploy:stage` / `deploy:prod` filtered a non-existent package (`indie-mixup-frontend`), so the frontend was never rebuilt: now `app-frontend`. `deploy:prod` builds with `PUBLIC_LIWE_SERVER=https://indiemixup.org` (the local `.env` points to localhost).
+- Deployed to production (`indie-mixup-prod`, custom domains `indiemixup.org` and `www.indiemixup.org`, 2026-11-13).
 - Prod secrets are set with `wrangler secret bulk` from `app/backend/.dev.vars.prod` (git-ignored).
 
 ### app: YouTube video in the home hero
