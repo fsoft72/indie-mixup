@@ -1,0 +1,297 @@
+/* LiWE3 Components - Generated */
+@layer liwe3.components {
+	.liwe3-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--liwe3-space-2);
+		padding: var(--liwe3-space-2) var(--liwe3-space-4);
+		border: 1px solid var(--liwe3-border);
+		border-radius: var(--liwe3-radius-md);
+		background: var(--liwe3-surface);
+		color: var(--liwe3-text);
+		font-family: var(--liwe3-font-sans);
+		font-size: var(--liwe3-text-sm);
+		font-weight: var(--liwe3-weight-medium);
+		line-height: var(--liwe3-leading-normal);
+		cursor: pointer;
+		transition: all var(--liwe3-duration-fast) var(--liwe3-ease-out);
+	}
+
+	.liwe3-btn:hover {
+		background: var(--liwe3-surface-raised);
+		border-color: var(--liwe3-border-strong);
+	}
+
+	.liwe3-btn--ghost {
+		background: transparent;
+		border-color: transparent;
+	}
+
+	.liwe3-btn--ghost:hover {
+		background: var(--liwe3-hover-overlay);
+	}
+
+	.liwe3-btn--primary {
+		background: var(--liwe3-primary);
+		color: var(--liwe3-text-on-primary);
+		border-color: var(--liwe3-primary);
+	}
+
+	.liwe3-btn--primary:hover {
+		background: var(--liwe3-primary-hover);
+		border-color: var(--liwe3-primary-hover);
+	}
+
+	.liwe3-btn--primary.liwe3-btn--outline {
+		background: transparent;
+		color: var(--liwe3-primary);
+		border-color: var(--liwe3-primary);
+	}
+
+	.liwe3-btn--primary.liwe3-btn--outline:hover {
+		background: var(--liwe3-primary-subtle);
+	}
+
+	.liwe3-btn--primary.liwe3-btn--ghost {
+		background: transparent;
+		border-color: transparent;
+		color: var(--liwe3-primary);
+	}
+
+	.liwe3-btn--primary.liwe3-btn--ghost:hover {
+		background: var(--liwe3-primary-subtle);
+	}
+
+	.liwe3-btn--secondary {
+		background: var(--liwe3-secondary);
+		color: var(--liwe3-text-on-secondary);
+		border-color: var(--liwe3-secondary);
+	}
+
+	.liwe3-btn--secondary:hover {
+		background: var(--liwe3-secondary-hover);
+		border-color: var(--liwe3-secondary-hover);
+	}
+
+	.liwe3-btn--secondary.liwe3-btn--outline {
+		background: transparent;
+		color: var(--liwe3-secondary);
+		border-color: var(--liwe3-secondary);
+	}
+
+	.liwe3-btn--secondary.liwe3-btn--outline:hover {
+		background: var(--liwe3-secondary-subtle);
+	}
+
+	.liwe3-btn--secondary.liwe3-btn--ghost {
+		background: transparent;
+		border-color: transparent;
+		color: var(--liwe3-secondary);
+	}
+
+	.liwe3-btn--secondary.liwe3-btn--ghost:hover {
+		background: var(--liwe3-secondary-subtle);
+	}
+
+	.liwe3-btn--accent {
+		background: var(--liwe3-accent);
+		color: var(--liwe3-text-on-accent);
+		border-color: var(--liwe3-accent);
+	}
+
+	.liwe3-btn--accent:hover {
+		background: var(--liwe3-accent-hover);
+		border-color: var(--liwe3-accent-hover);
+	}
+
+	.liwe3-btn--accent.liwe3-btn--outline {
+		background: transparent;
+		color: var(--liwe3-accent);
+		border-color: var(--liwe3-accent);
+	}
+
+	.liwe3-btn--accent.liwe3-btn--outline:hover {
+		background: var(--liwe3-accent-subtle);
+	}
+
+	.liwe3-btn--accent.liwe3-btn--ghost {
+		background: transparent;
+		border-color: transparent;
+		color: var(--liwe3-accent);
+	}
+
+	.liwe3-btn--accent.liwe3-btn--ghost:hover {
+		background: var(--liwe3-accent-subtle);
+	}
+
+	.liwe3-btn--success {
+		background: var(--liwe3-success);
+		color: var(--liwe3-text-on-success);
+		border-color: var(--liwe3-success);
+	}
+
+	.liwe3-btn--success:hover {
+		background: var(--liwe3-success-hover);
+		border-color: var(--liwe3-success-hover);
+	}
+
+	.liwe3-btn--success.liwe3-btn--outline {
+		background: transparent;
+		color: var(--liwe3-success);
+		border-color: var(--liwe3-success);
+	}
+
+	.liwe3-btn--success.liwe3-btn--outline:hover {
+		background: var(--liwe3-success-subtle);
+	}
+
+	.liwe3-btn--success.liwe3-btn--ghost {
+		background: transparent;
+		border-color: transparent;
+		color: var(--liwe3-success);
+	}
+
+	.liwe3-btn--success.liwe3-btn--ghost:hover {
+		background: var(--liwe3-success-subtle);
+	}
+
+	.liwe3-btn--warning {
+		background: var(--liwe3-warning);
+		color: var(--liwe3-text-on-warning);
+		border-color: var(--liwe3-warning);
+	}
+
+	.liwe3-btn--warning:hover {
+		background: var(--liwe3-warning-hover);
+		border-color: var(--liwe3-warning-hover);
+	}
+
+	.liwe3-btn--warning.liwe3-btn--outline {
+		background: transparent;
+		color: var(--liwe3-warning);
+		border-color: var(--liwe3-warning);
+	}
+
+	.liwe3-btn--warning.liwe3-btn--outline:hover {
+		background: var(--liwe3-warning-subtle);
+	}
+
+	.liwe3-btn--warning.liwe3-btn--ghost {
+		background: transparent;
+		border-color: transparent;
+		color: var(--liwe3-warning);
+	}
+
+	.liwe3-btn--warning.liwe3-btn--ghost:hover {
+		background: var(--liwe3-warning-subtle);
+	}
+
+	.liwe3-btn--info {
+		background: var(--liwe3-info);
+		color: var(--liwe3-text-on-info);
+		border-color: var(--liwe3-info);
+	}
+
+	.liwe3-btn--info:hover {
+		background: var(--liwe3-info-hover);
+		border-color: var(--liwe3-info-hover);
+	}
+
+	.liwe3-btn--info.liwe3-btn--outline {
+		background: transparent;
+		color: var(--liwe3-info);
+		border-color: var(--liwe3-info);
+	}
+
+	.liwe3-btn--info.liwe3-btn--outline:hover {
+		background: var(--liwe3-info-subtle);
+	}
+
+	.liwe3-btn--info.liwe3-btn--ghost {
+		background: transparent;
+		border-color: transparent;
+		color: var(--liwe3-info);
+	}
+
+	.liwe3-btn--info.liwe3-btn--ghost:hover {
+		background: var(--liwe3-info-subtle);
+	}
+
+	.liwe3-btn--danger {
+		background: var(--liwe3-error);
+		color: var(--liwe3-text-on-error);
+		border-color: var(--liwe3-error);
+	}
+
+	.liwe3-btn--danger:hover {
+		background: var(--liwe3-error-hover);
+		border-color: var(--liwe3-error-hover);
+	}
+
+	.liwe3-btn--danger.liwe3-btn--outline {
+		background: transparent;
+		color: var(--liwe3-error);
+		border-color: var(--liwe3-error);
+	}
+
+	.liwe3-btn--danger.liwe3-btn--outline:hover {
+		background: var(--liwe3-error-subtle);
+	}
+
+	.liwe3-btn--danger.liwe3-btn--ghost {
+		background: transparent;
+		border-color: transparent;
+		color: var(--liwe3-error);
+	}
+
+	.liwe3-btn--danger.liwe3-btn--ghost:hover {
+		background: var(--liwe3-error-subtle);
+	}
+
+	.liwe3-input, .liwe3-select, .liwe3-textarea {
+		padding: var(--liwe3-space-2) var(--liwe3-space-3);
+		border: 1px solid var(--liwe3-border);
+		border-radius: var(--liwe3-radius-md);
+		background: var(--liwe3-surface);
+		color: var(--liwe3-text);
+		font-family: var(--liwe3-font-sans);
+		font-size: var(--liwe3-text-sm);
+		line-height: var(--liwe3-leading-normal);
+		transition: border-color var(--liwe3-duration-fast) var(--liwe3-ease-out);
+	}
+
+	.liwe3-input:focus, .liwe3-select:focus, .liwe3-textarea:focus {
+		border-color: var(--liwe3-primary);
+		outline: none;
+		box-shadow: 0 0 0 2px oklch(from var(--liwe3-primary) l c h / 0.2);
+	}
+
+	.liwe3-card {
+		background: var(--liwe3-surface-raised);
+		border: 1px solid var(--liwe3-border-subtle);
+		border-radius: var(--liwe3-radius-lg);
+		padding: var(--liwe3-space-6);
+	}
+
+	.liwe3-alert--info {
+		background: var(--liwe3-info-subtle);
+		color: var(--liwe3-text);
+		border: 1px solid var(--liwe3-info);
+	}
+	.liwe3-alert--success {
+		background: var(--liwe3-success-subtle);
+		color: var(--liwe3-text);
+		border: 1px solid var(--liwe3-success);
+	}
+	.liwe3-alert--warning {
+		background: var(--liwe3-warning-subtle);
+		color: var(--liwe3-text);
+		border: 1px solid var(--liwe3-warning);
+	}
+	.liwe3-alert--error {
+		background: var(--liwe3-error-subtle);
+		color: var(--liwe3-text);
+		border: 1px solid var(--liwe3-error);
+	}
+}

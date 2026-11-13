@@ -1,0 +1,90 @@
+/* LiWE3 Typography - Generated */
+@layer liwe3.base {
+	body {
+		margin: 0;
+		padding: 0;
+		font-family: var(--liwe3-font-sans);
+		font-size: var(--liwe3-text-base);
+		line-height: var(--liwe3-leading-normal);
+		background-color: var(--liwe3-surface);
+		color: var(--liwe3-text);
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		color: var(--liwe3-text);
+		font-weight: var(--liwe3-weight-semibold);
+		line-height: var(--liwe3-leading-tight);
+	}
+
+	h1 {
+		font-size: var(--liwe3-text-3xl);
+	}
+	h2 {
+		font-size: var(--liwe3-text-2xl);
+	}
+	h3 {
+		font-size: var(--liwe3-text-xl);
+	}
+	h4 {
+		font-size: var(--liwe3-text-lg);
+	}
+	h5 {
+		font-size: var(--liwe3-text-base);
+		font-weight: var(--liwe3-weight-medium);
+	}
+	h6 {
+		font-size: var(--liwe3-text-sm);
+		font-weight: var(--liwe3-weight-medium);
+	}
+
+	p {
+		color: var(--liwe3-text-muted);
+		line-height: var(--liwe3-leading-relaxed);
+		margin: 0 0 var(--liwe3-space-4);
+	}
+
+	a {
+		color: var(--liwe3-primary);
+		text-decoration: none;
+		transition: color var(--liwe3-duration-fast) var(--liwe3-ease-out);
+	}
+
+	a:hover {
+		color: var(--liwe3-primary-hover);
+		text-decoration: underline;
+	}
+
+	small {
+		font-size: var(--liwe3-text-sm);
+	}
+
+	code {
+		font-family: var(--liwe3-font-mono);
+		font-size: 0.9em;
+		background: var(--liwe3-surface-sunken);
+		padding: var(--liwe3-space-1) var(--liwe3-space-2);
+		border-radius: var(--liwe3-radius-sm);
+	}
+
+	pre {
+		font-family: var(--liwe3-font-mono);
+		font-size: var(--liwe3-text-sm);
+		background: var(--liwe3-surface-sunken);
+		padding: var(--liwe3-space-4);
+		border-radius: var(--liwe3-radius-md);
+		overflow-x: auto;
+	}
+
+	pre code {
+		background: none;
+		padding: 0;
+	}
+
+	blockquote {
+		border-left: 4px solid var(--liwe3-primary);
+		margin: 0 0 var(--liwe3-space-4);
+		padding: var(--liwe3-space-2) var(--liwe3-space-4);
+		color: var(--liwe3-text-muted);
+		font-style: italic;
+	}
+}

@@ -1,0 +1,83 @@
+/* LiWE3 Utilities - Generated */
+@layer liwe3.utilities {
+	.liwe3-surface {
+		background: var(--liwe3-surface);
+		color: var(--liwe3-text);
+	}
+	.liwe3-surface-sunken {
+		background: var(--liwe3-surface-sunken);
+		color: var(--liwe3-text);
+	}
+	.liwe3-surface-raised {
+		background: var(--liwe3-surface-raised);
+		color: var(--liwe3-text);
+	}
+
+	.liwe3-stack {
+		display: flex;
+		flex-direction: column;
+		gap: var(--liwe3-space-4);
+	}
+	.liwe3-stack--sm {
+		gap: var(--liwe3-space-2);
+	}
+	.liwe3-stack--lg {
+		gap: var(--liwe3-space-8);
+	}
+
+	.liwe3-inline {
+		display: flex;
+		flex-direction: row;
+		gap: var(--liwe3-space-4);
+		align-items: center;
+	}
+
+	.liwe3-row {
+		display: grid;
+		grid-template-columns: repeat(12, 1fr);
+		gap: var(--liwe3-space-4);
+		width: 100%;
+	}
+	.liwe3-col-1 {
+		grid-column: span 1;
+	}
+	.liwe3-col-2 {
+		grid-column: span 2;
+	}
+	.liwe3-col-3 {
+		grid-column: span 3;
+	}
+	.liwe3-col-4 {
+		grid-column: span 4;
+	}
+	.liwe3-col-5 {
+		grid-column: span 5;
+	}
+	.liwe3-col-6 {
+		grid-column: span 6;
+	}
+	.liwe3-col-7 {
+		grid-column: span 7;
+	}
+	.liwe3-col-8 {
+		grid-column: span 8;
+	}
+	.liwe3-col-9 {
+		grid-column: span 9;
+	}
+	.liwe3-col-10 {
+		grid-column: span 10;
+	}
+	.liwe3-col-11 {
+		grid-column: span 11;
+	}
+	.liwe3-col-12 {
+		grid-column: span 12;
+	}
+
+	@media (max-width: 640px) {
+		[class*="liwe3-col-"] {
+			grid-column: span 12;
+		}
+	}
+}

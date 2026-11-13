@@ -1,0 +1,26 @@
+/* LiWE3 Base Styles - Generated */
+@layer liwe3.reset {
+	*, *::before, *::after {
+		box-sizing: border-box;
+	}
+}
+
+@layer liwe3.base {
+	:root {
+		color-scheme: light dark;
+		background-color: var(--liwe3-surface);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		[data-theme] {
+			--liwe3-duration-fast: 0ms;
+			--liwe3-duration-base: 0ms;
+			--liwe3-duration-slow: 0ms;
+		}
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--liwe3-focus-ring);
+		outline-offset: 2px;
+	}
+}
