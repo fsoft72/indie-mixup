@@ -1,0 +1,41 @@
+.claude
+.*.swp
+node_modules
+dist
+_app
+@apps/playground/public/index.html
+@apps/playground/public/robots.txt
+.svelte-kit
+.turbo
+@apps/*/worker/drizzle/meta
+.env
+.env.production
+.env.staging
+.env.local
+.dev.vars*
+!.dev.vars.*.secret
+!.env*.example
+!.dev*.example
+.trash
+wrangler.tar.bz2
+**/.wrangler
+.worktrees
+docs/superpowers
+.codegraph
+/tsconfig.paths.json
+__pycache__
+.playwright-mcp
+playground/backend/public/theme
+playground/frontend/static/theme
+app/frontend/static/theme
+
+# isolated installs from `pnpm run playground:setup` (--ignore-workspace)
+playground/backend/pnpm-lock.yaml
+playground/frontend/pnpm-lock.yaml
+
+# tsc -b incremental state
+*.tsbuildinfo
+
+# SvelteKit static build output of app/frontend (adapter-static writes it here)
+app/backend/public/index.html
+.superpowers

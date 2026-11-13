@@ -1,0 +1,18 @@
+{
+	"extends": "../../../../tsconfig.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"noEmit": true,
+		"paths": {
+			"@frontend/liwe3": ["../../../../liwe3/frontend/core/src"],
+			"@frontend/liwe3/*": ["../../../../liwe3/frontend/core/src/*"],
+			"@frontend-modules/indiegame": ["./src"],
+			"@frontend-modules/indiegame/*": ["./src/*"]
+		}
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.js",
+		"src/**/*.svelte"
+	]
+}

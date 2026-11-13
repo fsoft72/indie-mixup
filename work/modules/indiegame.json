@@ -1,0 +1,1948 @@
+{
+  "id": "mod.igm00000.main",
+  "name": "IndieGame",
+  "doc": "Public catalog of indie games with remixes, reports and rankings. Games link to a public GitHub repo of the author.",
+  "short_descr": "Indie games catalog and remix community",
+  "version": 1,
+  "modified": 0,
+  "locked_by": "",
+  "endpoints": {
+    "endp.igm00105.0069": {
+      "id": "endp.igm00105.0069",
+      "method": "GET",
+      "url": "/indiegame/list",
+      "short_descr": "List games",
+      "description": "Public catalog, visible games only, optional search by name",
+      "parameters": [
+        {
+          "id": "param.igm00102.0066",
+          "type": "str",
+          "name": "q",
+          "description": "Search text on the name",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00103.0067",
+          "type": "int",
+          "name": "page",
+          "description": "Page number, from 1",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "1",
+          "value": ""
+        },
+        {
+          "id": "param.igm00104.0068",
+          "type": "int",
+          "name": "limit",
+          "description": "Page size, 1 to 100",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "20",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieGameCard",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false
+      }
+    },
+    "endp.igm00107.006b": {
+      "id": "endp.igm00107.006b",
+      "method": "GET",
+      "url": "/indiegame/get",
+      "short_descr": "Get a game",
+      "description": "Game page with ancestors and direct remixes",
+      "parameters": [
+        {
+          "id": "param.igm00106.006a",
+          "type": "str",
+          "name": "id",
+          "description": "Game id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieGameDetail",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false
+      }
+    },
+    "endp.igm00110.006e": {
+      "id": "endp.igm00110.006e",
+      "method": "POST",
+      "url": "/indiegame/track",
+      "short_descr": "Track a view or a download",
+      "description": "Records one view or download per visitor, game, kind and UTC day",
+      "parameters": [
+        {
+          "id": "param.igm00108.006c",
+          "type": "str",
+          "name": "id_game",
+          "description": "Game id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00109.006d",
+          "type": "str",
+          "name": "kind",
+          "description": "view or download",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieGameTrackResult",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false
+      }
+    },
+    "endp.igm00114.0072": {
+      "id": "endp.igm00114.0072",
+      "method": "GET",
+      "url": "/indiegame/ranking/games",
+      "short_descr": "Games ranking",
+      "description": "Most viewed or downloaded games",
+      "parameters": [
+        {
+          "id": "param.igm00111.006f",
+          "type": "str",
+          "name": "kind",
+          "description": "views or downloads",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00112.0070",
+          "type": "str",
+          "name": "window",
+          "description": "all, 30d, 7d or 1d",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00113.0071",
+          "type": "int",
+          "name": "limit",
+          "description": "Max rows, 1 to 100",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "20",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieGameRankingEntry",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false
+      }
+    },
+    "endp.igm00118.0076": {
+      "id": "endp.igm00118.0076",
+      "method": "GET",
+      "url": "/indiegame/ranking/developers",
+      "short_descr": "Developers ranking",
+      "description": "Developers with most original games or most remixes",
+      "parameters": [
+        {
+          "id": "param.igm00115.0073",
+          "type": "str",
+          "name": "kind",
+          "description": "originals or remixes",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00116.0074",
+          "type": "str",
+          "name": "window",
+          "description": "all, 30d, 7d or 1d",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00117.0075",
+          "type": "int",
+          "name": "limit",
+          "description": "Max rows, 1 to 100",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "20",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieDevRankingEntry",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false
+      }
+    },
+    "endp.igm00120.0078": {
+      "id": "endp.igm00120.0078",
+      "method": "GET",
+      "url": "/indiegame/developer/get",
+      "short_descr": "Developer profile",
+      "description": "Counts and visible games of a developer",
+      "parameters": [
+        {
+          "id": "param.igm00119.0077",
+          "type": "str",
+          "name": "id_user",
+          "description": "User id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": true,
+          "query": true,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieDeveloper",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false
+      }
+    },
+    "endp.igm00129.0081": {
+      "id": "endp.igm00129.0081",
+      "method": "POST",
+      "url": "/indiegame/add",
+      "short_descr": "Create or edit a game",
+      "description": "Creates a game (no id) or edits one of your games (id)",
+      "parameters": [
+        {
+          "id": "param.igm00121.0079",
+          "type": "str",
+          "name": "id",
+          "description": "Game id, omitted to create",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00122.007a",
+          "type": "str",
+          "name": "name",
+          "description": "Game name",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00123.007b",
+          "type": "str",
+          "name": "description",
+          "description": "Description",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00124.007c",
+          "type": "str",
+          "name": "repo_url",
+          "description": "Public GitHub repo url (create only)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00125.007d",
+          "type": "json",
+          "name": "screenshots",
+          "description": "Screenshot urls",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00126.007e",
+          "type": "json",
+          "name": "gallery",
+          "description": "Gallery image urls",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00127.007f",
+          "type": "json",
+          "name": "video_urls",
+          "description": "Gameplay video urls",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00128.0080",
+          "type": "str",
+          "name": "id_remix_of",
+          "description": "Game this is a remix of",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieGameDetail",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false
+      }
+    },
+    "endp.igm00131.0083": {
+      "id": "endp.igm00131.0083",
+      "method": "DELETE",
+      "url": "/indiegame/del",
+      "short_descr": "Delete a game",
+      "description": "Soft delete of one of your games",
+      "parameters": [
+        {
+          "id": "param.igm00130.0082",
+          "type": "str",
+          "name": "id",
+          "description": "Game id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false
+      }
+    },
+    "endp.igm00132.0084": {
+      "id": "endp.igm00132.0084",
+      "method": "GET",
+      "url": "/indiegame/mine",
+      "short_descr": "My games",
+      "description": "Games published by the caller",
+      "parameters": [],
+      "returnType": "IndieGameCard",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false
+      }
+    },
+    "endp.igm00135.0087": {
+      "id": "endp.igm00135.0087",
+      "method": "POST",
+      "url": "/indiegame/report",
+      "short_descr": "Report a game",
+      "description": "Report inappropriate content",
+      "parameters": [
+        {
+          "id": "param.igm00133.0085",
+          "type": "str",
+          "name": "id_game",
+          "description": "Game id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00134.0086",
+          "type": "str",
+          "name": "reason",
+          "description": "Reason",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieGameReport",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false
+      }
+    },
+    "endp.igm00138.008a": {
+      "id": "endp.igm00138.008a",
+      "method": "POST",
+      "url": "/indiegame/remix/report",
+      "short_descr": "Is this a remix of your game?",
+      "description": "The author of a game reports another game as an undeclared remix",
+      "parameters": [
+        {
+          "id": "param.igm00136.0088",
+          "type": "str",
+          "name": "id_game",
+          "description": "Reported game",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00137.0089",
+          "type": "str",
+          "name": "id_original",
+          "description": "Your original game",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieRemixReport",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false
+      }
+    },
+    "endp.igm00139.008b": {
+      "id": "endp.igm00139.008b",
+      "method": "GET",
+      "url": "/indiegame/remix/inbox",
+      "short_descr": "Remix reports for me",
+      "description": "Remix reports about the games of the caller",
+      "parameters": [],
+      "returnType": "IndieRemixReport",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false
+      }
+    },
+    "endp.igm00142.008e": {
+      "id": "endp.igm00142.008e",
+      "method": "POST",
+      "url": "/indiegame/remix/answer",
+      "short_descr": "Answer a remix report",
+      "description": "The author of the reported game accepts or contests",
+      "parameters": [
+        {
+          "id": "param.igm00140.008c",
+          "type": "str",
+          "name": "id_report",
+          "description": "Report id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00141.008d",
+          "type": "boolean",
+          "name": "accept",
+          "description": "True to accept, false to contest",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieRemixReport",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false
+      }
+    },
+    "endp.igm00143.008f": {
+      "id": "endp.igm00143.008f",
+      "method": "GET",
+      "url": "/indiegame/admin/reports",
+      "short_descr": "Moderation queue",
+      "description": "Open content reports and contested remix reports",
+      "parameters": [],
+      "returnType": "IndieAdminReports",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.igm00002.mod1": true
+      }
+    },
+    "endp.igm00146.0092": {
+      "id": "endp.igm00146.0092",
+      "method": "POST",
+      "url": "/indiegame/admin/hide",
+      "short_descr": "Hide or show a game",
+      "description": "Moderators hide a game from catalog and rankings",
+      "parameters": [
+        {
+          "id": "param.igm00144.0090",
+          "type": "str",
+          "name": "id",
+          "description": "Game id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00145.0091",
+          "type": "boolean",
+          "name": "hidden",
+          "description": "True to hide, false to show",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieGameCard",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.igm00002.mod1": true
+      }
+    },
+    "endp.igm00149.0095": {
+      "id": "endp.igm00149.0095",
+      "method": "POST",
+      "url": "/indiegame/admin/remix/decide",
+      "short_descr": "Decide a contested remix report",
+      "description": "Confirm or reject a contested remix report",
+      "parameters": [
+        {
+          "id": "param.igm00147.0093",
+          "type": "str",
+          "name": "id_report",
+          "description": "Report id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.igm00148.0094",
+          "type": "boolean",
+          "name": "confirm",
+          "description": "True to confirm the remix",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieRemixReport",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.igm00002.mod1": true
+      }
+    },
+    "endp.igm00151.0097": {
+      "id": "endp.igm00151.0097",
+      "method": "POST",
+      "url": "/indiegame/admin/report/close",
+      "short_descr": "Close a content report",
+      "description": "Mark a content report as closed",
+      "parameters": [
+        {
+          "id": "param.igm00150.0096",
+          "type": "str",
+          "name": "id_report",
+          "description": "Report id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "IndieGameReport",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.igm00002.mod1": true
+      }
+    }
+  },
+  "functions": {},
+  "enums": {},
+  "types": {
+    "typ.igm00016.0010": {
+      "id": "typ.igm00016.0010",
+      "name": "IndieGame",
+      "description": "A game of the catalog",
+      "doc": "",
+      "db_table": "indiegame_games",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00001.0001",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Unique identifier",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00002.0002",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Domain",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00003.0003",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Author (user id)",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00004.0004",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game name",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00005.0005",
+          "name": "description",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game description",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00006.0006",
+          "name": "repo_url",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Canonical public GitHub repo url",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00007.0007",
+          "name": "repo_id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Numeric GitHub repo id (unique)",
+          "index": "u",
+          "size": 32,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00008.0008",
+          "name": "screenshots",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Screenshot urls (array of strings)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00009.0009",
+          "name": "gallery",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Gallery image urls (array of strings)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00010.000a",
+          "name": "video_urls",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Gameplay video urls (array of strings)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00011.000b",
+          "name": "id_remix_of",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Game this one is a remix of (empty for originals)",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00012.000c",
+          "name": "remix_locked",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "True once the remix link was accepted or confirmed after a report",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00013.000d",
+          "name": "status",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "visible, hidden or deleted",
+          "index": "m",
+          "size": 16,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00014.000e",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Creation date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00015.000f",
+          "name": "updated",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Last update date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00025.0019": {
+      "id": "typ.igm00025.0019",
+      "name": "IndieGameEvent",
+      "description": "A view or a download of a game (one per visitor, game, kind and UTC day)",
+      "doc": "",
+      "db_table": "indiegame_events",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00017.0011",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Unique identifier",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00018.0012",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Domain",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00019.0013",
+          "name": "id_game",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game id",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00020.0014",
+          "name": "kind",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "view or download",
+          "index": "m",
+          "size": 16,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00021.0015",
+          "name": "day",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UTC day, format YYYY-MM-DD",
+          "index": "m",
+          "size": 10,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00022.0016",
+          "name": "visitor",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Hash of the anonymous visitor",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00023.0017",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Creation date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00024.0018",
+          "name": "updated",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Last update date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00036.0024": {
+      "id": "typ.igm00036.0024",
+      "name": "IndieRemixReport",
+      "description": "A report that a game is a remix of another game",
+      "doc": "",
+      "db_table": "indiegame_remix_reports",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00026.001a",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Unique identifier",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00027.001b",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Domain",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00028.001c",
+          "name": "id_game",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Reported game (the suspected remix)",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00029.001d",
+          "name": "id_original",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Original game of the reporter",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00030.001e",
+          "name": "id_reporter",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "User who reports (author of the original)",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00031.001f",
+          "name": "id_owner",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Author of the reported game",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00032.0020",
+          "name": "status",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "pending, accepted, contested, confirmed or rejected",
+          "index": "m",
+          "size": 16,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00033.0021",
+          "name": "decided_by",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Moderator who decided a contested report",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00034.0022",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Creation date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00035.0023",
+          "name": "updated",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Last update date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00045.002d": {
+      "id": "typ.igm00045.002d",
+      "name": "IndieGameReport",
+      "description": "A report of inappropriate content on a game",
+      "doc": "",
+      "db_table": "indiegame_reports",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00037.0025",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Unique identifier",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00038.0026",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Domain",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00039.0027",
+          "name": "id_game",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Reported game",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00040.0028",
+          "name": "id_reporter",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "User who reports",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00041.0029",
+          "name": "reason",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Reason of the report",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00042.002a",
+          "name": "status",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "open or closed",
+          "index": "m",
+          "size": 16,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00043.002b",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Creation date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00044.002c",
+          "name": "updated",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Last update date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00058.003a": {
+      "id": "typ.igm00058.003a",
+      "name": "IndieGameCard",
+      "description": "Game summary for lists",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00046.002e",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game id",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00047.002f",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Author user id",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00048.0030",
+          "name": "author_name",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Author display name",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00049.0031",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game name",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00050.0032",
+          "name": "repo_url",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "GitHub repo url",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00051.0033",
+          "name": "screenshots",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Screenshot urls",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00052.0034",
+          "name": "id_remix_of",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Remix of game id",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00053.0035",
+          "name": "is_remix",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "True if the game is a remix",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00054.0036",
+          "name": "status",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "visible, hidden or deleted",
+          "index": "",
+          "size": 16,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00055.0037",
+          "name": "views",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Total views",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00056.0038",
+          "name": "downloads",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Total downloads",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00057.0039",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Creation date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00062.003e": {
+      "id": "typ.igm00062.003e",
+      "name": "IndieLineageItem",
+      "description": "One ancestor of a remix",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00059.003b",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game id",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00060.003c",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game name",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00061.003d",
+          "name": "state",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "ok, removed or unavailable",
+          "index": "",
+          "size": 16,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00081.0051": {
+      "id": "typ.igm00081.0051",
+      "name": "IndieGameDetail",
+      "description": "Full game page",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00063.003f",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game id",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00064.0040",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Author user id",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00065.0041",
+          "name": "author_name",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Author display name",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00066.0042",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game name",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00067.0043",
+          "name": "repo_url",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "GitHub repo url",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00068.0044",
+          "name": "screenshots",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Screenshot urls",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00069.0045",
+          "name": "id_remix_of",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Remix of game id",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00070.0046",
+          "name": "is_remix",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "True if the game is a remix",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00071.0047",
+          "name": "status",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "visible, hidden or deleted",
+          "index": "",
+          "size": 16,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00072.0048",
+          "name": "views",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Total views",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00073.0049",
+          "name": "downloads",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Total downloads",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00074.004a",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Creation date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00075.004b",
+          "name": "description",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Description",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00076.004c",
+          "name": "gallery",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Gallery image urls",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00077.004d",
+          "name": "video_urls",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Gameplay video urls",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00078.004e",
+          "name": "remix_locked",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Remix link locked",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00079.004f",
+          "name": "lineage",
+          "type": "IndieLineageItem",
+          "is_array": true,
+          "is_required": false,
+          "is_private": false,
+          "description": "Ancestors, root first",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00080.0050",
+          "name": "remixes",
+          "type": "IndieGameCard",
+          "is_array": true,
+          "is_required": false,
+          "is_private": false,
+          "description": "Direct remixes of this game",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00084.0054": {
+      "id": "typ.igm00084.0054",
+      "name": "IndieGameTrackResult",
+      "description": "Result of tracking a view or a download",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00082.0052",
+          "name": "counted",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "False if the visitor was already counted today",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00083.0053",
+          "name": "repo_url",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "GitHub repo url of the game",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00088.0058": {
+      "id": "typ.igm00088.0058",
+      "name": "IndieGameRankingEntry",
+      "description": "Row of a game ranking",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00085.0055",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game id",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00086.0056",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Game name",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00087.0057",
+          "name": "count",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Score",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00092.005c": {
+      "id": "typ.igm00092.005c",
+      "name": "IndieDevRankingEntry",
+      "description": "Row of a developer ranking",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00089.0059",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Author user id",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00090.005a",
+          "name": "author_name",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Author display name",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00091.005b",
+          "name": "count",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Score",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00098.0062": {
+      "id": "typ.igm00098.0062",
+      "name": "IndieDeveloper",
+      "description": "Developer profile",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00093.005d",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "User id",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00094.005e",
+          "name": "author_name",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Display name",
+          "index": "",
+          "size": 255,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00095.005f",
+          "name": "originals",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Original games",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00096.0060",
+          "name": "remixes",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Remixes",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00097.0061",
+          "name": "games",
+          "type": "IndieGameCard",
+          "is_array": true,
+          "is_required": false,
+          "is_private": false,
+          "description": "Visible games",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.igm00101.0065": {
+      "id": "typ.igm00101.0065",
+      "name": "IndieAdminReports",
+      "description": "Moderation queue",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.igm00099.0063",
+          "name": "reports",
+          "type": "IndieGameReport",
+          "is_array": true,
+          "is_required": false,
+          "is_private": false,
+          "description": "Open content reports",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.igm00100.0064",
+          "name": "remix_reports",
+          "type": "IndieRemixReport",
+          "is_array": true,
+          "is_required": false,
+          "is_private": false,
+          "description": "Contested remix reports",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    }
+  },
+  "permissions": {
+    "perm.igm00002.mod1": {
+      "id": "perm.igm00002.mod1",
+      "name": "indiegame.moderate",
+      "description": "Can hide games and decide reports"
+    }
+  },
+  "events": {
+    "evt.igm00152.0098": {
+      "id": "evt.igm00152.0098",
+      "name": "indiegame.game.created",
+      "description": "A game was published"
+    },
+    "evt.igm00153.0099": {
+      "id": "evt.igm00153.0099",
+      "name": "indiegame.game.hidden",
+      "description": "A game was hidden or shown by a moderator"
+    },
+    "evt.igm00154.009a": {
+      "id": "evt.igm00154.009a",
+      "name": "indiegame.remix.reported",
+      "description": "A game was reported as a remix"
+    }
+  },
+  "id_owner": "user.4e3cccf20d3afbb0070e52f33c09c40a.7x96",
+  "domain": "os3"
+}
