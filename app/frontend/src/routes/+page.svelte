@@ -80,7 +80,20 @@ onMount( () => {
 		</div>
 	</div>
 	<div class="art">
-		<video bind:this={heroVideo} src={heroSrc} autoplay muted loop playsinline preload="none" disablepictureinpicture tabindex="-1" aria-label="Indie Mixup video"></video>
+		<video
+			bind:this={heroVideo}
+			poster="/power.webp"
+			src={heroSrc}
+			autoplay
+			muted
+			loop
+			playsinline
+			preload="none"
+			disablepictureinpicture
+			tabindex="-1"
+			aria-label="Indie Mixup video"
+		>
+		</video>
 		<button type="button" class="sound" onclick={toggleSound} aria-pressed={soundOn} aria-label={soundOn ? 'Mute the video' : 'Turn the video sound on'}>
 			<Icon name={soundOn ? 'volume' : 'volume-off'} size={18} />
 		</button>

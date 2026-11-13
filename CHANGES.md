@@ -2,6 +2,10 @@
 
 ## 2026-11-13
 
+### app: poster for the hero video
+
+- `assets/power.webp` (20 KB) copied to `app/frontend/static/power.webp` and used as the `poster` of the hero video: it is shown from the first paint, during the 2 second delay, and if the video fails to load. Served as a static asset (no worker call).
+
 ### app: lighter hero video, delayed load and sound button
 
 - The hero video was re-encoded (H.264 720p, crf 29, AAC 96k stereo, `faststart`): 43 MB to 4.3 MB, audio kept. Uploaded to R2 as `system|site|indiemixup-hero.mp4` (new key because uploads are cached as immutable); the old `indiemixup.mp4` object was deleted.
