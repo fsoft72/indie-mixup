@@ -2,6 +2,12 @@
 
 ## 2026-11-13
 
+### app: lighter hero video, delayed load and sound button
+
+- The hero video was re-encoded (H.264 720p, crf 29, AAC 96k stereo, `faststart`): 43 MB to 4.3 MB, audio kept. Uploaded to R2 as `system|site|indiemixup-hero.mp4` (new key because uploads are cached as immutable); the old `indiemixup.mp4` object was deleted.
+- The video starts loading 2 seconds after the page is shown (`HERO_VIDEO_DELAY_MS`, `preload="none"` until then), to keep it out of the first paint.
+- New "Sound off / Sound on" button over the video (browsers allow sound only after a click). New `volume` and `volume-off` icons in the indiegame `Icon` component.
+
 ### app: hero video served from R2
 
 - `assets/indiemixup.mp4` uploaded to the prod bucket as `system|site|indiemixup.mp4` (`wrangler r2 object put ... --remote`). The file itself is not committed.

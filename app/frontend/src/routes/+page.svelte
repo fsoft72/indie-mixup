@@ -5,11 +5,17 @@ import { onMount } from 'svelte';
 import { env } from '$env/dynamic/public';
 
 /** Hero video, stored in R2 under the `site` folder of the system domain */
-const HERO_VIDEO_URL = `${env.PUBLIC_LIWE_SERVER ?? ''}/api/upload/get?key=${encodeURIComponent( 'site|indiemixup.mp4' )}`;
+const HERO_VIDEO_URL = `${env.PUBLIC_LIWE_SERVER ?? ''}/api/upload/get?key=${encodeURIComponent( 'site|indiemixup-hero.mp4' )}`;
+
+/** The hero video starts loading this long after the page is shown, so it does not compete with the first paint */
+const HERO_VIDEO_DELAY_MS = 2000;
 
 const PAGE_SIZE = 24;
 const SEARCH_DELAY_MS = 300;
 
+let heroVideo : HTMLVideoElement | undefined = $state();
+let soundOn = $state( false );
+let heroSrc : string | undefined = $state();
 let games : IndieGameCard[] = $state( [] );
 let search = $state( '' );
 let page = $state( 1 );
@@ -46,7 +52,19 @@ const more = () => {
 	return load( false );
 };
 
-onMount( () => load( true ) );
+/** Turns the hero video sound on or off (browsers only allow sound after a user click) */
+const toggleSound = () => {
+	if ( !heroVideo ) return;
+	heroVideo.muted = !heroVideo.muted;
+	soundOn = !heroVideo.muted;
+};
+
+onMount( () => {
+	const timer = setTimeout( () => heroSrc = HERO_VIDEO_URL, HERO_VIDEO_DELAY_MS );
+	load( true );
+
+	return () => clearTimeout( timer );
+} );
 </script>
 
 <svelte:head><title>Indie Mixup - free indie games and remixes</title></svelte:head>
@@ -62,7 +80,11 @@ onMount( () => load( true ) );
 		</div>
 	</div>
 	<div class="art">
-		<video src={HERO_VIDEO_URL} autoplay muted loop playsinline preload="auto" disablepictureinpicture tabindex="-1" aria-label="Indie Mixup video"></video>
+		<video bind:this={heroVideo} src={heroSrc} autoplay muted loop playsinline preload="none" disablepictureinpicture tabindex="-1" aria-label="Indie Mixup video"></video>
+		<button type="button" class="sound" onclick={toggleSound} aria-pressed={soundOn} aria-label={soundOn ? 'Mute the video' : 'Turn the video sound on'}>
+			<Icon name={soundOn ? 'volume' : 'volume-off'} size={18} />
+			<span>{soundOn ? 'Sound on' : 'Sound off'}</span>
+		</button>
 	</div>
 </section>
 
@@ -105,6 +127,28 @@ onMount( () => load( true ) );
 	border: 0;
 	object-fit: cover;
 	pointer-events: none;
+}
+.sound {
+	position: absolute;
+	right: var(--liwe3-space-3);
+	bottom: var(--liwe3-space-3);
+	display: inline-flex;
+	align-items: center;
+	gap: var(--liwe3-space-2);
+	padding: var(--liwe3-space-2) var(--liwe3-space-3);
+	border: 1px solid var(--im-panel-border);
+	border-radius: var(--liwe3-radius-md);
+	background: color-mix(in oklch, var(--liwe3-surface) 78%, transparent);
+	backdrop-filter: blur(6px);
+	color: var(--liwe3-text);
+	font: inherit;
+	font-size: var(--liwe3-text-sm);
+	cursor: pointer;
+}
+.sound:hover,
+.sound:focus-visible {
+	border-color: var(--liwe3-primary);
+	color: var(--liwe3-primary);
 }
 @media (max-width: 52rem) {
 	.hero {
