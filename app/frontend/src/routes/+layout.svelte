@@ -59,7 +59,7 @@ const logout = async () => {
 			</nav>
 
 			<div class="actions">
-				<a class="liwe3-btn liwe3-btn--primary" href="/submit"><Icon name="plus" size={16} /> Submit a game</a>
+				<a class="liwe3-btn liwe3-btn--primary im-cta" href="/submit"><Icon name="plus" size={16} /> Submit a game</a>
 				{#if storeUser.isLoggedIn}
 					<span class="who"><Icon name="user" size={16} /> {storeUser.user.name || storeUser.user.username}</span>
 					<button class="liwe3-btn liwe3-btn--ghost" onclick={logout}>Logout</button>

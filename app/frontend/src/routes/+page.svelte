@@ -53,7 +53,7 @@ onMount( () => load( true ) );
 		<h1>Play. <span class="im-neon">Remix.</span><br />Mix it up.</h1>
 		<p class="lead">Download free indie games straight from their GitHub repos, fork the idea and publish your own remix. Every remix keeps the trail back to the original.</p>
 		<div class="cta">
-			<a class="liwe3-btn liwe3-btn--primary" href="/submit"><Icon name="plus" size={16} /> Submit a game</a>
+			<a class="liwe3-btn liwe3-btn--primary im-cta" href="/submit"><Icon name="plus" size={16} /> Submit a game</a>
 			<a class="liwe3-btn" href="/rankings"><Icon name="trophy" size={16} /> See the rankings</a>
 		</div>
 	</div>

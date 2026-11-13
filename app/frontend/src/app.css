@@ -159,6 +159,31 @@ a:hover {
 	}
 }
 
+/* Call to action: a multicolor ring that cycles around the button (same loop as .im-neon) */
+.im-cta {
+	position: relative;
+}
+
+.im-cta::before {
+	content: "";
+	position: absolute;
+	inset: -5px;
+	padding: 2px;
+	border-radius: calc(var(--liwe3-radius-md) + 5px);
+	background: var(--im-neon-loop);
+	background-size: 200% 100%;
+	animation: im-neon-flow 3.5s linear infinite;
+	pointer-events: none;
+	/* Keeps only the 2px ring: the content box is cut out of the border box */
+	-webkit-mask:
+		linear-gradient(var(--liwe3-text) 0 0) content-box,
+		linear-gradient(var(--liwe3-text) 0 0);
+	-webkit-mask-composite: xor;
+	mask:
+		linear-gradient(var(--liwe3-text) 0 0) content-box exclude,
+		linear-gradient(var(--liwe3-text) 0 0);
+}
+
 .im-muted {
 	color: var(--liwe3-text-muted);
 }
@@ -241,7 +266,7 @@ a:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.im-neon {
+	.im-neon, .im-cta::before {
 		animation: none;
 	}
 	html {
