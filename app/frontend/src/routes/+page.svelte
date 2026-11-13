@@ -83,7 +83,6 @@ onMount( () => {
 		<video bind:this={heroVideo} src={heroSrc} autoplay muted loop playsinline preload="none" disablepictureinpicture tabindex="-1" aria-label="Indie Mixup video"></video>
 		<button type="button" class="sound" onclick={toggleSound} aria-pressed={soundOn} aria-label={soundOn ? 'Mute the video' : 'Turn the video sound on'}>
 			<Icon name={soundOn ? 'volume' : 'volume-off'} size={18} />
-			<span>{soundOn ? 'Sound on' : 'Sound off'}</span>
 		</button>
 	</div>
 </section>
@@ -134,15 +133,15 @@ onMount( () => {
 	bottom: var(--liwe3-space-3);
 	display: inline-flex;
 	align-items: center;
-	gap: var(--liwe3-space-2);
-	padding: var(--liwe3-space-2) var(--liwe3-space-3);
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	padding: 0;
 	border: 1px solid var(--im-panel-border);
-	border-radius: var(--liwe3-radius-md);
+	border-radius: 50%;
 	background: color-mix(in oklch, var(--liwe3-surface) 78%, transparent);
 	backdrop-filter: blur(6px);
 	color: var(--liwe3-text);
-	font: inherit;
-	font-size: var(--liwe3-text-sm);
 	cursor: pointer;
 }
 .sound:hover,
