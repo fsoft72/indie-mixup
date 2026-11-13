@@ -1,0 +1,105 @@
+{
+	"actions": [
+		{
+			"action": "section",
+			"title": "User Invitation Tests",
+			"actions": [
+				{
+					"title": "Create test user for invites",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "invitetest_1",
+						"email": "invitetest_1@example.com",
+						"name": "Invite",
+						"lastname": "Test",
+						"password": "InviteTest123!",
+						"enabled": true,
+						"email_verified": true
+					},
+					"status_code": 200,
+					"fields": [
+						["data.id", "invite_test_user_id"],
+						["data.username", "invite_test_username"]
+					]
+				},
+				{
+					"title": "Login as invite test user",
+					"method": "post",
+					"url": "/api/user/login",
+					"auth": false,
+					"body": {
+						"username": "%(invite_test_username)s",
+						"password": "InviteTest123!"
+					},
+					"status_code": 200,
+					"fields": [
+						["data.token", "invite_test_token"]
+					]
+				},
+				{
+					"action": "copy",
+					"from": "token",
+					"to": "original_token"
+				},
+				{
+					"action": "copy",
+					"from": "invite_test_token",
+					"to": "token"
+				},
+				{
+					"title": "Create user invite",
+					"method": "post",
+					"url": "/api/user/invite/create",
+					"auth": true,
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.id", "mode": "EXISTS" },
+						{ "field": "data.code", "mode": "EXISTS" },
+						{ "field": "data.id_user", "mode": "EQUALS", "value": "%(invite_test_user_id)s" }
+					],
+					"fields": [
+						["data.id", "invite_id"],
+						["data.code", "invite_code"]
+					]
+				},
+				{
+					"title": "Create second user invite",
+					"method": "post",
+					"url": "/api/user/invite/create",
+					"auth": true,
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.id", "mode": "EXISTS" },
+						{ "field": "data.code", "mode": "EXISTS" },
+						{ "field": "data.id_user", "mode": "EQUALS", "value": "%(invite_test_user_id)s" },
+						{ "field": "data.code", "mode": "EQUALS", "value": "%(invite_code)s" }
+					],
+					"fields": [
+						["data.id", "invite_id_2"],
+						["data.code", "invite_code_2"]
+					]
+				},
+				{
+					"action": "copy",
+					"from": "original_token",
+					"to": "token"
+				},
+				{
+					"rem": "Clean up: delete test user (cascading should remove invites)"
+				},
+				{
+					"title": "Delete invite test user",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "%(invite_test_user_id)s"
+					},
+					"status_code": 200
+				}
+			]
+		}
+	]
+}

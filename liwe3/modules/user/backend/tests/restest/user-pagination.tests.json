@@ -1,0 +1,102 @@
+{
+	"actions": [
+		{
+			"action": "section",
+			"title": "User List Pagination Tests",
+			"actions": [
+				{
+					"rem": "Create multiple test users for pagination"
+				},
+				{
+					"title": "Create test users for pagination",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "paguser_%(counter)s",
+						"email": "paguser_%(counter)s@example.com",
+						"name": "Page",
+						"lastname": "User %(counter)s",
+						"password": "PageTest123!",
+						"enabled": true,
+						"email_verified": true
+					},
+					"status_code": 200,
+					"repeat": 5,
+					"fields": [
+						["data.id", "pag_user_id_%(counter)s"]
+					]
+				},
+				{
+					"rem": "Test default list (no pagination)"
+				},
+				{
+					"title": "List all users",
+					"method": "get",
+					"url": "/api/user/list",
+					"auth": true,
+					"status_code": 200,
+					"tests": [
+						{ "field": "data", "mode": "SIZE-GT", "value": 4 }
+					],
+					"fields": [
+						["#data", "total_users"]
+					]
+				},
+				{
+					"rem": "Test pagination with limit"
+				},
+				{
+					"title": "List users with limit",
+					"method": "get",
+					"url": "/api/user/list?limit=3",
+					"auth": true,
+					"status_code": 200,
+					"tests": [
+						{ "field": "data", "mode": "SIZE", "value": 3 }
+					]
+				},
+				{
+					"rem": "Test pagination with offset"
+				},
+				{
+					"title": "List users with offset",
+					"method": "get",
+					"url": "/api/user/list?offset=2&limit=2",
+					"auth": true,
+					"status_code": 200,
+					"tests": [
+						{ "field": "data", "mode": "SIZE", "value": 2 }
+					]
+				},
+				{
+					"rem": "Test large offset (beyond available users)"
+				},
+				{
+					"title": "List users with large offset",
+					"method": "get",
+					"url": "/api/user/list?offset=1000&limit=10",
+					"auth": true,
+					"status_code": 200,
+					"tests": [
+						{ "field": "data", "mode": "SIZE", "value": 0 }
+					]
+				},
+				{
+					"rem": "Clean up: delete test users"
+				},
+				{
+					"title": "Delete pagination test users",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "%(pag_user_id_%(counter)s)s"
+					},
+					"status_code": 200,
+					"repeat": 5
+				}
+			]
+		}
+	]
+}

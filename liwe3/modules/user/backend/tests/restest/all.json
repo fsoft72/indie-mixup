@@ -1,0 +1,101 @@
+{
+	"system": {
+		"base_url": "http://localhost:8787",
+		"authorization_template": "Bearer %(token)s",
+		"stop_on_error": false
+	},
+	"actions": [
+		{
+			"rem": "=== Authentication Tests ==="
+		},
+		{
+			"action": "include",
+			"filename": "wrong-login.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"action": "include",
+			"filename": "admin-login.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"action": "include",
+			"filename": "../../../../system/backend/tests/restest/test-enter.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"action": "include",
+			"filename": "user-auth.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"action": "include",
+			"filename": "user-crud.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"action": "include",
+			"filename": "user-permissions.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"action": "include",
+			"filename": "user-role.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"action": "include",
+			"filename": "user-2fa.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"action": "include",
+			"filename": "user-password-expired.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"action": "include",
+			"filename": "user-invites.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"rem": "=== Pagination Tests ==="
+		},
+		{
+			"action": "include",
+			"filename": "user-pagination.tests.json",
+			"exec": true,
+			"show_filename": true,
+			"skip": true
+		},
+		{
+			"rem": "=== Validation Tests ==="
+		},
+		{
+			"action": "include",
+			"filename": "user-validation.tests.json",
+			"exec": true,
+			"show_filename": true
+		},
+		{
+			"rem": "=== Edge Cases Tests ==="
+		},
+		{
+			"action": "include",
+			"filename": "user-edge-cases.tests.json",
+			"exec": true,
+			"show_filename": true,
+			"skip": true
+		}
+	]
+}

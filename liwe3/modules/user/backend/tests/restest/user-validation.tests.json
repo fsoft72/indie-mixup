@@ -1,0 +1,139 @@
+{
+	"actions": [
+		{
+			"action": "section",
+			"title": "User Input Validation Tests",
+			"actions": [
+				{
+					"rem": "Test missing required fields"
+				},
+				{
+					"title": "Create user without username",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"email": "nouser@example.com",
+						"password": "Test123!",
+						"email_verified": true
+					},
+					"status_code": 400,
+					"ignore_error": true
+				},
+				{
+					"rem": "Test invalid email format"
+				},
+				{
+					"title": "Create user with invalid email",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "invalidemailtest",
+						"email": "not-an-email",
+						"password": "Test123!",
+						"email_verified": true
+					},
+					"status_code": 400,
+					"ignore_error": true
+				},
+				{
+					"rem": "Test weak password"
+				},
+				{
+					"title": "Create user with weak password",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "weakpasstest",
+						"email": "weakpass@example.com",
+						"password": "123",
+						"email_verified": true
+					},
+					"status_code": 400,
+					"ignore_error": true
+				},
+				{
+					"rem": "Test empty password"
+				},
+				{
+					"title": "Create user with empty password",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "emptypasstest",
+						"email": "emptypass@example.com",
+						"password": "",
+						"email_verified": true
+					},
+					"status_code": 400,
+					"ignore_error": true
+				},
+				{
+					"rem": "Test very long username"
+				},
+				{
+					"title": "Create user with very long username",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "thisisaverylongusernamethatshouldprobablyfailvalidationbecauseitexceedsreasonablelimitsforusernamelengthandmightcauseissuesinthedatabase",
+						"email": "longuser@example.com",
+						"password": "Test123!",
+						"email_verified": true
+					},
+					"status_code": 400,
+					"ignore_error": true
+				},
+				{
+					"rem": "Test invalid permission format"
+				},
+				{
+					"title": "Set invalid permissions",
+					"method": "post",
+					"url": "/api/user/perms/set",
+					"auth": true,
+					"body": {
+						"id_user": "invalid_user_id",
+						"perms": ["invalid.permission"]
+					},
+					"status_code": 400,
+					"ignore_error": true
+				},
+				{
+					"rem": "Test delete non-existent user"
+				},
+				{
+					"title": "Delete non-existent user",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "user.nonexistent.id"
+					},
+					"status_code": 404,
+					"ignore_error": true
+				},
+				{
+					"rem": "Test update non-existent user"
+				},
+				{
+					"title": "Update non-existent user",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"id": "user.nonexistent.id",
+						"username": "someuser",
+						"email": "some@example.com"
+					},
+					"status_code": 404,
+					"ignore_error": true
+				}
+			]
+		}
+	]
+}

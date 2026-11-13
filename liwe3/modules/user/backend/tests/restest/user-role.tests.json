@@ -1,0 +1,125 @@
+{
+	"actions": [
+		{
+			"action": "section",
+			"title": "User Role Tests",
+			"actions": [
+				{
+					"title": "Create test user for role assignment",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "roletest_1",
+						"email": "roletest_1@example.com",
+						"password": "RoleTest123!",
+						"enabled": true,
+						"email_verified": true
+					},
+					"status_code": 200,
+					"fields": [
+						["data.id", "role_test_user_id"]
+					]
+				},
+				{
+					"title": "Create a role",
+					"method": "post",
+					"url": "/api/user/role/add",
+					"auth": true,
+					"body": {
+						"name": "editor_${counter}",
+						"description": "Can edit content",
+						"perms": ["user.list"]
+					},
+					"status_code": 200,
+					"fields": [
+						["data.id", "role_id"],
+						["data.name", "role_name"]
+					],
+					"tests": [
+						{ "field": "data.perms", "mode": "CONTAINS", "value": "user.list" }
+					]
+				},
+				{
+					"title": "Reject duplicate role name in same domain",
+					"method": "post",
+					"url": "/api/user/role/add",
+					"auth": true,
+					"body": {
+						"name": "%(role_name)s",
+						"perms": ["user.list"]
+					},
+					"status_code": 400,
+					"ignore_error": true
+				},
+				{
+					"title": "Assign role to user",
+					"method": "post",
+					"url": "/api/user/role/assign",
+					"auth": true,
+					"body": {
+						"id_user": "%(role_test_user_id)s",
+						"id_role": "%(role_id)s"
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.perms", "mode": "CONTAINS", "value": "user.list" }
+					]
+				},
+				{
+					"title": "Add a new perm to the role, verify additive sync to assigned user",
+					"method": "post",
+					"url": "/api/user/role/add",
+					"auth": true,
+					"body": {
+						"id": "%(role_id)s",
+						"name": "%(role_name)s",
+						"perms": ["user.list", "user.create"]
+					},
+					"status_code": 200
+				},
+				{
+					"title": "Re-assign role to verify additive sync landed",
+					"method": "post",
+					"url": "/api/user/role/assign",
+					"auth": true,
+					"body": {
+						"id_user": "%(role_test_user_id)s",
+						"id_role": "%(role_id)s"
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.perms", "mode": "CONTAINS", "value": "user.create" }
+					]
+				},
+				{
+					"title": "List roles for current domain",
+					"method": "get",
+					"url": "/api/user/role/list",
+					"auth": true,
+					"status_code": 200
+				},
+				{
+					"title": "Delete the role",
+					"method": "delete",
+					"url": "/api/user/role/del",
+					"auth": true,
+					"body": {
+						"id": "%(role_id)s"
+					},
+					"status_code": 200
+				},
+				{
+					"title": "Delete role test user",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "%(role_test_user_id)s"
+					},
+					"status_code": 200
+				}
+			]
+		}
+	]
+}

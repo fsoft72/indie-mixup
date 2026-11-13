@@ -1,0 +1,196 @@
+{
+	"actions": [
+		{
+			"action": "section",
+			"title": "User Authentication Tests",
+			"actions": [
+				{
+					"rem": "Create a test user for authentication tests"
+				},
+				{
+					"title": "Create test user for auth",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "authtest",
+						"email": "authtest@example.com",
+						"name": "Auth",
+						"lastname": "Test",
+						"password": "AuthTest123!",
+						"enabled": true,
+						"email_verified": true
+					},
+					"status_code": 200,
+					"fields": [
+						["data.id", "auth_test_user_id"],
+						["data.username", "auth_test_username"]
+					]
+				},
+				{
+					"rem": "Test successful login"
+				},
+				{
+					"title": "Login with test user",
+					"method": "post",
+					"url": "/api/user/login",
+					"auth": false,
+					"body": {
+						"username": "%(auth_test_username)s",
+						"password": "AuthTest123!"
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.token", "mode": "EXISTS" },
+						{ "field": "data.refresh_token", "mode": "EXISTS" },
+						{ "field": "data.id", "mode": "EQUALS", "value": "%(auth_test_user_id)s" },
+						{ "field": "data.username", "mode": "EQUALS", "value": "%(auth_test_username)s" }
+					],
+					"fields": [
+						["data.token", "auth_test_token"],
+						["data.refresh_token", "auth_test_refresh_token"]
+					]
+				},
+				{
+					"rem": "Store current token and use test user token"
+				},
+				{
+					"action": "copy",
+					"from": "token",
+					"to": "original_token"
+				},
+				{
+					"action": "copy",
+					"from": "auth_test_token",
+					"to": "token"
+				},
+				{
+					"rem": "Test /user/me endpoint"
+				},
+				{
+					"title": "Get user session info",
+					"method": "get",
+					"url": "/api/user/me",
+					"auth": true,
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.id", "mode": "EQUALS", "value": "%(auth_test_user_id)s" },
+						{ "field": "data.username", "mode": "EQUALS", "value": "%(auth_test_username)s" },
+						{ "field": "data.email", "mode": "EXISTS" }
+					]
+				},
+				{
+					"rem": "Test token refresh"
+				},
+				{
+					"title": "Refresh JWT token",
+					"method": "post",
+					"url": "/api/user/token/refresh",
+					"auth": true,
+					"body": {
+						"refresh_token": "%(auth_test_refresh_token)s"
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.token", "mode": "EXISTS" },
+						{ "field": "data.refresh_token", "mode": "EXISTS" }
+					],
+					"fields": [
+						["data.token", "new_auth_test_token"]
+					]
+				},
+				{
+					"rem": "Use new token"
+				},
+				{
+					"action": "copy",
+					"from": "new_auth_test_token",
+					"to": "token"
+				},
+				{
+					"rem": "Test logout"
+				},
+				{
+					"title": "Logout user",
+					"method": "get",
+					"url": "/api/user/logout",
+					"auth": true,
+					"status_code": 200,
+					"tests": [
+						{ "field": "data", "mode": "EQUALS", "value": true }
+					]
+				},
+				{
+					"rem": "Verify token is invalidated (should fail)"
+				},
+				{
+					"title": "Try to access with invalidated token",
+					"method": "get",
+					"url": "/api/user/me",
+					"auth": true,
+					"status_code": 401,
+					"ignore_error": true
+				},
+				{
+					"rem": "Test wrong password login"
+				},
+				{
+					"title": "Login with wrong password",
+					"method": "post",
+					"url": "/api/user/login",
+					"auth": false,
+					"body": {
+						"username": "%(auth_test_username)s",
+						"password": "WrongPassword123!"
+					},
+					"status_code": 401,
+					"ignore_error": true
+				},
+				{
+					"rem": "Test login with non-existent user"
+				},
+				{
+					"title": "Login with non-existent user",
+					"method": "post",
+					"url": "/api/user/login",
+					"auth": false,
+					"body": {
+						"username": "nonexistentuser",
+						"password": "SomePassword123!"
+					},
+					"status_code": 401,
+					"ignore_error": true
+				},
+				{
+					"rem": "Test missing credentials"
+				},
+				{
+					"title": "Login without password",
+					"method": "post",
+					"url": "/api/user/login",
+					"auth": false,
+					"body": {
+						"username": "%(auth_test_username)s"
+					},
+					"status_code": 400,
+					"ignore_error": true
+				},
+				{
+					"action": "copy",
+					"from": "original_token",
+					"to": "token"
+				},
+				{
+					"title": "Delete auth test user",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "%(auth_test_user_id)s"
+					},
+					"status_code": 200
+				}
+			]
+		}
+	]
+}

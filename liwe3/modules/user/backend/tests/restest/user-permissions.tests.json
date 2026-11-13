@@ -1,0 +1,99 @@
+{
+	"actions": [
+		{
+			"action": "section",
+			"title": "User Permissions Tests",
+			"actions": [
+				{
+					"rem": "Create a test user for permission tests"
+				},
+				{
+					"title": "Create test user for permissions",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "permtest_1",
+						"email": "permtest_1@example.com",
+						"name": "Permission",
+						"lastname": "Test",
+						"password": "PermTest123!",
+						"enabled": true,
+						"email_verified": true,
+						"perms": ["user.list"]
+					},
+					"status_code": 200,
+					"fields": [
+						["data.id", "perm_test_user_id"],
+						["data.username", "perm_test_username"],
+						["data.perms", "initial_perms"]
+					],
+					"tests": [
+						{ "field": "data.perms", "mode": "CONTAINS", "value": "user.list" }
+					]
+				},
+				{
+					"rem": "Update user permissions"
+				},
+				{
+					"title": "Set user permissions",
+					"method": "post",
+					"url": "/api/user/perms/set",
+					"auth": true,
+					"body": {
+						"id_user": "%(perm_test_user_id)s",
+						"perms": ["user.list", "user.create", "user.password"]
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.id", "mode": "EQUALS", "value": "%(perm_test_user_id)s" },
+						{ "field": "data.perms", "mode": "CONTAINS", "value": "user.list" },
+						{ "field": "data.perms", "mode": "CONTAINS", "value": "user.create" },
+						{ "field": "data.perms", "mode": "CONTAINS", "value": "user.password" },
+						{ "field": "data.perms", "mode": "SIZE", "value": 3 }
+					]
+				},
+				{
+					"title": "Clear user permissions",
+					"method": "post",
+					"url": "/api/user/perms/set",
+					"auth": true,
+					"body": {
+						"id_user": "%(perm_test_user_id)s",
+						"perms": []
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.perms", "mode": "SIZE", "value": 0 }
+					]
+				},
+				{
+					"title": "Restore permissions",
+					"method": "post",
+					"url": "/api/user/perms/set",
+					"auth": true,
+					"body": {
+						"id_user": "%(perm_test_user_id)s",
+						"perms": ["user.list", "user.delete"]
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.perms", "mode": "SIZE", "value": 2 },
+						{ "field": "data.perms", "mode": "CONTAINS", "value": "user.list" },
+						{ "field": "data.perms", "mode": "CONTAINS", "value": "user.delete" }
+					]
+				},
+				{
+					"title": "Delete permission test user",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "%(perm_test_user_id)s"
+					},
+					"status_code": 200
+				}
+			]
+		}
+	]
+}

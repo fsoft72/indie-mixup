@@ -1,0 +1,35 @@
+{
+	"run-once": true,
+	"actions": [
+		{
+			"method": "post",
+			"url": "/api/user/login",
+			"auth": false,
+			"params": {
+				"username": "%(system_admin_username)s",
+				"password": "%(system_admin_password)s"
+			},
+			"fields": [
+				["data.token", "admin_token"],
+				["data.token", "token"]
+			]
+		},
+		{
+			"method": "get",
+			"url": "/api/user/me",
+			"fields": [["data.id", "id_admin"]]
+		},
+		{
+			"action": "batch_set",
+			"name": "switch_admin",
+			"actions": [
+				{
+					"title": "Switching to Admin",
+					"action": "copy",
+					"from": "admin_token",
+					"to": "token"
+				}
+			]
+		}
+	]
+}

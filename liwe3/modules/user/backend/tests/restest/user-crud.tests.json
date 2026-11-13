@@ -1,0 +1,110 @@
+{
+	"actions": [
+		{
+			"action": "section",
+			"title": "User CRUD Operations",
+			"actions": [
+				{
+					"title": "Create new user",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "testuser_1",
+						"email": "testuser_1@example.com",
+						"name": "Test",
+						"lastname": "User",
+						"password": "TestPassword123!",
+						"enabled": true,
+						"email_verified": true,
+						"perms": ["user.list"]
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.id", "mode": "EXISTS" },
+						{ "field": "data.username", "mode": "EQUALS", "value": "testuser_1" },
+						{ "field": "data.email", "mode": "EQUALS", "value": "testuser_1@example.com" },
+						{ "field": "data.enabled", "mode": "EQUALS", "value": true }
+					],
+					"fields": [
+						["data.id", "test_user_id"],
+						["data.username", "test_username"],
+						["data.email", "test_email"]
+					]
+				},
+				{
+					"title": "List users",
+					"method": "get",
+					"url": "/api/user/list",
+					"auth": true,
+					"status_code": 200,
+					"tests": [
+						{ "field": "data", "mode": "SIZE-GT", "value": 0 },
+						{ "field": "data.[id='%(test_user_id)s'].username", "mode": "EQUALS", "value": "%(test_username)s" }
+					]
+				},
+				{
+					"rem": "Update the user"
+				},
+				{
+					"title": "Try to create user with duplicate username",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "%(test_username)s",
+						"email": "different@example.com",
+						"password": "TestPassword123!",
+						"email_verified": true
+					},
+					"status_code": 400
+				},
+				{
+					"rem": "Test duplicate email detection"
+				},
+				{
+					"title": "Try to create user with duplicate email",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "differentusername",
+						"email": "%(test_email)s",
+						"password": "TestPassword123!",
+						"email_verified": true
+					},
+					"status_code": 400
+				},
+				{
+					"rem": "Clean up: delete the test user"
+				},
+				{
+					"title": "Delete test user",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "%(test_user_id)s"
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data", "mode": "EQUALS", "value": true }
+					]
+				},
+				{
+					"rem": "Verify user was deleted"
+				},
+				{
+					"title": "Verify user list after deletion",
+					"method": "get",
+					"url": "/api/user/list",
+					"auth": true,
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.[id='%(test_user_id)s']", "mode": "EMPTY" }
+					]
+				}
+			]
+		}
+	]
+}

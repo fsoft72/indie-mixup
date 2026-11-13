@@ -1,0 +1,158 @@
+{
+	"actions": [
+		{
+			"action": "section",
+			"title": "User Edge Cases and Special Scenarios",
+			"actions": [
+				{
+					"rem": "Test user with special characters in name"
+				},
+				{
+					"title": "Create user with special chars",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "specialuser_${counter}",
+						"email": "special_${counter}@example.com",
+						"name": "José María",
+						"lastname": "O'Brien-Smith",
+						"password": "Special123!",
+						"enabled": true,
+						"email_verified": true
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.name", "mode": "EQUALS", "value": "José María" },
+						{ "field": "data.lastname", "mode": "EQUALS", "value": "O'Brien-Smith" }
+					],
+					"fields": [
+						["data.id", "special_user_id"]
+					]
+				},
+				{
+					"rem": "Test user with empty permissions array"
+				},
+				{
+					"title": "Create user with no permissions",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "nopermsuser_${counter}",
+						"email": "noperms_${counter}@example.com",
+						"password": "NoPerms123!",
+						"enabled": true,
+						"email_verified": true,
+						"perms": []
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.perms", "mode": "SIZE", "value": 0 }
+					],
+					"fields": [
+						["data.id", "noperms_user_id"]
+					]
+				},
+				{
+					"rem": "Test updating only password"
+				},
+				{
+					"title": "Update user password only",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"id": "%(noperms_user_id)s",
+						"password": "NewPassword123!"
+					},
+					"status_code": 200,
+					"tests": [
+						{ "field": "data.id", "mode": "EQUALS", "value": "%(noperms_user_id)s" }
+					]
+				},
+				{
+					"rem": "Test case sensitivity in username"
+				},
+				{
+					"title": "Create user with uppercase username",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "UPPERCASEUSER_${counter}",
+						"email": "upper_${counter}@example.com",
+						"password": "Upper123!",
+						"enabled": true,
+						"email_verified": true
+					},
+					"status_code": 200,
+					"fields": [
+						["data.id", "upper_user_id"],
+						["data.username", "upper_username"]
+					]
+				},
+				{
+					"rem": "Try to create with lowercase version (test case handling)"
+				},
+				{
+					"title": "Test username case sensitivity",
+					"method": "post",
+					"url": "/api/user/add",
+					"auth": true,
+					"body": {
+						"username": "uppercaseuser_${counter}",
+						"email": "lowercaseversion@example.com",
+						"password": "Test123!",
+						"email_verified": true
+					},
+					"status_code": 400,
+					"ignore_error": true
+				},
+				{
+					"rem": "Clean up all test users"
+				},
+				{
+					"title": "Delete disabled user",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "%(disabled_user_id)s"
+					},
+					"status_code": 200
+				},
+				{
+					"title": "Delete special chars user",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "%(special_user_id)s"
+					},
+					"status_code": 200
+				},
+				{
+					"title": "Delete no perms user",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "%(noperms_user_id)s"
+					},
+					"status_code": 200
+				},
+				{
+					"title": "Delete uppercase user",
+					"method": "delete",
+					"url": "/api/user/delete",
+					"auth": true,
+					"body": {
+						"id": "%(upper_user_id)s"
+					},
+					"status_code": 200
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+	"actions": [
+		{
+			"method": "POST",
+			"url": "/api/user/login",
+			"auth": false,
+			"body": {
+				"username": "pizza@pazza.com"
+			},
+			"status_code": 400
+		}
+	]
+}

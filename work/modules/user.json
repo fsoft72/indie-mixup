@@ -1,0 +1,3019 @@
+{
+  "id": "mod.8c356c192fe0160c9fecb03187e46f69.91tx",
+  "doc": "The main module to handle user authentication and permissions",
+  "endpoints": {
+    "endp.mgov66zy.24l8": {
+      "id": "endp.mgov66zy.24l8",
+      "method": "POST",
+      "url": "/user/add",
+      "short_descr": "Add a new user to the system",
+      "description": "Add or updates a user to the system.\nIf the `id` is specified, the user is updated. \nIf the `id` field is missing, the user is created as new.\n\nA few checks are made:\n\nFor new users:\n\n- if `username` + `domain` are already in the system, then the new user is rejected\n- if `email` + `domain` are already in the system, then the new user is rejected\n\nFor existing users:\n\n- if `username` + `domain` are already in the system and the `id` is different from current user, then the new user is rejected\n- if `email` + `domain` are already in the system and the `id` is different from current user, then the new user is rejected\n\n",
+      "parameters": [
+        {
+          "id": "param.mgov79q6.6e81",
+          "type": "str",
+          "name": "username",
+          "description": "The user name",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgov7joe.1h90",
+          "type": "str",
+          "name": "id",
+          "description": "The user unique id",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgovnw7r.hl7v",
+          "type": "str",
+          "name": "email",
+          "description": "The user email",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgovo22f.l6d1",
+          "type": "str",
+          "name": "name",
+          "description": "User name",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgovo69b.epcb",
+          "type": "str",
+          "name": "lastname",
+          "description": "User lastname",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgovpc7z.d2e5",
+          "type": "str",
+          "name": "perms",
+          "description": "User perms",
+          "is_required": false,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgovpjvq.g7n5",
+          "type": "boolean",
+          "name": "enabled",
+          "description": "If the user is enabled",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgovpwhy.fkpz",
+          "type": "str",
+          "name": "password",
+          "description": "User password",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mks79pos.16mc",
+          "type": "boolean",
+          "name": "email_verified",
+          "description": "Flag T/F to set email already verified",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": true,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false
+      }
+    },
+    "endp.mgovserx.8pqw": {
+      "id": "endp.mgovserx.8pqw",
+      "method": "GET",
+      "url": "/user/create/admin",
+      "short_descr": "",
+      "description": "This endpoint is used to create a new admin, without using the interface.\nThis is a dangerous endpoint that can be disabled by settings.\n",
+      "parameters": [
+        {
+          "id": "param.mgovtjd9.32y9",
+          "type": "str",
+          "name": "username",
+          "description": "Admin username",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgovtsjx.91ul",
+          "type": "str",
+          "name": "password",
+          "description": "Admin password",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgovtyet.bjc1",
+          "type": "str",
+          "name": "key",
+          "description": "Secret admin operations key",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false
+      }
+    },
+    "endp.mgovvwtg.8b7k": {
+      "id": "endp.mgovvwtg.8b7k",
+      "method": "DELETE",
+      "url": "/user/delete",
+      "short_descr": "Delete a user",
+      "description": "Delete a user from the system",
+      "parameters": [
+        {
+          "id": "param.mgovwg6j.i2h4",
+          "type": "str",
+          "name": "id",
+          "description": "User id to be deleted",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": true,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false
+      }
+    },
+    "endp.mgowfohf.21ih": {
+      "id": "endp.mgowfohf.21ih",
+      "method": "GET",
+      "url": "/user/list",
+      "short_descr": "List all users in the system",
+      "description": "List all users in the system",
+      "parameters": [
+        {
+          "id": "param.mgowg5k3.clor",
+          "type": "int",
+          "name": "offset",
+          "description": "Pagination start row",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgowgekj.2mhw",
+          "type": "int",
+          "name": "limit",
+          "description": "Pagination rows to return",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": true,
+        "perm.mgovzcmi.ds09": false
+      }
+    },
+    "endp.mgox4mgh.5f47": {
+      "id": "endp.mgox4mgh.5f47",
+      "method": "POST",
+      "url": "/user/login",
+      "short_descr": "User login",
+      "description": "User login",
+      "parameters": [
+        {
+          "id": "param.mgox57y1.2wh0",
+          "type": "str",
+          "name": "username",
+          "description": "User's username",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgox5h5l.k590",
+          "type": "str",
+          "name": "password",
+          "description": "User's password",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mtd0m41n.lg01",
+          "type": "str",
+          "name": "domain",
+          "description": "Domain to log into. Needed only when the credentials match accounts in more than one domain",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UserLogin",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false
+      }
+    },
+    "endp.mgox8ftk.l17c": {
+      "id": "endp.mgox8ftk.l17c",
+      "method": "GET",
+      "url": "/user/logout",
+      "short_descr": "Log out a user from the system",
+      "description": "Log out a user from the system",
+      "parameters": [],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false
+      }
+    },
+    "endp.mgoxdfra.hqaw": {
+      "id": "endp.mgoxdfra.hqaw",
+      "method": "GET",
+      "url": "/user/me",
+      "short_descr": "Get session metadata",
+      "description": "Get session metadata",
+      "parameters": [],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false
+      }
+    },
+    "endp.mgoxfeph.iugm": {
+      "id": "endp.mgoxfeph.iugm",
+      "method": "POST",
+      "url": "/user/perms/set",
+      "short_descr": "Set permissions to the user",
+      "description": "Set the permissions to the user.\nPermissions are overwritten completely.",
+      "parameters": [
+        {
+          "id": "param.mgoxg699.68o5",
+          "type": "str",
+          "name": "id_user",
+          "description": "The user ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mgoxgcic.3jlk",
+          "type": "str",
+          "name": "perms",
+          "description": "The perms to be set",
+          "is_required": true,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": true,
+        "perm.mi7hcnie.kbos": false
+      }
+    },
+    "endp.mi329hak.djkw": {
+      "id": "endp.mi329hak.djkw",
+      "method": "POST",
+      "url": "/user/invite/create",
+      "short_descr": "Create an invite for the current user",
+      "description": "Create an invite for the current user",
+      "parameters": [],
+      "returnType": "UserInvite",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false
+      }
+    },
+    "endp.mi7hd80g.eljl": {
+      "id": "endp.mi7hd80g.eljl",
+      "method": "GET",
+      "url": "/user/change/identity",
+      "short_descr": "Relogin as a different user",
+      "description": "Change identity and login as a different user",
+      "parameters": [
+        {
+          "id": "param.mi7hdywn.at5p",
+          "type": "str",
+          "name": "id_user",
+          "description": "New user id",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UserLogin",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": true
+      }
+    },
+    "endp.mks08439.xcf": {
+      "id": "endp.mks08439.xcf",
+      "method": "POST",
+      "url": "/user/token/refresh",
+      "short_descr": "Refresh JWT token",
+      "description": "Refresh access token using refresh token",
+      "parameters": [
+        {
+          "id": "param.mks09go5.in76",
+          "type": "str",
+          "name": "refresh_token",
+          "description": "The refresh token",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "TokenRefreshResponse",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false
+      }
+    },
+    "endp.msaa2mvd.aex4": {
+      "id": "endp.msaa2mvd.aex4",
+      "method": "POST",
+      "url": "/user/role/add",
+      "short_descr": "Add or update a user role",
+      "description": "Add or updates a user role. If the id is specified, the role is updated (fields omitted in the request keep their current stored value - PATCH semantics, not full replace). If id is missing, a new role is created in the caller's domain. Rejects a duplicate name within the same domain. On update, any permission newly added to the role is unioned (additively) into perms of every user currently assigned to that role via id_role; permissions removed from the role are never retroactively removed from already-assigned users.",
+      "parameters": [
+        {
+          "id": "param.msaa3ap7.l8um",
+          "type": "str",
+          "name": "name",
+          "description": "role name",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.msaa3mkd.f6vd",
+          "type": "str",
+          "name": "id",
+          "description": "id role",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.msaa3xgm.ig1h",
+          "type": "str",
+          "name": "description",
+          "description": "Role description",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.msaa48nz.7pb3",
+          "type": "str",
+          "name": "perms",
+          "description": "Role permissions",
+          "is_required": false,
+          "is_private": false,
+          "is_array": true,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UserRole",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": true
+      }
+    },
+    "endp.msaa4ynk.iu9b": {
+      "id": "endp.msaa4ynk.iu9b",
+      "method": "DELETE",
+      "url": "/user/role/del",
+      "short_descr": "Delete a user role",
+      "description": "Deletes a user role by id. Users currently assigned to the role are unlinked (id_role set to null); their existing perms are left untouched. Returns 404 if the role does not exist.",
+      "parameters": [
+        {
+          "id": "param.msaa5p06.gt74",
+          "type": "str",
+          "name": "id",
+          "description": "id role to delete",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": true
+      }
+    },
+    "endp.msaa67ik.evaq": {
+      "id": "endp.msaa67ik.evaq",
+      "method": "GET",
+      "url": "/user/role/list",
+      "short_descr": " List all roles for the current domain",
+      "description": "Lists all roles defined for the current user's domain, with the same pagination behavior as user_list (offset/limit). Domain filter is bypassed only for a system.admin user in the system domain.",
+      "parameters": [
+        {
+          "id": "param.msaa78qz.3f6b",
+          "type": "int",
+          "name": "offset",
+          "description": "Pagination row start",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.msaa7ks0.3fb9",
+          "type": "int",
+          "name": "limit",
+          "description": "Pagination rows",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UserRole",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": true
+      }
+    },
+    "endp.msaa8ckz.aua9": {
+      "id": "endp.msaa8ckz.aua9",
+      "method": "POST",
+      "url": "/user/role/assign",
+      "short_descr": "Assign a role to a user",
+      "description": "Assigns a role to a user. Sets users.id_role and unions (additively) the role's perms into the user's existing perms - no permission already on the user is removed. Returns 404 if the user or role does not exist, 400 if the role belongs to a different domain than the target user.",
+      "parameters": [
+        {
+          "id": "param.msaa8y5x.7uax",
+          "type": "str",
+          "name": "id_user",
+          "description": "ID user to assign role to",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.msaa96dv.ezav",
+          "type": "str",
+          "name": "id_role",
+          "description": "ID Role to assign",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": true,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false
+      }
+    },
+    "endp.mscsad8l.f3fv": {
+      "id": "endp.mscsad8l.f3fv",
+      "method": "POST",
+      "url": "/user/2fa/setup",
+      "short_descr": "Start 2FA for the current user",
+      "description": "Start 2FA for the current user.\n- Generates secret TOTP\n- Saves it in `users.two_factor_secret`\n\ndoes **NOT** enable 2FA for the user yet.",
+      "parameters": [],
+      "returnType": "User2FASetup",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false
+      }
+    },
+    "endp.mscsg3mg.kfxz": {
+      "id": "endp.mscsg3mg.kfxz",
+      "method": "POST",
+      "url": "/user/2fa/enable",
+      "short_descr": "Verify code against secret",
+      "description": "Verify code against user secret.\nIf the code is valid, returns the recovery codes and enable 2FA for the user.\n",
+      "parameters": [
+        {
+          "id": "param.mscsh9hl.3su6",
+          "type": "str",
+          "name": "code",
+          "description": "The current OTP code",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "str",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false
+      }
+    },
+    "endp.mscshszk.gxiv": {
+      "id": "endp.mscshszk.gxiv",
+      "method": "POST",
+      "url": "/user/2fa/disable",
+      "short_descr": "Disable 2FA auth for the user",
+      "description": "Disables 2FA for the current user.\nRequires user password (not OTP because user could have lost the token)\n\nResets: `two_factor_enabled`, `two_factor_secret`, `two_factor_recovery_codes`",
+      "parameters": [
+        {
+          "id": "param.mscsii9d.danf",
+          "type": "str",
+          "name": "password",
+          "description": "Current user password",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": true,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false
+      }
+    },
+    "endp.mscslhr2.br22": {
+      "id": "endp.mscslhr2.br22",
+      "method": "POST",
+      "url": "/user/2fa/verify",
+      "short_descr": "Verify 2FA for user",
+      "description": "Verify if the user 2FA code is valid",
+      "parameters": [
+        {
+          "id": "param.mscsm9us.d5k1",
+          "type": "str",
+          "name": "pending_token",
+          "description": "Brief JWT created by user_login",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mscsmh4y.g5hh",
+          "type": "str",
+          "name": "code",
+          "description": "2FA Code",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UserLogin",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false
+      }
+    },
+    "endp.mscsnj6n.a828": {
+      "id": "endp.mscsnj6n.a828",
+      "method": "POST",
+      "url": "/user/2fa/admin/disable",
+      "short_descr": "Disable a user 2FA",
+      "description": "Disable a user 2FA",
+      "parameters": [
+        {
+          "id": "param.mscsoce5.6vpt",
+          "type": "str",
+          "name": "id_user",
+          "description": "The user to disable 2FA",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": true
+      }
+    },
+    "endp.mscwkt93.gpzp": {
+      "id": "endp.mscwkt93.gpzp",
+      "method": "POST",
+      "url": "/user/oauth/provider/add",
+      "short_descr": "Add a new Provider",
+      "description": "",
+      "parameters": [
+        {
+          "id": "param.mscwl9ex.ge3l",
+          "type": "str",
+          "name": "id",
+          "description": "The Provider ID (if any)",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mscwlot3.heuh",
+          "type": "str",
+          "name": "provider",
+          "description": "The provider name",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mscwm3wy.ge8o",
+          "type": "str",
+          "name": "client_id",
+          "description": "Client ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mscwmans.i16g",
+          "type": "str",
+          "name": "client_secret",
+          "description": "Client Secret",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mscwmeeo.l6tz",
+          "type": "boolean",
+          "name": "enabled",
+          "description": "Flag T/F for enabled",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UserOAUTHProvider",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": true
+      }
+    },
+    "endp.mscwnp32.3l5e": {
+      "id": "endp.mscwnp32.3l5e",
+      "method": "GET",
+      "url": "/user/oauth/provider/list",
+      "short_descr": "List all available providers",
+      "description": "",
+      "parameters": [
+        {
+          "id": "param.mscwnzr2.426u",
+          "type": "int",
+          "name": "offset",
+          "description": "Pagination offset",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mscwo49f.ko8j",
+          "type": "int",
+          "name": "limit",
+          "description": "Pagination limit",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UserOAUTHProvider",
+      "returnName": "",
+      "is_array": true,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": true
+      }
+    },
+    "endp.mscwoxw2.5eyv": {
+      "id": "endp.mscwoxw2.5eyv",
+      "method": "DELETE",
+      "url": "/user/oauth/provider/del",
+      "short_descr": "Removes a provider",
+      "description": "",
+      "parameters": [
+        {
+          "id": "param.mscwp6c8.9pkw",
+          "type": "str",
+          "name": "id",
+          "description": "Provider ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": true
+      }
+    },
+    "endp.mscwpzei.5xfj": {
+      "id": "endp.mscwpzei.5xfj",
+      "method": "GET",
+      "url": "/user/oauth/authorize",
+      "short_descr": "Authorize an OAUTH",
+      "description": "",
+      "parameters": [
+        {
+          "id": "param.mscwqg67.la28",
+          "type": "str",
+          "name": "provider",
+          "description": "Provider name",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mscwqpt9.cx13",
+          "type": "str",
+          "name": "redirect_url",
+          "description": "Provider redirect",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "str",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": false
+      }
+    },
+    "endp.mscwrdww.74vh": {
+      "id": "endp.mscwrdww.74vh",
+      "method": "GET",
+      "url": "/user/oauth/callback",
+      "short_descr": "Callback for OAUTH",
+      "description": "",
+      "parameters": [
+        {
+          "id": "param.mscwri6s.48em",
+          "type": "str",
+          "name": "state",
+          "description": "",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mscwrm14.anm9",
+          "type": "str",
+          "name": "code",
+          "description": "",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UserLogin",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": false
+      }
+    },
+    "endp.msmyxw9r.hxe3": {
+      "id": "endp.msmyxw9r.hxe3",
+      "method": "POST",
+      "url": "/user/set/enabled",
+      "short_descr": "Enable / disable user",
+      "description": "Enable or disable an user into the system",
+      "parameters": [
+        {
+          "id": "param.msmyycu5.9l78",
+          "type": "str",
+          "name": "id",
+          "description": "The User ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.msmyyivn.h8zx",
+          "type": "boolean",
+          "name": "enabled",
+          "description": "If the user is enabled or not",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": false,
+        "perm.msmywnan.dkzo": true,
+        "perm.msmyx1d5.bjf8": false
+      }
+    },
+    "endp.msmyz96l.9mrs": {
+      "id": "endp.msmyz96l.9mrs",
+      "method": "POST",
+      "url": "/user/set/email_verified",
+      "short_descr": "Set email verification status",
+      "description": "Set email verification status",
+      "parameters": [
+        {
+          "id": "param.msmyzmuk.ahqi",
+          "type": "str",
+          "name": "id",
+          "description": "User ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.msmyzsd4.5un5",
+          "type": "boolean",
+          "name": "verified",
+          "description": "If the email is verified or not",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": false,
+        "perm.msmywnan.dkzo": false,
+        "perm.msmyx1d5.bjf8": true
+      }
+    },
+    "endp.msn05ktq.1z1f": {
+      "id": "endp.msn05ktq.1z1f",
+      "method": "POST",
+      "url": "/user/set/password",
+      "short_descr": "Reset user password",
+      "description": "Reset user password",
+      "parameters": [
+        {
+          "id": "param.msn0dquf.b4kv",
+          "type": "str",
+          "name": "id",
+          "description": "User ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.msn0dvxw.lf2p",
+          "type": "str",
+          "name": "password",
+          "description": "The new user password",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": true,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": false,
+        "perm.msmywnan.dkzo": false,
+        "perm.msmyx1d5.bjf8": false
+      }
+    },
+    "endp.msec0vfy.aa01": {
+      "id": "endp.msec0vfy.aa01",
+      "method": "POST",
+      "url": "/user/email/verify",
+      "short_descr": "Verify a user email address with a token",
+      "description": "Validates an email verification token and marks the user's email as verified. Tokens expire after 7 days and can only be used once (used_at is set on success and re-checked on every call). The token is sent in the request body, never as a query parameter, so it does not leak into proxy/CDN access logs or browser history.",
+      "parameters": [
+        {
+          "id": "param.msec0vfy.p001",
+          "type": "str",
+          "name": "token",
+          "description": "The email verification token",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": false,
+        "perm.msmywnan.dkzo": false,
+        "perm.msmyx1d5.bjf8": false
+      }
+    },
+    "endp.msec0rsn.aa02": {
+      "id": "endp.msec0rsn.aa02",
+      "method": "POST",
+      "url": "/user/email/resend",
+      "short_descr": "Resend the email verification link",
+      "description": "Sends a new email verification link to the user. Expires/deletes any previous email_verify tokens for the user and generates a fresh token valid for 7 days. Unauthenticated endpoint that triggers an outbound email, so it is rate limited per IP (RL_AUTH).",
+      "parameters": [
+        {
+          "id": "param.msec0rsn.p001",
+          "type": "str",
+          "name": "email",
+          "description": "User email address",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "boolean",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": false,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": false,
+        "perm.msmywnan.dkzo": false,
+        "perm.msmyx1d5.bjf8": false
+      }
+    },
+    "endp.mt3pw0ex.set1": {
+      "id": "endp.mt3pw0ex.set1",
+      "method": "POST",
+      "url": "/user/set/password_expired",
+      "short_descr": "Force or clear the password change",
+      "description": "Sets or clears the password_expired flag of a user. When set, the user must choose a new password at the next login, before a session is created. Same permission and multi-tenant rules as /user/set/password.",
+      "parameters": [
+        {
+          "id": "param.mt3pw0ex.id01",
+          "type": "str",
+          "name": "id",
+          "description": "User ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mt3pw0ex.flg1",
+          "type": "boolean",
+          "name": "password_expired",
+          "description": "True to force the password change, false to clear the flag",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": true,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": false,
+        "perm.msmywnan.dkzo": false,
+        "perm.msmyx1d5.bjf8": false
+      }
+    },
+    "endp.mt3pw0ch.chg1": {
+      "id": "endp.mt3pw0ch.chg1",
+      "method": "POST",
+      "url": "/user/password/change-expired",
+      "short_descr": "Change an expired password",
+      "description": "Completes a login blocked by an expired password. Takes the pending_token returned by /user/login (or /user/2fa/verify) and the new password, stores it, clears the expired flag and returns the full login. Unauthenticated, so it is rate limited per IP (RL_AUTH).",
+      "parameters": [
+        {
+          "id": "param.mt3pw0ch.tok1",
+          "type": "str",
+          "name": "pending_token",
+          "description": "Brief JWT returned by the login when requires_password_change is true",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mt3pw0ch.pwd1",
+          "type": "str",
+          "name": "password",
+          "description": "The new password (min 8 characters, different from the current one)",
+          "is_required": true,
+          "is_private": true,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "UserLogin",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false
+      }
+    },
+    "endp.mt4pw0ma.set1": {
+      "id": "endp.mt4pw0ma.set1",
+      "method": "POST",
+      "url": "/user/set/password_max_age",
+      "short_descr": "Set the password max age of a user",
+      "description": "Sets the number of days after which the user must change the password. 0 means the password never expires for this user, a missing `days` clears the value so the global cfg.user.passwordMaxAgeDays applies. Same permission and multi-tenant rules as /user/set/password.",
+      "parameters": [
+        {
+          "id": "param.mt4pw0ma.id01",
+          "type": "str",
+          "name": "id",
+          "description": "User ID",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.mt4pw0ma.day1",
+          "type": "int",
+          "name": "days",
+          "description": "Days after which the password expires. 0: never. Missing: use the global default",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": false,
+        "logged": false,
+        "admins": false,
+        "perm.mgovxs5n.cjzz": false,
+        "perm.mgovy4ej.k9ei": false,
+        "perm.mgovyeje.7g63": true,
+        "perm.mgovywle.io93": false,
+        "perm.mgovzcmi.ds09": false,
+        "perm.mi7hcnie.kbos": false,
+        "perm.msa8q4zs.d8cv": false,
+        "perm.mscsopll.kt0k": false,
+        "perm.mscwjzjm.2dii": false,
+        "perm.msmywnan.dkzo": false,
+        "perm.msmyx1d5.bjf8": false
+      }
+    },
+    "endp.lc16r001.reg1": {
+      "id": "endp.lc16r001.reg1",
+      "method": "POST",
+      "url": "/user/register",
+      "short_descr": "Self-service user registration",
+      "description": "Public sign up. Rejected with 403 unless the config `user.allowRegistration` is true; when `user.registrationAuthCode` is not empty, `auth_code` must match it (403 otherwise). With `user.createDomain` true the user creates a new domain with the same code as the (lowercased) username, rejected with 400 if the username is not a valid domain code or the domain already exists, and becomes its owner with every user.* permission; with it false the user joins the system domain with no permission. The user is created with email_verified=false and a verification email is sent. Returns the created User (no password). Unauthenticated and sending an email, so it is rate limited per IP (RL_AUTH).",
+      "parameters": [
+        {
+          "id": "param.lc16r001.usr1",
+          "type": "str",
+          "name": "username",
+          "description": "Username (min 3 characters)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.lc16r001.eml1",
+          "type": "str",
+          "name": "email",
+          "description": "Email address (also the unique key in the domain)",
+          "is_required": true,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.lc16r001.pwd1",
+          "type": "str",
+          "name": "password",
+          "description": "Password (min 8 characters)",
+          "is_required": true,
+          "is_private": true,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.lc16r001.nam1",
+          "type": "str",
+          "name": "name",
+          "description": "First name",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.lc16r001.lnm1",
+          "type": "str",
+          "name": "lastname",
+          "description": "Last name",
+          "is_required": false,
+          "is_private": false,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        },
+        {
+          "id": "param.lc16r001.cod1",
+          "type": "str",
+          "name": "auth_code",
+          "description": "Registration auth code. Required when `user.registrationAuthCode` is set",
+          "is_required": false,
+          "is_private": true,
+          "is_array": false,
+          "is_query": false,
+          "query": false,
+          "default": "",
+          "value": ""
+        }
+      ],
+      "returnType": "User",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false
+      }
+    },
+    "endp.lc16r002.cfg1": {
+      "id": "endp.lc16r002.cfg1",
+      "method": "GET",
+      "url": "/user/register/config",
+      "short_descr": "Registration settings for the sign up form",
+      "description": "Public. Tells the sign up form whether registration is open, whether it creates a domain and whether an auth code is asked. The auth code itself is never returned.",
+      "parameters": [],
+      "returnType": "UserRegisterConfig",
+      "returnName": "",
+      "is_array": false,
+      "permissions": {
+        "public": true,
+        "logged": false,
+        "admins": false
+      }
+    }
+  },
+  "enums": {},
+  "functions": {},
+  "modified": false,
+  "name": "User",
+  "permissions": {
+    "perm.mgovxs5n.cjzz": {
+      "id": "perm.mgovxs5n.cjzz",
+      "name": "user.create",
+      "description": "Can create / update a user"
+    },
+    "perm.mgovy4ej.k9ei": {
+      "id": "perm.mgovy4ej.k9ei",
+      "name": "user.delete",
+      "description": "Can delete a user"
+    },
+    "perm.mgovyeje.7g63": {
+      "id": "perm.mgovyeje.7g63",
+      "name": "user.password",
+      "description": "Can change the password for a user"
+    },
+    "perm.mgovywle.io93": {
+      "id": "perm.mgovywle.io93",
+      "name": "user.list",
+      "description": "Can list all users in the system"
+    },
+    "perm.mgovzcmi.ds09": {
+      "id": "perm.mgovzcmi.ds09",
+      "name": "user.perms",
+      "description": "Can change user's perms"
+    },
+    "perm.mi7hcnie.kbos": {
+      "id": "perm.mi7hcnie.kbos",
+      "name": "user.change_identity",
+      "description": "The user can take another user's identity"
+    },
+    "perm.msa8q4zs.d8cv": {
+      "id": "perm.msa8q4zs.d8cv",
+      "name": "user.role.manage",
+      "description": "The user can manage roles"
+    },
+    "perm.mscsopll.kt0k": {
+      "id": "perm.mscsopll.kt0k",
+      "name": "user.2fa.manage",
+      "description": "Manage 2FA"
+    },
+    "perm.mscwjzjm.2dii": {
+      "id": "perm.mscwjzjm.2dii",
+      "name": "user.oauth.manage",
+      "description": "Can change OAUTH settings"
+    },
+    "perm.msmywnan.dkzo": {
+      "id": "perm.msmywnan.dkzo",
+      "name": "user.enable",
+      "description": "Enable / Disable users"
+    },
+    "perm.msmyx1d5.bjf8": {
+      "id": "perm.msmyx1d5.bjf8",
+      "name": "user.verify",
+      "description": "Force email verification for user"
+    }
+  },
+  "short_descr": "User auth and perms",
+  "types": {
+    "typ.mgouixns.f7yv": {
+      "id": "typ.mgouixns.f7yv",
+      "name": "User",
+      "description": "The main user table",
+      "doc": "",
+      "db_table": "users",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgouju1c.226s",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "The user unique id",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgoumy0u.jom1",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Domain associated with the user account",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgounbh2.8wi8",
+          "name": "email",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Email address of the user",
+          "index": "m",
+          "size": 250,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgouo6um.a47f",
+          "name": "username",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Username for the user account (required)",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgouozzx.evr0",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User's first name",
+          "index": "",
+          "size": 50,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgouplmd.1j8c",
+          "name": "lastname",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User's last name",
+          "index": "",
+          "size": 50,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgouq3jp.bxil",
+          "name": "perms",
+          "type": "str",
+          "is_array": true,
+          "is_required": false,
+          "is_private": false,
+          "description": "List of permissions",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgouqmvx.gche",
+          "name": "enabled",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "If user is enabled",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgour459.kxjj",
+          "name": "level",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User level",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgoury10.bws2",
+          "name": "password",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User encrypted password",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgousdok.frnr",
+          "name": "token_version",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks3utbr.6fb1",
+          "name": "email_verified",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Email verification status",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks3v8t2.jd4m",
+          "name": "verified_at",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Timestamp when email was verified",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.msa8ngrs.7ume",
+          "name": "id_role",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Role assigned to the user, defines a default set of permissions",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscs7bzw.2nrw",
+          "name": "two_factor_enabled",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Flag T/F is 2FA is enabled",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscs7tcz.czod",
+          "name": "two_factor_secret",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "The 2FA secret",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscs8o8p.iikl",
+          "name": "two_factor_recovery_codes",
+          "type": "str",
+          "is_array": true,
+          "is_required": false,
+          "is_private": false,
+          "description": "2FA Recovery codes",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mt3pw0ex.pwex",
+          "name": "password_expired",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Flag T/F: the password is expired and must be changed at the next login",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mt3pw0ch.pwch",
+          "name": "password_changed_at",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Timestamp (unix ms) of the last password change. Null means unknown: the password never expires automatically",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mt4pw0ma.pwma",
+          "name": "password_max_age_days",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Days after which this user must change the password. Null: use the global cfg.user.passwordMaxAgeDays. 0: never expires",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mi31qdmc.8nl6": {
+      "id": "typ.mi31qdmc.8nl6",
+      "name": "UserInvite",
+      "description": "User Invitation Links",
+      "doc": "This is the user invitation table.\nEach invite is kept in this table with also how many times the invited accepts the request.",
+      "db_table": "user_invites",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mi31rs5a.kw9b",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Invite id",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mi31scwu.bwqu",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "User id",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mi31skk7.7jfm",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Domain",
+          "index": "m",
+          "size": 32,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mi31x4fa.4zpw",
+          "name": "count",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Number of invites accepted",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mi32cvo6.hm1u",
+          "name": "code",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "User Invitation code",
+          "index": "",
+          "size": "64",
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgouuu7v.bky2": {
+      "id": "typ.mgouuu7v.bky2",
+      "name": "UserLogin",
+      "description": "the data returned after a successful login",
+      "doc": "This is the data returned after a successful login",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgouvcvm.c8jg",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User id",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgouvo9f.byz",
+          "name": "username",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "The user's username",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgouw19e.ecsu",
+          "name": "email",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User's email",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgouwdaq.amyp",
+          "name": "perms",
+          "type": "str",
+          "is_array": true,
+          "is_required": false,
+          "is_private": false,
+          "description": "User's permissions",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgouwrw2.9srr",
+          "name": "token",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Authentication token",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgoux3s2.bg2l",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User domain",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgouxfwi.14dx",
+          "name": "refresh_token",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "User refresh token",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscx62gw.fk00",
+          "name": "requires_2fa",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Flag T/F if 2FA is needed",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscx8aap.acf9",
+          "name": "pending_token",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mt3pw0rq.pwrq",
+          "name": "requires_password_change",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Flag T/F if the user must change the password before getting a session (pending_token is the change token)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mt3pw0rs.pwrs",
+          "name": "password_change_reason",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Why the password change is required: 'flag' (forced by an admin) or 'age' (older than the configured max age)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mtd0m41n.rdc1",
+          "name": "requires_domain_choice",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Flag T/F if the credentials are valid in more than one domain and the user must choose one (see domains)",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mtd0m41n.dms1",
+          "name": "domains",
+          "type": "str",
+          "is_array": true,
+          "is_required": false,
+          "is_private": false,
+          "description": "The domains where the credentials are valid, when requires_domain_choice is true",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgox6ytk.187f": {
+      "id": "typ.mgox6ytk.187f",
+      "name": "UserLogout",
+      "description": "User logout info",
+      "doc": "This is the JSON returned when the user logs out",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgox7i0w.6nn9",
+          "name": "success",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "If log out was successful",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgox7r7s.27bs",
+          "name": "message",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The logout message",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgoxbf67.81ii": {
+      "id": "typ.mgoxbf67.81ii",
+      "name": "UserMe",
+      "description": "User session data",
+      "doc": "",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mgoxc0fq.756s",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "The user id",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgoxcf46.gu16",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Session creation date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgoxcplq.7j88",
+          "name": "updated",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Session updated date",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mgoxcyty.6mjf",
+          "name": "metadata",
+          "type": "json",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Session metadata",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mgouyot5.dccg": {
+      "id": "typ.mgouyot5.dccg",
+      "name": "UserRefresh",
+      "description": "Refresh tokens, stored as a sha256 hex digest with a rotation family",
+      "doc": "On login an access JWT and a long-lived refresh token are issued.\nOnly the sha256 hex digest of the refresh token is persisted.\n`family_id` ties together every token in the rotation chain born from one login,\nso a detected reuse can invalidate the whole chain. `used_at` marks a consumed token.",
+      "db_table": "user_refresh_tokens",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.4c9zdioa.py23",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Refresh token record id",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.x3urlcbv.989k",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Owning user id",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.uspw0ysi.pp3b",
+          "name": "token_hash",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "sha256 hex digest of the refresh token",
+          "index": "u",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.3qpf2r0q.08kg",
+          "name": "family_id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Rotation family: the chain of successors born from a single login",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.rdqwxeb8.92ur",
+          "name": "expires_at",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Expiry, unix milliseconds",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.ku3y1vg4.fsuj",
+          "name": "used_at",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Consumption timestamp, unix ms; non-null means already used",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.n08y5lpk.iq8e",
+          "name": "created",
+          "type": "int",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Creation timestamp, unix milliseconds",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mks0acfh.f6g3": {
+      "id": "typ.mks0acfh.f6g3",
+      "name": "TokenRefreshResponse",
+      "description": "Data returned on token refresh",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mks0at73.icbi",
+          "name": "token",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks0b2h8.fvk8",
+          "name": "refresh_token",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks0bcv5.nd7",
+          "name": "expiresIn",
+          "type": "num",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ],
+      "doc": "Data returned on token refresh"
+    },
+    "typ.mks3w22v.g8s7": {
+      "id": "typ.mks3w22v.g8s7",
+      "name": "UserVerificationToken",
+      "description": "Table used for verification emails",
+      "doc": "",
+      "db_table": "user_verification_tokens",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mks3wovj.d3up",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UserVerificationToken main ID",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks3wuan.2eh",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UserVerificationToken domain",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks3wxty.adz4",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks3xe0u.5l65",
+          "name": "type",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "email_verify or password_reset",
+          "index": "",
+          "size": 20,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks3xnz2.58ch",
+          "name": "expires_at",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks3y78m.5rqm",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UserVerificationToken created date",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks3yd61.4ljw",
+          "name": "used_at",
+          "type": "int",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mks6om6r.3f71",
+          "name": "token",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.msa8kiu2.6h6a": {
+      "id": "typ.msa8kiu2.6h6a",
+      "name": "UserRole",
+      "description": "Schema for UserRole",
+      "doc": "Schema for UserRole",
+      "db_table": "user_roles",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.msa8kqs6.1edl",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UserRole main ID",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.msa8krnk.1q0w",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UserRole domain",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.msa8kuji.ip6q",
+          "name": "name",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Role name, unique per domain (required, max 64 chars)",
+          "index": "",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.msa8l3vj.gba3",
+          "name": "description",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Role description",
+          "index": "",
+          "size": 250,
+          "min_length": 0
+        },
+        {
+          "id": "fld.msa8lba6.58ps",
+          "name": "perms",
+          "type": "str",
+          "is_array": true,
+          "is_required": true,
+          "is_private": false,
+          "description": "Permissions granted by this role",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ]
+    },
+    "typ.mscsc7o2.90ib": {
+      "id": "typ.mscsc7o2.90ib",
+      "name": "User2FASetup",
+      "description": "Data returned by /user/2fa/setup",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mscscqro.2c38",
+          "name": "secret",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscsd0rj.e5zv",
+          "name": "otpauth_url",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ],
+      "doc": ""
+    },
+    "typ.mscwe2dy.1h6d": {
+      "id": "typ.mscwe2dy.1h6d",
+      "name": "UserOAUTHProvider",
+      "description": "User OAUTH Provider",
+      "db_table": "user_oauth_providers",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mscwfg9m.jv3s",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UserOAUTHProvider main ID",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwfhyg.r7i",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UserOAUTHProvider domain",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwflke.4qa1",
+          "name": "provider",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Provider name",
+          "index": "",
+          "size": "32",
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwfzi2.kbt6",
+          "name": "client_id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Provider Client ID",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwg5y0.jc16",
+          "name": "client_secret",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "Provider Client Secret",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwge63.jqxq",
+          "name": "enabled",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "Flag T/F",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        }
+      ],
+      "doc": ""
+    },
+    "typ.mscwhf9j.4uxr": {
+      "id": "typ.mscwhf9j.4uxr",
+      "name": "UserOAUTHLink",
+      "description": "User OAUTH Links",
+      "db_table": "user_oauth_links",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.mscwi3ek.hph2",
+          "name": "id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UserOAUTHLink main ID",
+          "index": "u",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwi42e.g64k",
+          "name": "domain",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UserOAUTHLink domain",
+          "index": "m",
+          "size": 64,
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwi6qu.j02c",
+          "name": "id_user",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": "64",
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwifxy.2ekn",
+          "name": "provider",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": "32",
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwip0o.o1j",
+          "name": "provider_user_id",
+          "type": "str",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": "64",
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwj3eo.jczb",
+          "name": "email",
+          "type": "str",
+          "is_array": false,
+          "is_required": false,
+          "is_private": false,
+          "description": "",
+          "index": "",
+          "size": "128",
+          "min_length": 0
+        },
+        {
+          "id": "fld.mscwjgyc.faws",
+          "name": "created",
+          "type": "datetime",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "UserOAUTHLink created date",
+          "index": "m",
+          "size": 0,
+          "min_length": 0
+        }
+      ],
+      "doc": ""
+    },
+    "typ.lc16r003.rcf1": {
+      "id": "typ.lc16r003.rcf1",
+      "name": "UserRegisterConfig",
+      "description": "Settings the sign up form needs",
+      "db_table": "",
+      "db_clear": false,
+      "fields": [
+        {
+          "id": "fld.lc16r003.en01",
+          "name": "enabled",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "True when the registration is open",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.lc16r003.cd01",
+          "name": "create_domain",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "True when a registration creates a new domain",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        },
+        {
+          "id": "fld.lc16r003.ac01",
+          "name": "auth_code_required",
+          "type": "boolean",
+          "is_array": false,
+          "is_required": true,
+          "is_private": false,
+          "description": "True when the registration asks for an auth code",
+          "index": "",
+          "size": 0,
+          "min_length": 0
+        }
+      ],
+      "doc": "Settings the sign up form needs"
+    }
+  },
+  "version": 35,
+  "domain": "os3",
+  "id_owner": "user.4e3cccf20d3afbb0070e52f33c09c40a.7x96",
+  "events": {
+    "evt.mhpugdu2.id6j": {
+      "id": "evt.mhpugdu2.id6j",
+      "name": "user.create",
+      "description": "A new user has been created"
+    },
+    "evt.mhpugqpt.ew3c": {
+      "id": "evt.mhpugqpt.ew3c",
+      "name": "user.delete",
+      "description": "A user has been deleted"
+    },
+    "evt.mht6p8zr.8tgq": {
+      "id": "evt.mht6p8zr.8tgq",
+      "name": "user.call.user.add",
+      "description": "Create a new user in the system"
+    },
+    "evt.mht6pnr2.h5gg": {
+      "id": "evt.mht6pnr2.h5gg",
+      "name": "user.call.user.del",
+      "description": "Delete a user from the system"
+    },
+    "evt.mi37tktm.331a": {
+      "id": "evt.mi37tktm.331a",
+      "name": "user.call.invite.get",
+      "description": "Returns the invite belonging to the code"
+    },
+    "evt.mj44jnw8.7a7v": {
+      "id": "evt.mj44jnw8.7a7v",
+      "name": "user.login",
+      "description": "User logged in"
+    },
+    "evt.mlqky0kx.elnp": {
+      "id": "evt.mlqky0kx.elnp",
+      "name": "user.call.user.get",
+      "description": "Return a single user by id or email or username"
+    },
+    "evt.igm00001.oal1": {
+      "id": "evt.igm00001.oal1",
+      "name": "user.call.user.oauth_link",
+      "description": "Return the OAuth link (provider and provider_user_id) of a user for a given provider"
+    },
+    "evt.mscst6fy.3dab": {
+      "id": "evt.mscst6fy.3dab",
+      "name": "user.call.user.perms",
+      "description": "Set the user permissions"
+    },
+    "evt.i4jmmen1.rjyp": {
+      "id": "evt.i4jmmen1.rjyp",
+      "name": "user.call.user.register",
+      "description": "Self-service registration call. Payload: username, email, password, domain, name, lastname. Rejects if `domain` already exists in the system. On success creates the user in the new domain with email_verified=false, grants it every user.* permission (it becomes the owner/admin of its own domain), sends an email verification link (same token flow as /user/email/resend, valid 7 days), and returns the created User."
+    },
+    "evt.mo2lst1a.k9xq": {
+      "id": "evt.mo2lst1a.k9xq",
+      "name": "user.call.user.list",
+      "description": "Return the list of users of the caller's domain, with only username, name, lastname, email and perms. Payload: domain (optional, defaults to the caller's domain or '_')."
+    },
+    "evt.lc15a001.upd1": {
+      "id": "evt.lc15a001.upd1",
+      "name": "user.call.user.update",
+      "description": "Change name, lastname and/or email of a user. Payload: id, domain, name?, lastname?, email?. Trusted server code only: the user must belong to `domain` (403 otherwise) and the email must be free in the domain (409). A username equal to the old email follows the new email."
+    },
+    "evt.lc15a002.ena1": {
+      "id": "evt.lc15a002.ena1",
+      "name": "user.call.user.set_enabled",
+      "description": "Enable or disable (suspend) a user. Payload: id, domain, enabled. Trusted server code only: the user must belong to `domain`."
+    },
+    "evt.lc15a004.reg1": {
+      "id": "evt.lc15a004.reg1",
+      "name": "user.registered",
+      "description": "A new domain has been registered by its first user. Payload: id_user, domain"
+    },
+    "evt.lc15a003.pwd1": {
+      "id": "evt.lc15a003.pwd1",
+      "name": "user.call.user.set_password",
+      "description": "Set the password of a user. Payload: id, domain, password (8 characters at least). Trusted server code only: the user must belong to `domain`."
+    }
+  }
+}
