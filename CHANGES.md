@@ -2,6 +2,13 @@
 
 ## 2026-11-13
 
+### app: production setup for indiemixup.org
+
+- `app/backend/wrangler.jsonc` `env.prod`: real D1 (`indie-mixup-prod`), KV and R2 (`indie-mixup-bucket-prod`, binding `UPLOAD_BUCKET`) ids, `ALLOWED_ORIGINS` and custom domains `indiemixup.org` and `www.indiemixup.org`.
+- The prod D1 schema was created from the local schema (there is no `drizzle` migrations folder, so `migrations:*` scripts do not work).
+- `deploy:stage` / `deploy:prod` filtered a non-existent package (`indie-mixup-frontend`), so the frontend was never rebuilt: now `app-frontend`. `deploy:prod` builds with `PUBLIC_LIWE_SERVER=https://indiemixup.org` (the local `.env` points to localhost).
+- Prod secrets are set with `wrangler secret bulk` from `app/backend/.dev.vars.prod` (git-ignored).
+
 ### app: YouTube video in the home hero
 
 - The decorative sun/grid circle on the right of the hero in `app/frontend/src/routes/+page.svelte` is replaced by a 16:9 YouTube embed (`LTFE68Sc1BQ`) served from `youtube-nocookie.com` (privacy-enhanced mode, no cookies until play). The video is now shown on mobile too, below the text. It autoplays muted in a loop, without controls (`controls=0`, `pointer-events: none`) and is scaled 1.18x inside the clipped frame to crop the YouTube title bar.

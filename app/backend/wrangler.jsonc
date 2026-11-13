@@ -70,19 +70,31 @@
 			"name": "indie-mixup-prod",
 			"vars": {
 				"ENVIRONMENT": "production",
-				"DEV_MODE": "false"
+				"DEV_MODE": "false",
+				"ALLOWED_ORIGINS": "https://indiemixup.org,https://www.indiemixup.org"
 			},
+			"routes": [
+				{ "pattern": "indiemixup.org", "custom_domain": true },
+				{ "pattern": "www.indiemixup.org", "custom_domain": true }
+			],
 			"d1_databases": [
 				{
 					"binding": "DB",
 					"database_name": "indie-mixup-prod",
-					"database_id": "REPLACE_WITH_PROD_DATABASE_ID"
+					"database_id": "5d72ffc4-374f-4403-b0f7-33635113ab1d",
+					"migrations_dir": "drizzle"
 				}
 			],
 			"kv_namespaces": [
 				{
 					"binding": "KV",
-					"id": "sessions-prod"
+					"id": "b4feb39bba2b4027aabfdce9e9f63d39"
+				}
+			],
+			"r2_buckets": [
+				{
+					"bucket_name": "indie-mixup-bucket-prod",
+					"binding": "UPLOAD_BUCKET"
 				}
 			]
 		}

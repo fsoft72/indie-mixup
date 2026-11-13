@@ -5,8 +5,8 @@
 	"scripts": {
 		"dev": "sleep 1 && wrangler dev",
 		"start": "sleep 5 && wrangler dev",
-		"deploy:stage": "pnpm -F indie-mixup-frontend build && wrangler deploy --env stage",
-		"deploy:prod": "pnpm -F indie-mixup-frontend build && wrangler deploy --env prod",
+		"deploy:stage": "pnpm -F app-frontend build && wrangler deploy --env stage",
+		"deploy:prod": "PUBLIC_LIWE_SERVER=https://indiemixup.org pnpm -F app-frontend build && wrangler deploy --env prod",
 		"test": "vitest",
 		"cf-typegen": "wrangler types",
 		"migrations:dev": "wrangler d1 migrations apply indie-mixup-dev --local",
