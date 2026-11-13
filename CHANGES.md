@@ -2,6 +2,11 @@
 
 ## 2026-11-13
 
+### app: admin pages for users, roles and games
+
+- New app pages `/admin/users` (`UsersList`, needs `user.list`), `/admin/roles` (`UserRolesAdmin`, needs `user.role.manage`) and `/admin/games` (search and paginated list of the visible games with Hide, list of the hidden games with Restore, needs `indiegame.moderate` / `system.admin`). No backend change: the games page uses `indiegame_list`, `indiegame_admin_reports` and `indiegame_admin_hide`.
+- Nav links `Games`, `Users` and `Roles` in the layout, shown only with the matching permission.
+
 ### user module: enable / disable OAuth providers
 
 - New endpoint `POST /api/user/oauth/provider/enable` (`user_oauth_provider_enable`, permission `user.oauth.manage`) in `work/modules/user.json`, regenerated with flow2code. Params `id`, `enabled`; returns the provider without the secret. Tests in `liwe3/modules/user/backend/tests/user-oauth-provider-enable.test.ts`. Documented in `liwe3/modules/user/docs/oauth.md`.

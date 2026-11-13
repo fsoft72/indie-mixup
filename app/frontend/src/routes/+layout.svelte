@@ -30,6 +30,10 @@ const isModerator = $derived( !!storeUser.user.perms?.some( ( p ) => p === 'indi
 
 const isOAuthAdmin = $derived( has_perm( storeUser.user, 'user.oauth.manage' ) );
 
+const canListUsers = $derived( has_perm( storeUser.user, 'user.list' ) );
+
+const canManageRoles = $derived( has_perm( storeUser.user, 'user.role.manage' ) );
+
 const isActive = ( href : string ) => ( href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith( href ) );
 
 const logout = async () => {
@@ -57,6 +61,9 @@ const logout = async () => {
 				{#if storeUser.isLoggedIn}
 					<a href="/my-games" aria-current={isActive( '/my-games' ) ? 'page' : undefined}>My games</a>
 					{#if isModerator}<a href="/admin" aria-current={page.url.pathname === '/admin' ? 'page' : undefined}>Moderation</a>{/if}
+					{#if isModerator}<a href="/admin/games" aria-current={isActive( '/admin/games' ) ? 'page' : undefined}>Games</a>{/if}
+					{#if canListUsers}<a href="/admin/users" aria-current={isActive( '/admin/users' ) ? 'page' : undefined}>Users</a>{/if}
+					{#if canManageRoles}<a href="/admin/roles" aria-current={isActive( '/admin/roles' ) ? 'page' : undefined}>Roles</a>{/if}
 					{#if isOAuthAdmin}<a href="/admin/providers" aria-current={isActive( '/admin/providers' ) ? 'page' : undefined}>Providers</a>{/if}
 				{/if}
 			</nav>
