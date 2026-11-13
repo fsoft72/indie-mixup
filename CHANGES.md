@@ -7,7 +7,7 @@
 - New endpoint `POST /api/user/oauth/provider/enable` (`user_oauth_provider_enable`, permission `user.oauth.manage`) in `work/modules/user.json`, regenerated with flow2code. Params `id`, `enabled`; returns the provider without the secret. Tests in `liwe3/modules/user/backend/tests/user-oauth-provider-enable.test.ts`. Documented in `liwe3/modules/user/docs/oauth.md`.
 - New component `OAuthProvidersAdmin` in `liwe3/modules/user/frontend/src/components` (list, add / edit credentials, enable / disable with the grid checkbox, delete). Needs `user.oauth.manage`.
 - New app page `/admin/providers` (and a `Providers` nav link for `user.oauth.manage` / `system.admin`) that shows the component and the GitHub callback URL to register.
-- New hidden app page `/login/admin` (not linked in the menu): password login with the `Login` component of `user`, used to enter as the system admin (the public `/login` has only GitHub). On success it goes to `/admin/providers`.
+- New hidden app page `/login/admin` (not linked in the menu): password login with the `Login` component of `user`, used to enter as the system admin (the public `/login` has only GitHub). On success it goes to `/admin/providers`. The form is restyled with `:global` rules in the page (stacked fields, site buttons, dead "Forgot password" link hidden).
 
 ### indiegame module (catalog, remixes, reports, rankings)
 
