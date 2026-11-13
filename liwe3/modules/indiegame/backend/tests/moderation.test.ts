@@ -80,6 +80,14 @@ describe('moderator endpoints', () => {
 		expect( ( await indiegame_admin_reports( mkCtx( env.db, null ), {} as any ) ).status ).toBe( 401 );
 	});
 
+	it('the system admin wildcard counts as a moderator', async () => {
+		const admin = mkUser( 'root', [ 'system.admin' ] );
+		await report( bob, 'g1' );
+
+		expect( ( await indiegame_admin_reports( mkCtx( env.db, admin ), {} as any ) ).data!.reports ).toHaveLength( 1 );
+		expect( ( await hide( admin, 'g1', true ) ).data!.status ).toBe( 'hidden' );
+	});
+
 	it('hidden game disappears from list, get, rankings and track', async () => {
 		insertEvent( env.sqlite, { id: 'e1', id_game: 'g1', day: '2026-11-13' } );
 		const env2 = { VISITOR_SALT: 'salt-salt-salt-salt-salt-salt-12' };

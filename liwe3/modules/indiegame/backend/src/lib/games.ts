@@ -3,7 +3,7 @@
  */
 
 import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
-import { type LiWECtx, LiWEResponse, type LiWEUser, liwe_event_call, responseError, responseSuccess } from '@backend/liwe3';
+import { type LiWECtx, LiWEResponse, type LiWEUser, has_perms_sync, liwe_event_call, responseError, responseSuccess } from '@backend/liwe3';
 import { type IndieGameDB, indiegame_events, indiegame_games } from '../schema';
 import { INDIEGAME_PERM_MODERATE } from '../perms';
 import type { IndieGameCard, IndieGameDetail } from '../types';
@@ -15,8 +15,8 @@ export const MAX_PAGE_SIZE = 100;
 /** Domain of a request: the caller domain, otherwise the system domain (anonymous visitors) */
 export const domainOf = ( ctx : LiWECtx, user : LiWEUser | null ) : string => user?.domain ?? ctx.app.cfg?.system?.domain ?? '_';
 
-/** True if the user can moderate games */
-export const isModerator = ( user : LiWEUser | null ) : boolean => !!user?.perms?.includes( INDIEGAME_PERM_MODERATE );
+/** True if the user can moderate games: it has `indiegame.moderate` or the `system.admin` wildcard */
+export const isModerator = ( user : LiWEUser | null ) : boolean => has_perms_sync( user, [ INDIEGAME_PERM_MODERATE ] );
 
 /** Loads one game of a domain, or undefined */
 export const loadGame = ( ctx : LiWECtx, domain : string, id : string ) : Promise<IndieGameDB | undefined> =>

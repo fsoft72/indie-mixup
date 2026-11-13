@@ -16,6 +16,7 @@
 	"dependencies": {
 		"@frontend/liwe3": "workspace:*",
 		"@frontend-modules/indiegame": "workspace:*",
+		"@frontend-modules/notifier": "workspace:*",
 		"@frontend-modules/system": "workspace:*",
 		"@frontend-modules/theme": "workspace:*",
 		"@frontend-modules/upload": "workspace:*",

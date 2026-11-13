@@ -2,9 +2,12 @@
 	"files": [],
 	"references": [
 		{ "path": "./liwe3/backend/core" },
+		{ "path": "./liwe3/backend/thumbnailer" },
 		{ "path": "./liwe3/modules/indiegame/backend" },
+		{ "path": "./liwe3/modules/notifier/backend" },
 		{ "path": "./liwe3/modules/system/backend" },
 		{ "path": "./liwe3/modules/tags/backend" },
+		{ "path": "./liwe3/modules/upload/backend" },
 		{ "path": "./liwe3/modules/user/backend" }
 	]
 }

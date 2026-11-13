@@ -24,8 +24,10 @@
 	"dependencies": {
 		"@backend/liwe3": "workspace:*",
 		"@backend-modules/indiegame": "workspace:*",
+		"@backend-modules/notifier": "workspace:*",
 		"@backend-modules/system": "workspace:*",
 		"@backend-modules/tags": "workspace:*",
+		"@backend-modules/upload": "workspace:*",
 		"@backend-modules/user": "workspace:*",
 		"hono": "^4.12.30",
 		"zod": "^4.4.3"

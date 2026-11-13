@@ -3,6 +3,8 @@ import { LiWEApp } from '@backend/liwe3';
 import { app_init } from '@backend/liwe3/src/app';
 import { module_init as user_init, module_seed as user_seed } from '@backend-modules/user';
 import { module_init as tags_init } from '@backend-modules/tags';
+import { module_init as upload_init } from '@backend-modules/upload';
+import { module_init as notifier_init } from '@backend-modules/notifier';
 import { module_init as indiegame_init } from '@backend-modules/indiegame';
 import { module_init as system_init, module_seed as system_seed } from '@backend-modules/system';
 
@@ -28,6 +30,8 @@ const initializeApp = async ( env : Env ) : Promise<LiWEApp> => {
 	await app.moduleRegister( system_init, system_seed );
 	await app.moduleRegister( user_init, user_seed );
 	await app.moduleRegister( tags_init );
+	await app.moduleRegister( upload_init );
+	await app.moduleRegister( notifier_init );
 	await app.moduleRegister( indiegame_init );
 
 	// Serve static files for non-API routes (fallback to index.html for SPA)

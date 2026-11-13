@@ -21,3 +21,12 @@
 
 - New call event `user.call.user.oauth_link` (listener in `listeners.ts`, 3 tests). Details in `USER-NEW.md`.
 - Removed a duplicate `isNull` import in `methods/user-email-resend.ts` (template drift after regeneration).
+
+### Frontend and app wiring
+
+- `@frontend-modules/indiegame`: `GameCard`, `GameGrid`, `LineageBar`, `RankingTable`, `ReportBox`, `RemixReportBox`, `RemixInbox`, `AdminQueue`, texts in `texts.ts` (ready to translate) and helpers in `utils.ts`.
+- App routes in `app/frontend/src/routes`: catalog `/`, `/games/[id]`, `/rankings`, `/developers/[id]`, `/login` (GitHub), `/login/callback`, `/submit`, `/my-games`, `/admin`. The form of `/submit` and `/my-games` is `app/frontend/src/lib/GameForm.svelte` (`FormCreator` + `Upload`).
+- `app/frontend/src/routes/+layout.svelte` sets the API base url from `PUBLIC_LIWE_SERVER` and registers the `text`, `textarea` and `checkbox` field types.
+- `app/backend/src/index.ts` now registers the `upload` (screenshots and gallery) and `notifier` (remix report notifications) modules too.
+- `system.admin` counts as a moderator (it already passes the route gate).
+- To log in with GitHub an admin must add the `github` OAuth provider (`POST /api/user/oauth/provider/add`).
