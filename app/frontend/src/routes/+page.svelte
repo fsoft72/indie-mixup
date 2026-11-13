@@ -57,9 +57,15 @@ onMount( () => load( true ) );
 			<a class="liwe3-btn" href="/rankings"><Icon name="trophy" size={16} /> See the rankings</a>
 		</div>
 	</div>
-	<div class="art" aria-hidden="true">
-		<div class="sun"></div>
-		<div class="floor"></div>
+	<div class="art">
+		<iframe
+			src="https://www.youtube-nocookie.com/embed/LTFE68Sc1BQ?rel=0"
+			title="Indie Mixup video"
+			loading="lazy"
+			allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+			referrerpolicy="strict-origin-when-cross-origin"
+			allowfullscreen
+		></iframe>
 	</div>
 </section>
 
@@ -77,7 +83,7 @@ onMount( () => load( true ) );
 <style>
 .hero {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 32rem);
 	align-items: center;
 	gap: var(--liwe3-space-8);
 	padding: var(--liwe3-space-8) 0 var(--liwe3-space-6);
@@ -87,43 +93,23 @@ onMount( () => load( true ) );
 }
 .art {
 	position: relative;
-	aspect-ratio: 1;
+	aspect-ratio: 16 / 9;
 	overflow: hidden;
 	border-radius: var(--liwe3-radius-lg);
 	border: 1px solid var(--im-panel-border);
-	background: linear-gradient(to bottom, var(--liwe3-surface-sunken), color-mix(in oklch, var(--liwe3-secondary) 14%, var(--liwe3-surface)));
+	background: var(--liwe3-surface-sunken);
+	box-shadow: 0 0 40px color-mix(in oklch, var(--liwe3-secondary) 30%, transparent);
 }
-.sun {
+.art iframe {
 	position: absolute;
-	left: 50%;
-	top: 12%;
-	width: 66%;
-	aspect-ratio: 1;
-	transform: translateX(-50%);
-	border-radius: 50%;
-	background: linear-gradient(to bottom, var(--liwe3-primary), var(--liwe3-secondary));
-	box-shadow: 0 0 60px color-mix(in oklch, var(--liwe3-secondary) 55%, transparent);
-	-webkit-mask: repeating-linear-gradient(to bottom, var(--liwe3-text) 0 14px, transparent 14px 18px);
-	mask: repeating-linear-gradient(to bottom, var(--liwe3-text) 0 14px, transparent 14px 18px);
-}
-.floor {
-	position: absolute;
-	inset: auto -20% 0 -20%;
-	height: 46%;
-	background:
-		linear-gradient(color-mix(in oklch, var(--liwe3-primary) 55%, transparent) 1px, transparent 1px) 0 0 / 100% 22px,
-		linear-gradient(90deg, color-mix(in oklch, var(--liwe3-primary) 55%, transparent) 1px, transparent 1px) 0 0 / 38px 100%;
-	transform: perspective(260px) rotateX(58deg);
-	transform-origin: top;
-	border-top: 1px solid var(--liwe3-primary);
-	box-shadow: 0 -12px 40px color-mix(in oklch, var(--liwe3-primary) 40%, transparent);
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
 }
 @media (max-width: 52rem) {
 	.hero {
 		grid-template-columns: minmax(0, 1fr);
-	}
-	.art {
-		display: none;
 	}
 }
 .hero h1 {

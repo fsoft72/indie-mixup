@@ -2,6 +2,10 @@
 
 ## 2026-11-13
 
+### app: YouTube video in the home hero
+
+- The decorative sun/grid circle on the right of the hero in `app/frontend/src/routes/+page.svelte` is replaced by a 16:9 YouTube embed (`LTFE68Sc1BQ`) served from `youtube-nocookie.com` (privacy-enhanced mode, no cookies until play). The video is now shown on mobile too, below the text.
+
 ### app: admin pages for users, roles and games
 
 - New app pages `/admin/users` (`UsersList`, needs `user.list`), `/admin/roles` (`UserRolesAdmin`, needs `user.role.manage`) and `/admin/games` (search and paginated list of the visible games with Hide, list of the hidden games with Restore, needs `indiegame.moderate` / `system.admin`). No backend change: the games page uses `indiegame_list`, `indiegame_admin_reports` and `indiegame_admin_hide`.
