@@ -109,6 +109,25 @@ a:hover {
 	background: var(--liwe3-primary-hover);
 	color: var(--liwe3-text-on-primary);
 }
+
+/*
+ * The site paints every .liwe3-btn with the dark panel background, but the theme keeps the
+ * "on-<color>" text of the variants (dark, meant for solid light backgrounds): unreadable.
+ * Solid variants other than primary and danger get the site text color.
+ */
+.liwe3-btn:not(.liwe3-btn--primary):not(.liwe3-btn--danger):not(.liwe3-btn--outline):not(.liwe3-btn--ghost) {
+	color: var(--liwe3-text);
+}
+
+.liwe3-btn:not(.liwe3-btn--primary):not(.liwe3-btn--danger):not(.liwe3-btn--outline):not(.liwe3-btn--ghost):hover:not(:disabled) {
+	color: var(--liwe3-primary);
+}
+
+.liwe3-btn--danger {
+	color: var(--liwe3-error);
+	border-color: color-mix(in oklch, var(--liwe3-error) 55%, transparent);
+}
+
 .liwe3-btn--danger:hover {
 	box-shadow: 0 0 0 1px var(--liwe3-error), 0 0 18px color-mix(in oklch, var(--liwe3-error) 40%, transparent);
 	color: var(--liwe3-error);

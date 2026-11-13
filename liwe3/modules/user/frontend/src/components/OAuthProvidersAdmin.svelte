@@ -3,7 +3,8 @@ import { Button, DataGrid, Input, Modal, has_perm } from '@frontend/liwe3';
 import type { DataGridAction, DataGridButton, DataGridField, DataGridRow } from '@frontend/liwe3';
 import { onMount } from 'svelte';
 import { PencilSquare, Trash } from 'svelte-hero-icons';
-import { dialogAdd, toastAdd } from '@liwe3/webcomponents-svelte';
+import { SmartSelect, dialogAdd, toastAdd } from '@liwe3/webcomponents-svelte';
+import type { SelectOption } from '@liwe3/webcomponents';
 
 import { user_oauth_provider_add, user_oauth_provider_del, user_oauth_provider_enable, user_oauth_provider_list } from '../actions';
 import { type UserOAUTHProvider } from '../types';
@@ -17,6 +18,12 @@ interface Props {
 let { onchange } : Props = $props();
 
 const PERM_OAUTH_MANAGE = 'user.oauth.manage';
+
+/** Providers that have an adapter in the backend (liwe3/modules/user/backend/src/oauth) */
+const PROVIDER_OPTIONS : SelectOption[] = [
+	{ value: 'github', label: 'GitHub' },
+	{ value: 'google', label: 'Google' },
+];
 
 const fields : DataGridField[] = [
 	{ name: 'provider', label: 'Provider', sortable: true, filterable: true, type: 'string' },
@@ -177,7 +184,16 @@ onMount( loadProviders );
 	>
 		<div class="provider-form">
 			{#if !editingProvider}
-				<Input name="provider" label="Provider (github, google)" type="text" required={true} bind:value={providerName} />
+				<div class="provider-field">
+					<span class="provider-label">Provider</span>
+					<SmartSelect
+						options={PROVIDER_OPTIONS}
+						value={providerName}
+						placeholder="Select a provider"
+						searchable={true}
+						onchange={( val ) => ( providerName = typeof val === 'string' ? val : '' )}
+					/>
+				</div>
 			{/if}
 			<Input name="client_id" label="Client ID" type="text" required={true} bind:value={clientId} />
 			<Input name="client_secret" label="Client Secret" type="password" autocomplete="off" required={true} bind:value={clientSecret} />
@@ -195,6 +211,19 @@ onMount( loadProviders );
 	flex-direction: column;
 	gap: 1rem;
 	min-width: 400px;
+	padding: 0 0 var(--liwe3-space-3);
+}
+
+.provider-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.provider-label {
+	font-size: 0.8rem;
+	font-weight: 500;
+	user-select: none;
 }
 
 .provider-form-buttons {

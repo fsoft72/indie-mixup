@@ -3,7 +3,7 @@ import '../app.css';
 import { goto } from '$app/navigation';
 import { env } from '$env/dynamic/public';
 import { page } from '$app/state';
-import { FormCheckbox, FormTextArea, FormTextInput, apiClient, formCreatorPluginRegister } from '@frontend/liwe3';
+import { FormCheckbox, FormTextArea, FormTextInput, apiClient, formCreatorPluginRegister, has_perm } from '@frontend/liwe3';
 import { Icon } from '@frontend-modules/indiegame';
 import { ThemeProvider } from '@frontend-modules/theme';
 import { storeUser } from '@frontend-modules/user';
@@ -28,7 +28,7 @@ onMount( () => storeUser.load() );
 
 const isModerator = $derived( !!storeUser.user.perms?.some( ( p ) => p === 'indiegame.moderate' || p === 'system.admin' ) );
 
-const isOAuthAdmin = $derived( !!storeUser.user.perms?.some( ( p ) => p === 'user.oauth.manage' || p === 'system.admin' ) );
+const isOAuthAdmin = $derived( has_perm( storeUser.user, 'user.oauth.manage' ) );
 
 const isActive = ( href : string ) => ( href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith( href ) );
 
