@@ -37,29 +37,35 @@ export const authorNames = async ( ctx : LiWECtx, ids : string[] ) : Promise<Map
 		const res = await liwe_event_call<{ username? : string; name? : string; lastname? : string }>( ctx, 'user', 'user.get', { id } );
 		if ( !res.ok || !res.data ) continue;
 
+		// For accounts created with GitHub the username is the email: it must never reach a public page
 		const full = [ res.data.name, res.data.lastname ].filter( Boolean ).join( ' ' );
-		names.set( id, full || res.data.username || id );
+		const handle = res.data.username && !res.data.username.includes( '@' ) ? res.data.username : '';
+		names.set( id, full || handle || 'Developer' );
 	}
 
 	return names;
 };
 
+/** Ids per query: D1 allows 100 bound parameters, and the domain takes one of them */
+const COUNT_CHUNK = 50;
+
 /** Total views and downloads per game */
 export const countsFor = async ( ctx : LiWECtx, domain : string, ids : string[] ) : Promise<Map<string, { views : number; downloads : number }>> => {
 	const counts = new Map<string, { views : number; downloads : number }>();
-	if ( !ids.length ) return counts;
 
-	const rows = await ctx.app.db.select( { id_game: indiegame_events.id_game, kind: indiegame_events.kind, n: sql<number>`count(*)` } )
-		.from( indiegame_events )
-		.where( and( eq( indiegame_events.domain, domain ), inArray( indiegame_events.id_game, ids ) ) )
-		.groupBy( indiegame_events.id_game, indiegame_events.kind )
-		.all();
+	for ( let start = 0; start < ids.length; start += COUNT_CHUNK ) {
+		const rows = await ctx.app.db.select( { id_game: indiegame_events.id_game, kind: indiegame_events.kind, n: sql<number>`count(*)` } )
+			.from( indiegame_events )
+			.where( and( eq( indiegame_events.domain, domain ), inArray( indiegame_events.id_game, ids.slice( start, start + COUNT_CHUNK ) ) ) )
+			.groupBy( indiegame_events.id_game, indiegame_events.kind )
+			.all();
 
-	for ( const row of rows ) {
-		const entry = counts.get( row.id_game ) ?? { views: 0, downloads: 0 };
-		if ( row.kind === 'view' ) entry.views = Number( row.n );
-		if ( row.kind === 'download' ) entry.downloads = Number( row.n );
-		counts.set( row.id_game, entry );
+		for ( const row of rows ) {
+			const entry = counts.get( row.id_game ) ?? { views: 0, downloads: 0 };
+			if ( row.kind === 'view' ) entry.views = Number( row.n );
+			if ( row.kind === 'download' ) entry.downloads = Number( row.n );
+			counts.set( row.id_game, entry );
+		}
 	}
 
 	return counts;

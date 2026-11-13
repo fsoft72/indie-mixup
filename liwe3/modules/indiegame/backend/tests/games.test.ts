@@ -6,6 +6,7 @@ import { indiegame_list } from '../src/methods/indiegame-list';
 import { indiegame_mine } from '../src/methods/indiegame-mine';
 import { createDb, insertGame, mkCtx, mkUser, registerStubs, stubGithubRepo, stubs } from './helpers';
 
+const UPLOAD = '/api/upload/get?key=acme%7Cindiegame%7Cs1.png';
 const alice = mkUser( 'alice' );
 const bob = mkUser( 'bob' );
 const mod = mkUser( 'mod', [ 'indiegame.moderate' ] );
@@ -14,7 +15,7 @@ const valid = ( over : Record<string, unknown> = {} ) => ( {
 	name: 'Cool Game',
 	description: 'A cool game',
 	repo_url: 'https://github.com/alice/cool-game',
-	screenshots: [ 'https://cdn/s1.png' ],
+	screenshots: [ UPLOAD ],
 	...over,
 } );
 
@@ -260,5 +261,50 @@ describe('indiegame_del, mine, get and list', () => {
 
 		const literal = await indiegame_list( mkCtx( env.db, null ), { q: '%', page: 1, limit: 20 } as any );
 		expect( literal.data!.map( ( g ) => g.id ) ).toEqual( [ 'p' ] );
+	});
+});
+
+describe('review fixes', () => {
+	it('images must be files of the upload module, not external urls (create and edit)', async () => {
+		for ( const bad of [ 'https://evil.example/p.png', '//evil.example/p.png', '/other/path.png', 'javascript:alert(1)' ] ) {
+			expect( ( await create( alice, valid( { screenshots: [ bad ] } ) ) ).status, bad ).toBe( 400 );
+			expect( ( await create( alice, valid( { gallery: [ bad ] } ) ) ).status, bad ).toBe( 400 );
+		}
+
+		const id = ( await create( alice, valid() ) ).data!.id;
+		expect( ( await indiegame_add( mkCtx( env.db, alice ), { id, screenshots: [ 'https://evil.example/p.png' ] } as any ) ).status ).toBe( 400 );
+		expect( ( await indiegame_add( mkCtx( env.db, alice ), { id, gallery: [ UPLOAD ] } as any ) ).ok ).toBe( true );
+	});
+
+	it('a repo can be published again after its game was deleted', async () => {
+		const id = ( await create( alice, valid() ) ).data!.id;
+		await indiegame_del( mkCtx( env.db, alice ), { id } as any );
+
+		const again = await create( alice, valid() );
+
+		expect( again.ok ).toBe( true );
+		expect( again.data!.id ).not.toBe( id );
+	});
+
+	it('the author name never falls back to an email', async () => {
+		stubs.userOverrides = { alice: { name: '', lastname: '', username: 'alice@example.com' }, bob: { name: '', lastname: '', username: 'bobby' } };
+		insertGame( env.sqlite, { id: 'ga', id_user: 'alice' } );
+		insertGame( env.sqlite, { id: 'gb', id_user: 'bob' } );
+
+		const names = ( await indiegame_list( mkCtx( env.db, null ), { page: 1, limit: 20 } as any ) ).data!.map( ( g ) => g.author_name );
+		stubs.userOverrides = {};
+
+		expect( names.some( ( n ) => n?.includes( '@' ) ) ).toBe( false );
+		expect( names.sort() ).toEqual( [ 'Developer', 'bobby' ] );
+	});
+
+	it('a page of 100 games stays under the 100 bound parameters of D1', async () => {
+		for ( let i = 0; i < 100; i++ ) insertGame( env.sqlite, { id: `m${i}`, id_user: 'alice', created: `2026-02-01 10:00:${String( i % 60 ).padStart( 2, '0' )}` } );
+		env.stats.maxParams = 0;
+
+		const res = await indiegame_list( mkCtx( env.db, null ), { page: 1, limit: 100 } as any );
+
+		expect( res.data ).toHaveLength( 100 );
+		expect( env.stats.maxParams ).toBeLessThanOrEqual( 100 );
 	});
 });

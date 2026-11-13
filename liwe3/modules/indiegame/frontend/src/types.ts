@@ -4,7 +4,6 @@ import { zodBoolean } from '@frontend/liwe3';
 /*=== f2c_start __types ===*/
 
 // Add custom types here
-
 /*=== f2c_end __types ===*/
 
 /**
@@ -296,10 +295,12 @@ export { ZIndieDeveloper };
  *
  * @property {[IndieGameReport[]]} reports - Open content reports
  * @property {[IndieRemixReport[]]} remix_reports - Contested remix reports
+ * @property {[IndieGameCard[]]} hidden_games - Games hidden by a moderator, newest first
  */
 const ZIndieAdminReports = z.object( {
 	reports: z.any().array().optional(),
 	remix_reports: z.any().array().optional(),
+	hidden_games: z.any().array().optional(),
 } );
 
 export type IndieAdminReports = z.infer<typeof ZIndieAdminReports>;

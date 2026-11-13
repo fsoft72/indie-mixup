@@ -16,6 +16,10 @@ export const VISITOR_COOKIE = 'ig_vid';
 const COOKIE_MAX_AGE = 365 * 24 * 60 * 60;
 const KINDS = [ 'view', 'download' ] as const;
 
+/** Most distinct visitors one IP can add to a game, per kind and day: the cookie is chosen by the client, so it cannot be the only limit */
+const MAX_VISITORS_PER_IP = 10;
+const CAP_TTL_SECONDS = 25 * 60 * 60;
+
 const _readCookie = ( header : string | undefined, name : string ) : string | null => {
 	for ( const part of ( header ?? '' ).split( ';' ) ) {
 		const [ key, ...rest ] = part.trim().split( '=' );
@@ -61,6 +65,16 @@ export const trackGame = async ( ctx : LiWECtx, idGame : string, kind : string )
 
 	const seen = await ctx.app.db.select( { id: indiegame_events.id } ).from( indiegame_events ).where( eq( indiegame_events.id, id ) ).get();
 	if ( seen ) return responseSuccess( { counted: false, repo_url: game.repo_url } );
+
+	const ip = ctx.c?.req.header( 'cf-connecting-ip' );
+	const kv = ctx.app.env?.KV;
+	if ( kv && ip ) {
+		const capKey = `indiegame:cap:${domain}:${game.id}:${kindOk}:${dayOf( new Date() )}:${await visitorHash( null, ip, salt )}`;
+		const used = Number( await kv.get( capKey ) ?? 0 );
+
+		if ( used >= MAX_VISITORS_PER_IP ) return responseSuccess( { counted: false, repo_url: game.repo_url } );
+		await kv.put( capKey, String( used + 1 ), { expirationTtl: CAP_TTL_SECONDS } );
+	}
 
 	await ctx.app.db.insert( indiegame_events ).values( { id, domain, id_game: game.id, kind: kindOk, day: dayOf( new Date() ), visitor } ).onConflictDoNothing().run();
 

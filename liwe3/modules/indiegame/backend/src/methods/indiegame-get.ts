@@ -18,7 +18,6 @@ export type IndiegameGetParams = z.infer<typeof IndiegameGetSchema>;
 /*=== f2c_start indiegame_get_headers ===*/
 
 import { gameGet } from '../lib/games';
-
 /*=== f2c_end indiegame_get_headers ===*/
 
 /**

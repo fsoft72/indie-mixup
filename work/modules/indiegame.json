@@ -1915,6 +1915,18 @@
           "index": "",
           "size": 0,
           "min_length": 0
+        },
+        {
+          "id": "fld.igm90001.hid1",
+          "name": "hidden_games",
+          "type": "IndieGameCard",
+          "is_array": true,
+          "is_required": false,
+          "is_private": false,
+          "description": "Games hidden by a moderator, newest first",
+          "index": "",
+          "size": 0,
+          "min_length": 0
         }
       ]
     }

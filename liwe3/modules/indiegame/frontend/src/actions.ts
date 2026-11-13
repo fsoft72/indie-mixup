@@ -16,7 +16,6 @@ import type {
 /*=== f2c_start actions ===*/
 
 // Add custom imports here
-
 /*=== f2c_end actions ===*/
 
 /**
@@ -72,7 +71,6 @@ export const indiegame_list = async ( params : {
 	/*=== f2c_start indiegame_list ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_list ===*/
 
 	return res;
@@ -86,7 +84,6 @@ export const indiegame_get = async ( params : {
 	/*=== f2c_start indiegame_get ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_get ===*/
 
 	return res;
@@ -101,7 +98,6 @@ export const indiegame_track = async ( params : {
 	/*=== f2c_start indiegame_track ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_track ===*/
 
 	return res;
@@ -117,7 +113,6 @@ export const indiegame_ranking_games = async ( params : {
 	/*=== f2c_start indiegame_ranking_games ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_ranking_games ===*/
 
 	return res;
@@ -133,7 +128,6 @@ export const indiegame_ranking_developers = async ( params : {
 	/*=== f2c_start indiegame_ranking_developers ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_ranking_developers ===*/
 
 	return res;
@@ -147,7 +141,6 @@ export const indiegame_developer_get = async ( params : {
 	/*=== f2c_start indiegame_developer_get ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_developer_get ===*/
 
 	return res;
@@ -168,7 +161,6 @@ export const indiegame_add = async ( params : {
 	/*=== f2c_start indiegame_add ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_add ===*/
 
 	return res;
@@ -182,7 +174,6 @@ export const indiegame_del = async ( params : {
 	/*=== f2c_start indiegame_del ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_del ===*/
 
 	return res;
@@ -194,7 +185,6 @@ export const indiegame_mine = async ( options? : LiWEActionOptions ) : Promise<L
 	/*=== f2c_start indiegame_mine ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_mine ===*/
 
 	return res;
@@ -209,7 +199,6 @@ export const indiegame_report = async ( params : {
 	/*=== f2c_start indiegame_report ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_report ===*/
 
 	return res;
@@ -224,7 +213,6 @@ export const indiegame_remix_report = async ( params : {
 	/*=== f2c_start indiegame_remix_report ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_remix_report ===*/
 
 	return res;
@@ -236,7 +224,6 @@ export const indiegame_remix_inbox = async ( options? : LiWEActionOptions ) : Pr
 	/*=== f2c_start indiegame_remix_inbox ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_remix_inbox ===*/
 
 	return res;
@@ -251,7 +238,6 @@ export const indiegame_remix_answer = async ( params : {
 	/*=== f2c_start indiegame_remix_answer ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_remix_answer ===*/
 
 	return res;
@@ -263,7 +249,6 @@ export const indiegame_admin_reports = async ( options? : LiWEActionOptions ) : 
 	/*=== f2c_start indiegame_admin_reports ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_admin_reports ===*/
 
 	return res;
@@ -278,7 +263,6 @@ export const indiegame_admin_hide = async ( params : {
 	/*=== f2c_start indiegame_admin_hide ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_admin_hide ===*/
 
 	return res;
@@ -293,7 +277,6 @@ export const indiegame_admin_remix_decide = async ( params : {
 	/*=== f2c_start indiegame_admin_remix_decide ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_admin_remix_decide ===*/
 
 	return res;
@@ -307,7 +290,6 @@ export const indiegame_admin_report_close = async ( params : {
 	/*=== f2c_start indiegame_admin_report_close ===*/
 
 	// Add custom code here
-
 	/*=== f2c_end indiegame_admin_report_close ===*/
 
 	return res;
@@ -316,5 +298,4 @@ export const indiegame_admin_report_close = async ( params : {
 /*=== f2c_start __actions ===*/
 
 // Add custom actions here
-
 /*=== f2c_end __actions ===*/

@@ -5,7 +5,7 @@ import { indiegame_admin_hide, indiegame_admin_remix_decide, indiegame_admin_rep
 import { T } from '../texts';
 import type { IndieAdminReports } from '../types';
 
-let queue : IndieAdminReports = $state( { reports: [], remix_reports: [] } );
+let queue : IndieAdminReports = $state( { reports: [], remix_reports: [], hidden_games: [] } );
 let loaded = $state( false );
 
 const load = async () => {
@@ -57,6 +57,19 @@ onMount( load );
 				<a href={`/games/${report.id_original}`}>{report.id_original}</a>
 				<button class="liwe3-btn liwe3-btn--primary" onclick={() => run( () => indiegame_admin_remix_decide( { id_report: report.id, confirm: true } ) )}>{T.admin.confirm}</button>
 				<button class="liwe3-btn" onclick={() => run( () => indiegame_admin_remix_decide( { id_report: report.id, confirm: false } ) )}>{T.admin.reject}</button>
+			</li>
+		{/each}
+	</ul>
+
+	<h2>{T.admin.hiddenGames}</h2>
+	{#if loaded && !queue.hidden_games?.length}
+		<p class="empty">{T.admin.empty}</p>
+	{/if}
+	<ul>
+		{#each queue.hidden_games ?? [] as game (game.id)}
+			<li>
+				<a href={`/games/${game.id}`}>{game.name}</a>
+				<button class="liwe3-btn" onclick={() => run( () => indiegame_admin_hide( { id: game.id, hidden: false } ) )}>{T.admin.show}</button>
 			</li>
 		{/each}
 	</ul>

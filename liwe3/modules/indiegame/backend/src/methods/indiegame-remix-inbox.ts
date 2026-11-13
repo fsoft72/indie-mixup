@@ -6,7 +6,6 @@ import { IndieRemixReport } from '../types';
 /*=== f2c_start indiegame_remix_inbox_headers ===*/
 
 import { remixInbox } from '../lib/remix';
-
 /*=== f2c_end indiegame_remix_inbox_headers ===*/
 
 /**

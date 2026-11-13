@@ -2,7 +2,7 @@
  * @fileoverview Content reports ("Report" button) and moderator actions: moderation queue, hide or show a game, close a report.
  */
 
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
 import {
 	ERR_ALREADY_EXISTS,
 	ERR_PERMISSION_DENIED,
@@ -22,6 +22,7 @@ import { domainOf, isModerator, loadGame, toCards, toDate } from './games';
 import { remixToReport } from './remix';
 
 const MAX_REASON = 2000;
+const MAX_HIDDEN_LISTED = 100;
 const RANKING_CACHE_PREFIX = 'indiegame:rank:';
 
 const _toReport = ( row : IndieGameReportDB ) : IndieGameReport => ( {
@@ -81,7 +82,7 @@ export const gameReport = async ( ctx : LiWECtx, user : LiWEUser, idGame : strin
 };
 
 /**
- * Moderation queue: open content reports and contested remix reports, oldest first.
+ * Moderation queue: open content reports and open remix reports (pending or contested), oldest first, plus the hidden games, newest first.
  *
  * @param ctx - Request context
  * @param user - A moderator
@@ -91,18 +92,25 @@ export const adminReports = async ( ctx : LiWECtx, user : LiWEUser ) : Promise<L
 	if ( !isModerator( user ) ) return _forbidden();
 
 	const domain = domainOf( ctx, user );
-	const [ reports, remixReports ] = await Promise.all( [
+	const [ reports, remixReports, hiddenRows ] = await Promise.all( [
 		ctx.app.db.select().from( indiegame_reports ).where( and( eq( indiegame_reports.domain, domain ), eq( indiegame_reports.status, 'open' ) ) ).orderBy(
 			asc( indiegame_reports.created ),
 			asc( indiegame_reports.id ),
 		).all(),
-		ctx.app.db.select().from( indiegame_remix_reports ).where( and( eq( indiegame_remix_reports.domain, domain ), eq( indiegame_remix_reports.status, 'contested' ) ) ).orderBy(
+		ctx.app.db.select().from( indiegame_remix_reports ).where(
+			and( eq( indiegame_remix_reports.domain, domain ), inArray( indiegame_remix_reports.status, [ 'pending', 'contested' ] ) ),
+		).orderBy(
 			asc( indiegame_remix_reports.created ),
 			asc( indiegame_remix_reports.id ),
 		).all(),
+		ctx.app.db.select().from( indiegame_games )
+			.where( and( eq( indiegame_games.domain, domain ), eq( indiegame_games.status, 'hidden' ) ) )
+			.orderBy( desc( indiegame_games.created ) )
+			.limit( MAX_HIDDEN_LISTED )
+			.all(),
 	] );
 
-	return responseSuccess( { reports: reports.map( _toReport ), remix_reports: remixReports.map( remixToReport ) } );
+	return responseSuccess( { reports: reports.map( _toReport ), remix_reports: remixReports.map( remixToReport ), hidden_games: await toCards( ctx, domain, hiddenRows ) } );
 };
 
 /**

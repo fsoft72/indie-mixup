@@ -16,7 +16,6 @@ export type IndiegameDelParams = z.infer<typeof IndiegameDelSchema>;
 /*=== f2c_start indiegame_del_headers ===*/
 
 import { gameDelete } from '../lib/game-add';
-
 /*=== f2c_end indiegame_del_headers ===*/
 
 /**

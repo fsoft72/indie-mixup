@@ -6,7 +6,6 @@ import { IndieAdminReports } from '../types';
 /*=== f2c_start indiegame_admin_reports_headers ===*/
 
 import { adminReports } from '../lib/moderation';
-
 /*=== f2c_end indiegame_admin_reports_headers ===*/
 
 /**

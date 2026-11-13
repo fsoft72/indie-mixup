@@ -21,7 +21,6 @@ export type IndiegameAdminRemixDecideParams = z.infer<typeof IndiegameAdminRemix
 
 import { ERR_VALIDATION } from '@backend/liwe3';
 import { remixDecide } from '../lib/remix';
-
 /*=== f2c_end indiegame_admin_remix_decide_headers ===*/
 
 /**

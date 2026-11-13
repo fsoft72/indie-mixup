@@ -20,7 +20,6 @@ export type IndiegameRemixReportParams = z.infer<typeof IndiegameRemixReportSche
 /*=== f2c_start indiegame_remix_report_headers ===*/
 
 import { remixReport } from '../lib/remix';
-
 /*=== f2c_end indiegame_remix_report_headers ===*/
 
 /**

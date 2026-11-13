@@ -32,7 +32,6 @@ export type IndiegameAddParams = z.infer<typeof IndiegameAddSchema>;
 /*=== f2c_start indiegame_add_headers ===*/
 
 import { gameCreate, gameEdit } from '../lib/game-add';
-
 /*=== f2c_end indiegame_add_headers ===*/
 
 /**

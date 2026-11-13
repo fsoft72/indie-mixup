@@ -126,13 +126,14 @@ describe('moderator endpoints', () => {
 		expect( ( await ranking() ).data ?? [] ).toEqual( [] );
 	});
 
-	it('admin reports lists open reports and contested remixes, oldest first', async () => {
+	it('admin reports lists open reports, pending and contested remixes, and hidden games, oldest first', async () => {
 		insertGame( env.sqlite, { id: 'g2', id_user: 'bob', name: 'Beta' } );
 		const first = ( await report( bob, 'g1', 'first' ) ).data!.id;
 		vi.setSystemTime( new Date( '2026-11-13T13:00:00Z' ) );
 		await report( alice, 'g2', 'second' );
 		const closed = ( await report( mkUser( 'carol' ), 'g1', 'closed one' ) ).data!.id;
 		await indiegame_admin_report_close( mkCtx( env.db, mod ), { id_report: closed } as any );
+		insertGame( env.sqlite, { id: 'gh', id_user: 'bob', name: 'Hidden one', status: 'hidden' } );
 		env.sqlite.prepare(
 			"INSERT INTO indiegame_remix_reports (id, domain, id_game, id_original, id_reporter, id_owner, status) VALUES ('rr1','acme','g2','g1','alice','bob','contested'), ('rr2','acme','g2','g1','alice','bob','pending')",
 		).run();
@@ -141,7 +142,8 @@ describe('moderator endpoints', () => {
 
 		expect( res.data!.reports.map( ( r ) => r.reason ) ).toEqual( [ 'first', 'second' ] );
 		expect( res.data!.reports[0].id ).toBe( first );
-		expect( res.data!.remix_reports.map( ( r ) => r.id ) ).toEqual( [ 'rr1' ] );
+		expect( res.data!.remix_reports.map( ( r ) => r.id ) ).toEqual( [ 'rr1', 'rr2' ] );
+		expect( res.data!.hidden_games ).toEqual( [ expect.objectContaining( { id: 'gh', status: 'hidden' } ) ] );
 	});
 
 	it('close marks the report closed, twice is fine, unknown is a 404', async () => {

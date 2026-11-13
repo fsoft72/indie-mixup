@@ -54,6 +54,15 @@ const _urlList = ( value : unknown, max : number, httpOnly : boolean ) : string[
 	return out;
 };
 
+const UPLOAD_PATH_RE = /^\/api\/upload\/get\?key=\S+$/;
+
+/** Validates a list of images: each one must be a file served by the upload module (no external urls, so no third party sees the visitors) */
+const _imageList = ( value : unknown, max : number ) : string[] | null => {
+	const list = _urlList( value, max, false );
+
+	return list && list.every( ( url ) => UPLOAD_PATH_RE.test( url ) ) ? list : null;
+};
+
 const _invalid = ( message : string ) => responseError<IndieGameDetail>( message, 400, ERR_VALIDATION );
 
 /** Checks that `parent` can be the original of a game: it exists in the domain and is visible */
@@ -80,10 +89,10 @@ export const gameCreate = async ( ctx : LiWECtx, user : LiWEUser, input : GameIn
 	if ( !name || !description || !repoUrl ) return _invalid( 'name, description and repo_url are required' );
 	if ( name.length > MAX_NAME ) return _invalid( `name is longer than ${MAX_NAME} characters` );
 
-	const screenshots = _urlList( input.screenshots, MAX_IMAGES, false );
+	const screenshots = _imageList( input.screenshots, MAX_IMAGES );
 	if ( !screenshots?.length ) return _invalid( 'At least one screenshot is required' );
 
-	const gallery = input.gallery === undefined ? [] : _urlList( input.gallery, MAX_IMAGES, false );
+	const gallery = input.gallery === undefined ? [] : _imageList( input.gallery, MAX_IMAGES );
 	if ( !gallery ) return _invalid( 'gallery must be a list of urls' );
 
 	const videos = input.video_urls === undefined ? [] : _urlList( input.video_urls, MAX_VIDEOS, true );
@@ -179,13 +188,13 @@ export const gameEdit = async ( ctx : LiWECtx, user : LiWEUser, input : GameInpu
 	}
 
 	if ( input.screenshots !== undefined ) {
-		const screenshots = _urlList( input.screenshots, MAX_IMAGES, false );
+		const screenshots = _imageList( input.screenshots, MAX_IMAGES );
 		if ( !screenshots?.length ) return _invalid( 'At least one screenshot is required' );
 		changes.screenshots = screenshots;
 	}
 
 	if ( input.gallery !== undefined ) {
-		const gallery = _urlList( input.gallery, MAX_IMAGES, false );
+		const gallery = _imageList( input.gallery, MAX_IMAGES );
 		if ( !gallery ) return _invalid( 'gallery must be a list of urls' );
 		changes.gallery = gallery;
 	}
@@ -234,7 +243,8 @@ export const gameDelete = async ( ctx : LiWECtx, user : LiWEUser, id : string ) 
 	if ( !row || row.status === 'deleted' ) return responseError( 'Game not found', 404, 'GAME_NOT_FOUND' );
 	if ( row.id_user !== user.id ) return responseError( 'Only the author can delete this game', 403, ERR_PERMISSION_DENIED );
 
-	await ctx.app.db.update( indiegame_games ).set( { status: 'deleted', updated: sql`CURRENT_TIMESTAMP` as unknown as Date } )
+	// The repo id is freed (it is unique), so the author can publish the same repo again
+	await ctx.app.db.update( indiegame_games ).set( { status: 'deleted', repo_id: `del.${id}`, updated: sql`CURRENT_TIMESTAMP` as unknown as Date } )
 		.where( and( eq( indiegame_games.domain, domain ), eq( indiegame_games.id, id ) ) ).run();
 
 	return responseSuccess( true );

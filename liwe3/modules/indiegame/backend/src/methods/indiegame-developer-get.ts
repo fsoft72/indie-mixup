@@ -18,7 +18,6 @@ export type IndiegameDeveloperGetParams = z.infer<typeof IndiegameDeveloperGetSc
 /*=== f2c_start indiegame_developer_get_headers ===*/
 
 import { developerProfile } from '../lib/ranking';
-
 /*=== f2c_end indiegame_developer_get_headers ===*/
 
 /**

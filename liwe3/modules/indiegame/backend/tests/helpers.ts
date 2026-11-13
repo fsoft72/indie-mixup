@@ -11,7 +11,10 @@ export const createDb = () => {
 	const sqlite = new DatabaseSync( ':memory:' );
 	sqlite.exec( DDL );
 
+	const stats = { maxParams: 0 };
+
 	const db = drizzle( async ( query, params, method ) => {
+		stats.maxParams = Math.max( stats.maxParams, params.length );
 		const stmt = sqlite.prepare( query );
 
 		if ( method === 'run' ) {
@@ -26,7 +29,7 @@ export const createDb = () => {
 		return { rows: ( method === 'get' ? rows[0] : rows ) as any };
 	} );
 
-	return { db, sqlite };
+	return { db, sqlite, stats };
 };
 
 /** In-memory KV with the get/put/delete surface used by the module */
@@ -67,6 +70,8 @@ export const mkCtx = ( db : any, user : LiWEUser | null, env : Record<string, un
 export const stubs = {
 	githubIds: {} as Record<string, string>,
 	notifications: [] as unknown[],
+	/** Replaces fields of the user returned by user.get, by user id */
+	userOverrides: {} as Record<string, Record<string, unknown>>,
 };
 
 let registered = false;
@@ -90,6 +95,7 @@ export const registerStubs = () => {
 			name: `Name ${data.id}`,
 			lastname: `Last ${data.id}`,
 			email: 'hidden@example.com',
+			...( stubs.userOverrides[data.id] ?? {} ),
 		} ) );
 
 	liwe_event_register( 'notifier.call.create', async ( _ctx, data : unknown ) => {

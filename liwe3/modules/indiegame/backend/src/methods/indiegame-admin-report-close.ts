@@ -18,7 +18,6 @@ export type IndiegameAdminReportCloseParams = z.infer<typeof IndiegameAdminRepor
 /*=== f2c_start indiegame_admin_report_close_headers ===*/
 
 import { reportClose } from '../lib/moderation';
-
 /*=== f2c_end indiegame_admin_report_close_headers ===*/
 
 /**

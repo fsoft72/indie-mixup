@@ -22,7 +22,6 @@ export type IndiegameListParams = z.infer<typeof IndiegameListSchema>;
 /*=== f2c_start indiegame_list_headers ===*/
 
 import { gameList } from '../lib/games';
-
 /*=== f2c_end indiegame_list_headers ===*/
 
 /**

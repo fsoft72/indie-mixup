@@ -6,7 +6,6 @@ import { IndieGameCard } from '../types';
 /*=== f2c_start indiegame_mine_headers ===*/
 
 import { gamesOfUser } from '../lib/games';
-
 /*=== f2c_end indiegame_mine_headers ===*/
 
 /**

@@ -21,7 +21,6 @@ export type IndiegameRemixAnswerParams = z.infer<typeof IndiegameRemixAnswerSche
 
 import { ERR_VALIDATION } from '@backend/liwe3';
 import { remixAnswer } from '../lib/remix';
-
 /*=== f2c_end indiegame_remix_answer_headers ===*/
 
 /**

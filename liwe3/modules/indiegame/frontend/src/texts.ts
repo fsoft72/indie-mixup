@@ -45,7 +45,9 @@ export const T = {
 	},
 	admin: {
 		reports: 'Open reports',
-		remixReports: 'Contested remix reports',
+		remixReports: 'Remix reports to decide (contested or never answered)',
+		hiddenGames: 'Hidden games',
+		show: 'Show game again',
 		empty: 'Nothing to review.',
 		hide: 'Hide game',
 		close: 'Close report',

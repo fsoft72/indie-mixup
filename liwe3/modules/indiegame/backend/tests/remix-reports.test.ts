@@ -181,19 +181,33 @@ describe('indiegame_admin_remix_decide', () => {
 		expect( gameRow( 'copy' ).id_remix_of ).toBeNull();
 	});
 
-	it('only a moderator can decide, and only a contested report', async () => {
+	it('only a moderator can decide, and only a report that is still open', async () => {
 		const id = await contested();
 
 		expect( ( await decide( bob, id, true ) ).status ).toBe( 403 );
-
-		const pending = ( await ( async () => {
-			insertGame( env.sqlite, { id: 'orig2', id_user: 'alice', created: '2026-01-02 10:00:00' } );
-
-			return report( alice, 'copy', 'orig2' );
-		} )() ).data!.id;
-
-		expect( ( await decide( mod, pending, true ) ).status ).toBe( 409 );
 		expect( ( await decide( mod, 'ghost', true ) ).status ).toBe( 404 );
+		expect( ( await decide( mod, id, true ) ).ok ).toBe( true );
+		expect( ( await decide( mod, id, true ) ).status ).toBe( 409 );
+	});
+
+	it('a moderator can decide a pending report that the owner never answered', async () => {
+		const id = ( await report( alice, 'copy', 'orig' ) ).data!.id;
+
+		const res = await decide( mod, id, true );
+
+		expect( res.data ).toMatchObject( { status: 'confirmed', decided_by: 'mod' } );
+		expect( gameRow( 'copy' ) ).toEqual( { id_remix_of: 'orig', remix_locked: 1 } );
+	});
+
+	it('the owner cannot make a report undecidable by declaring another remix meanwhile', async () => {
+		const id = await contested();
+		insertGame( env.sqlite, { id: 'other', id_user: 'bob', created: '2026-02-01 10:00:00' } );
+		env.sqlite.prepare( "UPDATE indiegame_games SET id_remix_of = 'other' WHERE id = 'copy'" ).run();
+
+		const res = await decide( mod, id, true );
+
+		expect( res.data!.status ).toBe( 'confirmed' );
+		expect( gameRow( 'copy' ) ).toEqual( { id_remix_of: 'orig', remix_locked: 1 } );
 	});
 });
 

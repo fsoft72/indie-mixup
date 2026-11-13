@@ -46,10 +46,11 @@ const _setStatus = ( ctx : LiWECtx, domain : string, id : string, status : strin
  *
  * @returns An error response, or null when the link was applied
  */
-const _applyLink = async ( ctx : LiWECtx, domain : string, report : IndieRemixReportDB ) : Promise<LiWEResponse<IndieRemixReport> | null> => {
+const _applyLink = async ( ctx : LiWECtx, domain : string, report : IndieRemixReportDB, override = false ) : Promise<LiWEResponse<IndieRemixReport> | null> => {
 	const game = await loadGame( ctx, domain, report.id_game );
 	if ( !game || game.status === 'deleted' ) return responseError( 'The reported game is no longer available', 409, 'GAME_NOT_AVAILABLE' );
-	if ( game.id_remix_of && game.id_remix_of !== report.id_original ) return responseError( 'The game is already a remix of another game', 409, 'ALREADY_REMIX' );
+	// A moderator decision wins over a link the owner declared in the meantime
+	if ( !override && game.id_remix_of && game.id_remix_of !== report.id_original ) return responseError( 'The game is already a remix of another game', 409, 'ALREADY_REMIX' );
 	if ( await createsCycle( game.id, report.id_original, lineageLoader( ctx, domain ) ) ) return responseError( 'The link would create a remix cycle', 409, 'REMIX_CYCLE' );
 
 	await ctx.app.db.update( indiegame_games ).set( { id_remix_of: report.id_original, remix_locked: true, updated: sql`CURRENT_TIMESTAMP` as unknown as Date } )
@@ -156,11 +157,11 @@ export const remixAnswer = async ( ctx : LiWECtx, user : LiWEUser, idReport : st
 };
 
 /**
- * A moderator confirms or rejects a contested report.
+ * A moderator confirms or rejects a report that is still open: contested, or pending because the owner never answered.
  *
  * @param ctx - Request context
  * @param user - The moderator
- * @param idReport - Report id, must be contested
+ * @param idReport - Report id, must be pending or contested
  * @param confirm - True to make the game a remix of the original, false to reject the report
  * @returns The updated report
  */
@@ -171,10 +172,10 @@ export const remixDecide = async ( ctx : LiWECtx, user : LiWEUser, idReport : st
 	const report = await _loadReport( ctx, domain, idReport );
 
 	if ( !report ) return responseError( 'Report not found', 404, 'REPORT_NOT_FOUND' );
-	if ( report.status !== 'contested' ) return responseError( 'Only a contested report can be decided', 409, 'REPORT_NOT_CONTESTED' );
+	if ( report.status !== 'contested' && report.status !== 'pending' ) return responseError( 'The report was already decided', 409, 'REPORT_NOT_OPEN' );
 
 	if ( confirm ) {
-		const error = await _applyLink( ctx, domain, report );
+		const error = await _applyLink( ctx, domain, report, true );
 		if ( error ) return error;
 	}
 

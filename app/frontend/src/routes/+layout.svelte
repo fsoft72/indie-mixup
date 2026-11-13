@@ -1,5 +1,5 @@
 <script lang="ts">
-import { PUBLIC_LIWE_SERVER } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 import { FormCheckbox, FormTextArea, FormTextInput, apiClient, formCreatorPluginRegister } from '@frontend/liwe3';
 import { storeUser } from '@frontend-modules/user';
 import { goto } from '$app/navigation';
@@ -12,8 +12,8 @@ interface Props {
 
 let { children } : Props = $props();
 
-// Every API call goes to the LiWE server of the environment
-apiClient.setBaseURL( PUBLIC_LIWE_SERVER );
+// Every API call goes to the LiWE server of the environment (empty: the same origin that serves the app)
+apiClient.setBaseURL( env.PUBLIC_LIWE_SERVER ?? '' );
 
 // Field types available to every FormCreator of the app
 formCreatorPluginRegister( 'text', FormTextInput );

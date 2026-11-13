@@ -20,7 +20,6 @@ export type IndiegameReportParams = z.infer<typeof IndiegameReportSchema>;
 /*=== f2c_start indiegame_report_headers ===*/
 
 import { gameReport } from '../lib/moderation';
-
 /*=== f2c_end indiegame_report_headers ===*/
 
 /**

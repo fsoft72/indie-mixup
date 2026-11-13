@@ -21,7 +21,6 @@ export type IndiegameAdminHideParams = z.infer<typeof IndiegameAdminHideSchema>;
 
 import { ERR_VALIDATION } from '@backend/liwe3';
 import { gameHide } from '../lib/moderation';
-
 /*=== f2c_end indiegame_admin_hide_headers ===*/
 
 /**

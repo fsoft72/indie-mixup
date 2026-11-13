@@ -23,7 +23,6 @@ export type IndiegameRankingDevelopersParams = z.infer<typeof IndiegameRankingDe
 
 import { RANKING_TTL_SECONDS, cachedRanking, isRankError, parseRankParams, rankDevelopers } from '../lib/ranking';
 import { domainOf } from '../lib/games';
-
 /*=== f2c_end indiegame_ranking_developers_headers ===*/
 
 /**

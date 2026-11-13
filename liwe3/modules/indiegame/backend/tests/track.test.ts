@@ -1,6 +1,6 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { indiegame_track } from '../src/methods/indiegame-track';
-import { createDb, insertGame, mkCtx, mkUser, registerStubs } from './helpers';
+import { createDb, createKv, insertGame, mkCtx, mkUser, registerStubs } from './helpers';
 
 const ENV = { VISITOR_SALT: 'test-salt-test-salt-test-salt-123' };
 
@@ -127,5 +127,20 @@ describe('indiegame_track', () => {
 		expect( res.ok ).toBe( true );
 		expect( res.data!.counted ).toBe( true );
 		expect( eventRows() ).toHaveLength( 1 );
+	});
+});
+
+describe('forged cookies', () => {
+	it('one IP cannot create more than 10 visitors per game, kind and day by changing the cookie', async () => {
+		const kv = createKv();
+		const withKv = { ...ENV, KV: kv };
+		const results : boolean[] = [];
+
+		for ( let i = 0; i < 15; i++ ) results.push( ( await track( 'view', { cookie: `ig_vid=forged-${i}`, 'cf-connecting-ip': '9.9.9.9' }, 'g1', withKv ) ).data!.counted );
+
+		expect( results.filter( Boolean ) ).toHaveLength( 10 );
+		expect( results.slice( 0, 10 ).every( Boolean ) ).toBe( true );
+		expect( ( await track( 'view', { cookie: 'ig_vid=forged-x', 'cf-connecting-ip': '8.8.8.8' }, 'g1', withKv ) ).data!.counted ).toBe( true );
+		expect( ( await track( 'download', { cookie: 'ig_vid=forged-x', 'cf-connecting-ip': '9.9.9.9' }, 'g1', withKv ) ).data!.counted ).toBe( true );
 	});
 });

@@ -20,7 +20,6 @@ export type IndiegameTrackParams = z.infer<typeof IndiegameTrackSchema>;
 /*=== f2c_start indiegame_track_headers ===*/
 
 import { trackGame } from '../lib/track';
-
 /*=== f2c_end indiegame_track_headers ===*/
 
 /**

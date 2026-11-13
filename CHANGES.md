@@ -30,3 +30,13 @@
 - `app/backend/src/index.ts` now registers the `upload` (screenshots and gallery) and `notifier` (remix report notifications) modules too.
 - `system.admin` counts as a moderator (it already passes the route gate).
 - To log in with GitHub an admin must add the `github` OAuth provider (`POST /api/user/oauth/provider/add`).
+
+### Review fixes
+
+- Author names never fall back to the username when it is an email (GitHub accounts without a profile name show `Developer`).
+- Cookie forging: one IP can add at most 10 distinct visitors per game, kind and UTC day (KV counter, only when the IP is known).
+- Deleting a game frees its repo id, so the same repo can be published again.
+- Moderators now also see and decide remix reports the owner never answered (`pending`), and a moderator decision overrides a link the owner declared meanwhile.
+- The moderation queue lists the hidden games (`hidden_games` in `IndieAdminReports`, new field in `work/modules/indiegame.json`) and the admin page can show them again.
+- Screenshots and gallery accept only files of the upload module (`/api/upload/get?key=...`), never external urls.
+- Counters of a page of games are read in chunks of 50 ids (D1 allows 100 bound parameters per query).
