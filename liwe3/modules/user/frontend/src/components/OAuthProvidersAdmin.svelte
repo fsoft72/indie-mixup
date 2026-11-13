@@ -185,7 +185,7 @@ onMount( loadProviders );
 		<div class="provider-form">
 			{#if !editingProvider}
 				<div class="provider-field">
-					<span class="provider-label">Provider</span>
+					<span class="provider-label liwe3-label">Provider</span>
 					<SmartSelect
 						options={PROVIDER_OPTIONS}
 						value={providerName}
@@ -211,19 +211,13 @@ onMount( loadProviders );
 	flex-direction: column;
 	gap: 1rem;
 	min-width: 400px;
-	padding: 0 0 var(--liwe3-space-3);
+	padding: var(--liwe3-space-4) var(--liwe3-space-5) var(--liwe3-space-5);
 }
 
 .provider-field {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
-}
-
-.provider-label {
-	font-size: 0.8rem;
-	font-weight: 500;
-	user-select: none;
 }
 
 .provider-form-buttons {
